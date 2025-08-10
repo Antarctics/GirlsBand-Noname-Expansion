@@ -4886,7 +4886,7 @@ const skills = {
                                 player.loseHp()
                                 if (player.canUse({
                                     name: "sha"
-                                }, target)) {
+                                }, target, false, false)) {
                                     player.useCard({
                                         name: "sha"
                                     }, target)

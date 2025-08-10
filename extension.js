@@ -78,7 +78,7 @@ game.import("extension", function (lib, game, ui, get, ai, _status) {
                 game.saveConfig("show_tip", confirm("检测到未启用Tip标记！\n\n《少女乐队》扩展部分角色使用Tip标记作为提示\n\n是否启用Tip标记以获得完整体验？\n\n本询问仅显示一次！\n\n后续可前往 选项->显示->显示tip标记 处修改"))
                 localStorage.setItem('gb_tipInt', true)
             }
-            if (lib.config.extension_GirlsBand_gb_check_update) checkForUpdate()
+            if (lib.config.extension_GirlsBand_gb_check_update && window.navigator.onLine) checkForUpdate()
             // 新增势力
             game.addGroup("gbmygo", "迷", "迷途之子", {
                 color: "#3388BB",
@@ -253,8 +253,6 @@ const checkForUpdate = async () => {
                 delete game.importedPack
                 game.reload()
             }
-        } else {
-            alert('当前已是最新版本');
         }
     } catch (error) {
         alert('检查更新失败: ' + error.message);

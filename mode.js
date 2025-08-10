@@ -32,39 +32,46 @@ const bandMode = {
                         player.draw(1)
                         break
                     case "guitar2":
-                        player.chooseToDebate([player, game.zhu])
-                            .set("ai", card => {
-                                if (get.color(card) == "red") return 10
-                                return 1
-                            })
-                            .set("callback", () => {
-                                const {
-                                    bool,
-                                    opinion } = event.debateResult;
-                                if (bool && opinion == "red") {
-                                    game.zhu.identity = player.identity
-                                    game.zhu.isZhu = false
-                                    game.zhu.setIdentity()
-                                    game.zhu.maxHp--
-                                    game.zhu.getOriginalSkills().forEach(skill => lib.skill[skill].zhuSkill ? game.zhu.removeSkill(skill) : [])
-                                    game.zhu.update()
-                                    player.identity = "vocalist"
-                                    game.zhu = player;
-                                    player.isZhu = true;
-                                    player.identityShown = true;
-                                    player.ai.shown = 1
-                                    player.maxHp++
-                                    player.hp++
-                                    player.getOriginalSkills().forEach(skill => lib.skill[skill].zhuSkill ? player.addSkill(skill) : [])
-                                    player.update()
-                                    player.setIdentity();
-                                    player.node.identity.classList.remove("guessing");
-                                    player.when("phaseEnd")
-                                        .filter((event, player) => game.phaseNumber == 1)
-                                        .then(() => { player.chooseTarget("主音", "是否明置一名角色的身份牌").set("filterTarget", (card, player, target) => !target.identityShown).set("ai", target => Math.random()) })
-                                        .then(() => { if (result && result.bool) { game.showIdentityCards(result.targets) } })
-                                }
-                            })
+                        let next = await player.chooseToDiscard("主音", "是否弃置两张手牌并与主唱进行议事", "h", 2).set("ai", card => {
+                            if (get.color(card) == "red") return 0
+                            return get.value(card)
+                        }).forResult()
+                        if (next && next.bool) {
+                            player.chooseToDebate([player, game.zhu])
+                                .set("ai", card => {
+                                    if (get.color(card) == "red") return 10
+                                    return 1
+                                })
+                                .set("callback", () => {
+                                    const {
+                                        bool,
+                                        opinion } = event.debateResult;
+                                    if (bool && opinion == "red") {
+                                        game.zhu.identity = player.identity
+                                        game.zhu.isZhu = false
+                                        game.zhu.setIdentity()
+                                        game.zhu.maxHp--
+                                        game.zhu.getOriginalSkills().forEach(skill => lib.skill[skill].zhuSkill ? game.zhu.removeSkill(skill) : [])
+                                        game.zhu.update()
+                                        player.identity = "vocalist"
+                                        game.zhu = player;
+                                        player.isZhu = true;
+                                        player.identityShown = true;
+                                        player.ai.shown = 1
+                                        player.maxHp++
+                                        player.hp++
+                                        player.getOriginalSkills().forEach(skill => lib.skill[skill].zhuSkill ? player.addSkill(skill) : [])
+                                        player.update()
+                                        player.setIdentity();
+                                        player.node.identity.classList.remove("guessing");
+                                        game.updateIdentity()
+                                        player.when("phaseEnd")
+                                            .filter((event, player) => game.phaseNumber == 1)
+                                            .then(() => { player.chooseTarget("主音", "是否明置一名角色的身份牌").set("filterTarget", (card, player, target) => !target.identityShown).set("ai", target => Math.random()) })
+                                            .then(() => { if (result && result.bool) { game.showIdentityCards(result.targets) } })
+                                    }
+                                })
+                        }
                         break
                     case "guitar3":
                         player.when("phaseEnd")
@@ -95,13 +102,14 @@ const bandMode = {
             game.prepareArena(8)
         }
         "step 2"
-        game.assignIdentity();
-        "step 3"
         for (var i = 0; i < game.players.length; i++) {
-            game.players[i].ai.shown = 0.01
+            game.players[i].ai.shown = 0
             game.players[i].getId();
         }
+        game.assignIdentity();
+        "step 3"
         game.chooseCharacter();
+        game.zhu.ai.shown = 1
         "step 4"
         event.trigger("gameStart");
         var players = get.players(lib.sort.position);
@@ -124,6 +132,7 @@ const bandMode = {
         _status.videoInited = true;
         game.addVideo("init", null, info);
         game.gameDraw(players[0], 4);
+        _status.firstAct = game.zhu
         "step 5"
         var result = game.zhu.chooseTarget("主唱", "请明置至少两名其他角色的身份牌", true, [1, 2], lib.filter.notMe).set("ai", (target) => Math.random())
         "step 6"
@@ -132,7 +141,7 @@ const bandMode = {
             game.showIdentityCards(targets)
         }
         "step 7"
-        game.phaseLoop(game.zhu || _status.firstAct || game.me)
+        game.phaseLoop(_status.firstAct)
     },
     game: {
         assignIdentity: () => {
@@ -141,17 +150,18 @@ const bandMode = {
             var identities = get.identityList();
             for (var i = 0; i < players.length; i++) {
                 players[i].identity = identities.randomRemove();
-                players[i].setIdentity("an");
+                players[i].setIdentity("cai");
                 players[i].node.identity.classList.add("guessing");
+                players[i].node.identity.addEventListener(lib.config.touchscreen ? "touchend" : "click", ui.click.identity)
                 players[i].identityShown = false;
             }
             var vocalist = players.find(player => player.identity == "vocalist")
             if (vocalist) {
                 game.zhu = vocalist;
-                vocalist.isZhu = true;
-                vocalist.identityShown = true;
-                vocalist.ai.shown = 1
-                vocalist.node.identity.classList.remove("guessing");
+                game.zhu.isZhu = true;
+                game.zhu.identityShown = true;
+                game.zhu.ai.shown = 1
+                game.zhu.node.identity.classList.remove("guessing");
             }
             game.me.setIdentity();
             game.me.node.identity.classList.remove("guessing");
@@ -193,16 +203,14 @@ const bandMode = {
         updateIdentity: () => {
             let players = get.players()
             players.forEach(player => {
+                if (player.identityShown || player == game.me) player.node.identity.removeEventListener(lib.config.touchscreen ? "touchend" : "click", ui.click.identity)
                 if (game.me.identity == "drummer") {
-                    if (game.ming.includes(player)) player.node.identity.setAttribute("data-color", "wu")
-                    else player.node.identity.setAttribute("data-color", "truezhu")
+                    if (game.ming.includes(player) && player.identityShown) player.node.identity.setAttribute("data-color", "wu")
                 } else {
                     if (game.ming.includes(game.me)) {
                         if (game.ming.includes(player) && player.identityShown) player.node.identity.setAttribute("data-color", "wu")
-                        else player.node.identity.setAttribute("data-color", "truezhu")
                     } else {
                         if (!player.identityShown || player.identity == "bass") player.node.identity.setAttribute("data-color", "wu")
-                        else player.node.identity.setAttribute("data-color", "truezhu")
                     }
                 }
             })
@@ -338,7 +346,7 @@ const bandMode = {
                 var list2 = get.identityList(game.players.length);
                 for (var i = 0; i < list.length; i++) list2.remove(list[i]);
                 player.identity = list2[0];
-                player.setIdentity("an");
+                player.setIdentity("cai");
             };
             next.removePlayer = function () {
                 return game.players.randomGet(game.me, game.zhu);
@@ -545,7 +553,7 @@ const bandMode = {
                 for (i = 0; i < game.players.length; i++) {
                     game.players[i].node.identity.classList.add("guessing");
                     game.players[i].identity = identityList[i];
-                    game.players[i].setIdentity("an");
+                    game.players[i].setIdentity("cai");
                     if (identityList[i] == "vocalist") {
                         game.zhu = game.players[i];
                     }
@@ -801,30 +809,34 @@ const bandMode = {
                 if (!game.ming.includes(me)) game.over(false)
                 else game.over(true)
             }
+        },
+        getIdentityList: () => {
+            switch (_status.mode) {
+                case "normal":
+                    return { drummer: "鼓", diehard: "遗", bass: "贝", guitar: "吉", cai: "猜" }
+                case "impart":
+                    return { drummer: "鼓", diehard: "遗", bass: "贝", guitar: "吉", cai: "猜" }
+                case "girls":
+                    return { guitar2: "音", keys: "键", guitar3: "奏", diehard: "遗", bass: "贝", cai: "猜" }
+                case "soyo":
+                    return { keys: "键", diehard: "遗", cai: "猜" }
+                case "mortis":
+                    return { keys: "键", drummer: "鼓", diehard: "遗", bass: "贝", cai: "猜" }
+            }
         }
     },
     get: {
         rawAttitude: function (from, to) {
-            return get.realAttitude(from, to)
+            let aiShown = to.ai.shown
+            if (aiShown < 0.2) return get.realAttitude(from, to)
+            return get.realAttitude(from, to) * aiShown
         },
         realAttitude: function (from, to) {
             if (from == to) return 10
-            if (from.identity == "drummer") {
-                if (to.identityShown && to.identity != "bass") return 6
-                return -6
-            }
-            if (from.identity == "bass") {
-                if (to.identityShown && to.identity != "bass") return -6
-                return 6
-            }
-            if (from.identityShown) {
-                if (to.identityShown && to.identity != "bass") return 6
-                return -6
-            }
-            if (!from.identityShown) {
-                if (!to.identityShown || to.identity == "bass") return 6
-                return -6
-            }
+            let fromMing = game.ming.includes(from),
+                toMing = game.ming.includes(to)
+            if (fromMing == toMing) return 6
+            return -6
         },
         situation: function (absolute) {
             var i, j, player;
@@ -861,7 +873,7 @@ const bandMode = {
                 case "impart":
                     return ["vocalist", "drummer", "diehard", "bass", "guitar", "guitar", "guitar", "guitar"]
                 case "girls":
-                    return ["vocalist", "guitar2", "keys", "keys", "guitar3", "guitar3", "guitar3", "diehard"]
+                    return ["vocalist", "guitar2", "keys", "bass", "guitar3", "guitar3", "guitar3", "diehard"]
                 case "soyo":
                     return ["vocalist", "keys", "keys", "keys", "keys", "keys", "keys", "diehard"]
                 case "mortis":
@@ -875,7 +887,7 @@ const bandMode = {
                 case "impart":
                     return ["random", "vocalist", "drummer", "diehard", "bass", "guitar"]
                 case "girls":
-                    return ["random", "vocalist", "guitar2", "keys", "guitar3", "diehard"]
+                    return ["random", "vocalist", "guitar2", "keys", "guitar3", "diehard", "bass"]
                 case "soyo":
                     return ["random", "vocalist", "keys", "diehard"]
                 case "mortis":
@@ -905,6 +917,57 @@ const bandMode = {
                 }
                 game.checkResult()
             },
+            logAi: function (targets, card) {
+                if (this.ai.shown == 1 || this.isMad()) return;
+                if (typeof targets == "number") {
+                    this.ai.shown += targets;
+                } else {
+                    var effect = 0,
+                        c,
+                        shown;
+                    var info = get.info(card);
+                    if (info.ai && info.ai.expose) {
+                        if (_status.event.name == "_wuxie" && card.name == "wuxie") {
+                            const infomap = _status.event._info_map;
+                            if (infomap) {
+                                if (this != infomap.target && infomap.player && infomap.player.ai.shown) {
+                                    this.ai.shown += 0.2;
+                                }
+                            }
+                        } else {
+                            this.ai.shown += info.ai.expose;
+                        }
+                    }
+                    if (targets.length > 0) {
+                        for (var i = 0; i < targets.length; i++) {
+                            shown = Math.abs(targets[i].ai.shown);
+                            if (shown < 0.2 || targets[i].identity == "diehard") c = 0;
+                            else if (shown < 0.4) c = 0.5;
+                            else if (shown < 0.6) c = 0.8;
+                            else c = 1;
+                            var eff = get.effect(targets[i], card, this);
+                            effect += eff * c;
+                            if (eff == 0 && shown == 0 && ["drummer"].includes(this.identity) && targets[i] != this) {
+                                effect += 0.1;
+                            }
+                        }
+                    }
+                    if (effect > 0) {
+                        if (effect < 1) c = 0.5;
+                        else c = 1;
+                        if (targets.length == 1 && targets[0] == this);
+                        else if (targets.length == 1) this.ai.shown += 0.2 * c;
+                        else this.ai.shown += 0.1 * c;
+                    } else if (effect < 0 && this == game.me && game.me.identity == "diehard") {
+                        if (targets.length == 1 && targets[0] == this);
+                        else if (targets.length == 1) this.ai.shown -= 0.2;
+                        else this.ai.shown -= 0.1;
+                    }
+                    if (this != game.me) this.ai.shown *= 2;
+                    if (this.ai.shown > 0.95) this.ai.shown = 0.95;
+                    if (this.ai.shown < -0.5) this.ai.shown = -0.5;
+                }
+            },
             dieAfter2: function (source) {
                 if (this.identity == "vocalist" && source) {
                     source.draw(1)
@@ -932,7 +995,7 @@ const bandMode = {
 <br>
         <br>五人标准乐队场：1主唱 1贝斯 2吉他 1遗老贝斯
         <br>八人标准乐队场：1主唱 1鼓手  1贝斯 4吉他 1遗老贝斯
-        <br>大少女乐队场（八人）：1主唱 1主音吉他 2键盘 3节奏吉他 1遗老贝斯
+        <br>大少女乐队场（八人）：1主唱 1主音吉他 1键盘 3节奏吉他 1贝斯 1遗老贝斯
         <br>素世的野望场（八人）：1主唱 6键盘 1遗老贝斯
         <br>全部不会弹场（八人）：1主唱 1键盘 2鼓手 3贝斯 1遗老贝斯
 <br>
@@ -940,7 +1003,7 @@ const bandMode = {
         <br>1.增加1点体力上限，并获得武将牌上的主公技。
         <br>2.游戏开始时，你可以指定至多两名其他角色并明置其的身份牌。
         <br>3.你的胜利目标为击杀所有除鼓手以外的所有未展示身份牌的其他角色。
-        <br>4.当所有展示身份牌的绝嗣死亡后，所有未展示身份牌的角色视为胜利。
+        <br>4.当所有展示身份牌的角色死亡后，所有未展示身份牌的角色视为胜利。
         <br>5.击杀你的角色摸一张牌，然后恢复一点体力并增加1点体力上限。
 <br>
         <br>【鼓手】
@@ -988,7 +1051,7 @@ game.addMode("band", bandMode, {
                 "impart": "合奏模式",
                 "girls": "女乐模式",
                 "soyo": "素世の野望",
-                "morits": "全都不会"
+                "mortis": "全都不会"
             }
         },
         change_identity: {

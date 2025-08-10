@@ -9,7 +9,7 @@ const translates = {
     keys: "键盘",
     guitar2: "主音",
     guitar3: "节奏",
-    an: "?",
+    cai: "猜",
     gb_mygo: "MyGO!!!!!",
     gb_sp_mygo: "异构·MyGO!!!!!",
     gb_mujica: "Ave Mujica",
