@@ -208,6 +208,16 @@ game.import("extension", function (lib, game, ui, get, ai, _status) {
                 init: true,
                 intro: "场上存在本扩展角色时是否播放BGM<br>下局游戏生效",
             },
+            "gb_update_web": {
+                name: `<font color="#f9b2d3ff">更新镜像`,
+                init: "0",
+                item: {
+                    0: "Github官方",
+                    1: "gh-proxy全球镜像",
+                    2: "gh-proxy国内镜像",
+                    3: "tvv.tw镜像",
+                }
+            },
             "gb_check_update": {
                 name: `<font color="#ff2676ff">自动检测更新`,
                 init: false,
@@ -226,12 +236,12 @@ game.import("extension", function (lib, game, ui, get, ai, _status) {
             <div style="color:#ffa348">• 有问题可加群：</div><br>
             <div style="color:#ffa348">&nbsp;&nbsp;Q:1001742343</div><br>
             <div style="color:#ffa348">• 角色设计：文茄</div><br>
-            <div style="color:#ffa348">• 版本号：v2.0.0</div><br>
+            <div style="color:#ffa348">• 版本号：v2.0.1</div><br>
             `,
             author: "Rin",
             diskURL: "",
             forumURL: "",
-            version: "2.0.0",
+            version: "2.0.1",
         },
         files: {},
         connect: true
@@ -239,7 +249,14 @@ game.import("extension", function (lib, game, ui, get, ai, _status) {
 })
 const checkForUpdate = async () => {
     try {
-        const response = await fetch('https://gh-proxy.com/https://raw.githubusercontent.com/Antarctics/GirlsBand-Noname-Expansion/refs/heads/main/info.json');
+        var list = {
+            0: "",
+            1: "https://gh-proxy.com/",
+            2: "https://hk.gh-proxy.com/",
+            3: "https://tvv.tw/"
+        }
+        let proxy = list[lib.config.extension_GirlsBand_gb_update_web]
+        const response = await fetch(`${proxy}https://raw.githubusercontent.com/Antarctics/GirlsBand-Noname-Expansion/refs/heads/main/info.json`);
         if (!response.ok) throw new Error('获取更新失败');
 
         const latestRelease = await response.json();
@@ -249,7 +266,7 @@ const checkForUpdate = async () => {
             if (confirm(`发现新版本 ${latestVersion}，是否更新？\n更新说明:\n${latestRelease.update || '无更新说明'}`)) {
                 let bool = game.getExtensionConfig('应用配置', 'watchExt')
                 game.importedPack = true
-                await downloadAndUpdate("https://gh-proxy.com/https://github.com/Antarctics/GirlsBand-Noname-Expansion/archive/refs/heads/main.zip");
+                await downloadAndUpdate(`${proxy}https://github.com/Antarctics/GirlsBand-Noname-Expansion/archive/refs/heads/main.zip`);
                 delete game.importedPack
                 game.reload()
             }
