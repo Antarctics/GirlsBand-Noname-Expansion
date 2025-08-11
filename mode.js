@@ -813,7 +813,7 @@ const bandMode = {
         getIdentityList: () => {
             switch (_status.mode) {
                 case "normal":
-                    return { drummer: "鼓", diehard: "遗", bass: "贝", guitar: "吉", cai: "猜" }
+                    return { diehard: "遗", bass: "贝", guitar: "吉", cai: "猜" }
                 case "impart":
                     return { drummer: "鼓", diehard: "遗", bass: "贝", guitar: "吉", cai: "猜" }
                 case "girls":
@@ -869,7 +869,7 @@ const bandMode = {
         identityList: () => {
             switch (_status.mode) {
                 case "normal":
-                    return ["vocalist", "drummer", "diehard", "bass", "guitar"]
+                    return ["vocalist", "diehard", "bass", "guitar", "guitar"]
                 case "impart":
                     return ["vocalist", "drummer", "diehard", "bass", "guitar", "guitar", "guitar", "guitar"]
                 case "girls":
@@ -883,7 +883,7 @@ const bandMode = {
         identityList2: () => {
             switch (_status.mode) {
                 case "normal":
-                    return ["random", "vocalist", "drummer", "diehard", "bass", "guitar"]
+                    return ["random", "vocalist", "diehard", "bass", "guitar"]
                 case "impart":
                     return ["random", "vocalist", "drummer", "diehard", "bass", "guitar"]
                 case "girls":
@@ -981,7 +981,7 @@ const bandMode = {
             },
             hasZhuSkill(skill, player) {
                 if (!this.hasSkill(skill)) return false;
-                if (player.identity == "vocalist") return true;
+                if (this.identity == "vocalist") return true;
             }
         }
     },
