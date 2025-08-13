@@ -21,6 +21,7 @@ game.import("extension", function (lib, game, ui, get, ai, _status) {
             * 此方法由GirlSBand扩展实现，拷贝请标注来源！
             * 
             */
+            if (lib.config.extension_GirlsBand_gb_check_update && window.navigator.onLine) update(false)
             if (!lib.keywordInfo) lib.keywordInfo = { ...keywordInfo }
             var oldInfo = get.skillInfoTranslation;
             get.skillInfoTranslation = (name, player) => {
@@ -78,7 +79,6 @@ game.import("extension", function (lib, game, ui, get, ai, _status) {
                 game.saveConfig("show_tip", confirm("检测到未启用Tip标记！\n\n《少女乐队》扩展部分角色使用Tip标记作为提示\n\n是否启用Tip标记以获得完整体验？\n\n本询问仅显示一次！\n\n后续可前往 选项->显示->显示tip标记 处修改"))
                 localStorage.setItem('gb_tipInt', true)
             }
-            if (lib.config.extension_GirlsBand_gb_check_update && window.navigator.onLine) update(false)
             // 新增势力
             game.addGroup("gbmygo", "迷", "迷途之子", {
                 color: "#3388BB",
@@ -271,12 +271,12 @@ const update = async (bool) => {
             }
         }
 
-        if (filesToUpdate.length === 0 && bool) {
-            alert('已经是最新版本，无需更新');
+        if (filesToUpdate.length == 0) {
+            if (bool) alert('已经是最新版本，无需更新');
             return;
         }
 
-        if (confirm(`发现新版本 ${filesToUpdate.version}，当前共有 ${filesToUpdate.length} 个文件需要更新，是否继续？\n更新说明:\n${filesToUpdate.update || '无'}`)) {
+        if (confirm(`《GirlsBnad》发现新版本 ${remoteManifest.version}\n当前共有 ${filesToUpdate.length} 个文件需要更新，是否继续？\n更新说明:\n${remoteManifest.update || '无'}`)) {
             await performUpdate(proxy, remoteManifest, filesToUpdate);
             alert('更新完成！');
             game.reload()
@@ -291,7 +291,7 @@ async function performUpdate(proxy, remoteManifest, filesToUpdate) {
     const progress = createProgress("正在更新 GirlsBand 扩展", filesToUpdate.length);
     game.importedPack = true;
     try {
-        for (let i = 0; i < totalFiles; i++) {
+        for (let i = 0; i < filesToUpdate.length; i++) {
             const filePath = filesToUpdate[i];
             progress.setProgressValue(i + 1);
             progress.setFileName(`正在下载：${filePath} （${i + 1} / ${filesToUpdate.length}）`);
