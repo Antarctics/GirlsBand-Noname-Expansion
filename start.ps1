@@ -2,7 +2,7 @@ $extensionDir = $PWD.Path
 $manifestFile = Join-Path -Path $extensionDir -ChildPath "manifest.json"
 
 $manifest = @{
-    version = "v1.0.0"
+    version = "1.0.0"
     update = "info"
     files = @{}
 }

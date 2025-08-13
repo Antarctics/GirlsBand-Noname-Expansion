@@ -1103,7 +1103,7 @@ const skills = {
         },
         chooseButton: {
             dialog(event, player) {
-                var list = ["kaihua", "huogong", "shuiyanqijunx"];
+                var list = ["kaihua", "yiyi", "shuiyanqijunx"];
                 var dialog = ui.create.dialog("夺目");
                 dialog.add("<div class='text center'>选择要视为的牌</div>");
                 dialog.add([list, "vcard"]);

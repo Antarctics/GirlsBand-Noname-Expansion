@@ -78,7 +78,7 @@ game.import("extension", function (lib, game, ui, get, ai, _status) {
                 game.saveConfig("show_tip", confirm("检测到未启用Tip标记！\n\n《少女乐队》扩展部分角色使用Tip标记作为提示\n\n是否启用Tip标记以获得完整体验？\n\n本询问仅显示一次！\n\n后续可前往 选项->显示->显示tip标记 处修改"))
                 localStorage.setItem('gb_tipInt', true)
             }
-            if (lib.config.extension_GirlsBand_gb_check_update && window.navigator.onLine) checkForUpdate()
+            if (lib.config.extension_GirlsBand_gb_check_update && window.navigator.onLine) update(false)
             // 新增势力
             game.addGroup("gbmygo", "迷", "迷途之子", {
                 color: "#3388BB",
@@ -227,7 +227,7 @@ game.import("extension", function (lib, game, ui, get, ai, _status) {
                 name: `<font color="#34faabff"><span style="text-decoration: underline;">检查更新<span>`,
                 clear: true,
                 onclick() {
-                    checkForUpdate();
+                    update(true);
                 }
             }
         },
@@ -247,82 +247,70 @@ game.import("extension", function (lib, game, ui, get, ai, _status) {
         connect: true
     }
 })
-const checkForUpdate = async () => {
+const update = async (bool) => {
     try {
-        var list = {
+        const proxyList = {
             0: "",
             1: "https://gh-proxy.com/",
             2: "https://hk.gh-proxy.com/",
             3: "https://tvv.tw/"
-        }
-        let proxy = list[lib.config.extension_GirlsBand_gb_update_web]
-        const response = await fetch(`${proxy}https://raw.githubusercontent.com/Antarctics/GirlsBand-Noname-Expansion/refs/heads/main/info.json`);
-        if (!response.ok) throw new Error('获取更新失败');
+        };
+        const proxy = proxyList[lib.config.extension_GirlsBand_gb_update_web] || "";
 
-        const latestRelease = await response.json();
-        const latestVersion = latestRelease.version;
-        const currentVersion = lib.extensionPack.GirlsBand.version || 'v0.0.0';
-        if (currentVersion != latestVersion) {
-            if (confirm(`发现新版本 ${latestVersion}，是否更新？\n更新说明:\n${latestRelease.update || '无更新说明'}`)) {
-                let bool = game.getExtensionConfig('应用配置', 'watchExt')
-                game.importedPack = true
-                await downloadAndUpdate(`${proxy}https://github.com/Antarctics/GirlsBand-Noname-Expansion/archive/refs/heads/main.zip`);
-                delete game.importedPack
-                game.reload()
+        let localManifest = { files: {} };
+        const localManifestData = await game.promises.readFile("extension/GirlsBand/manifest.json");
+        localManifest = JSON.parse(new TextDecoder().decode(localManifestData));
+        const manifestResponse = await fetch(`${proxy}https://raw.githubusercontent.com/Antarctics/GirlsBand-Noname-Expansion/refs/heads/main/manifest.json`);
+        if (!manifestResponse.ok) throw new Error('获取远程清单失败，请尝试更换镜像或检查网络');
+        const remoteManifest = await manifestResponse.json();
+        const filesToUpdate = [];
+        for (const [filePath, remoteHash] of Object.entries(remoteManifest.files)) {
+            const localHash = localManifest.files[filePath];
+            if (localHash !== remoteHash) {
+                filesToUpdate.push(filePath);
             }
         }
+
+        if (filesToUpdate.length === 0 && bool) {
+            alert('已经是最新版本，无需更新');
+            return;
+        }
+
+        if (confirm(`发现新版本 ${filesToUpdate.version}，当前共有 ${filesToUpdate.length} 个文件需要更新，是否继续？\n更新说明:\n${filesToUpdate.update || '无'}`)) {
+            await performUpdate(proxy, remoteManifest, filesToUpdate);
+            alert('更新完成！');
+            game.reload()
+        }
     } catch (error) {
-        alert('检查更新失败: ' + error.message);
-    }
-}
-const downloadAndUpdate = async (zipUrl) => {
-    const progress = createProgress("正在更新 GirlsBand 扩展", 1, "GirlsBand-Noname-Expansion.zip");
-    try {
-        const response = await fetch(zipUrl);
-        if (!response.ok) {
-            throw new Error(`下载失败: HTTP ${response.status}`);
-        }
-        const reader = response.body.getReader();
-        const contentLength = +response.headers.get('Content-Length') || 200 * 1024 * 1024
-        let receivedBytes = 0;
-        let chunks = [];
-
-        while (true) {
-            const { done, value } = await reader.read();
-            if (done) break;
-
-            chunks.push(value);
-            receivedBytes += value.length;
-            const receivedMB = (receivedBytes / (1024 * 1024)).toFixed(1);
-            const totalMB = (contentLength / (1024 * 1024)).toFixed(1);
-            progress.setProgressValue(parseFloat(receivedMB));
-            progress.setProgressMax(parseFloat(totalMB));
-            progress.setFileName(`下载中: ${receivedMB}MB / ${totalMB}MB`);
-        }
-        const blob = new Blob(chunks);
-        const zip = await get.promises.zip();
-        zip.load(await blob.arrayBuffer());
-        const unzipProgress = createProgress("正在解压更新", Object.keys(zip.files).length);
-        let i = 0;
-
-        for (const [path, file] of Object.entries(zip.files)) {
-            if (file.dir) continue;
-            i++;
-            unzipProgress.setProgressValue(i);
-            unzipProgress.setFileName(path);
-            const relativePath = path.replace(/^[^\/]+\//, "");
-            const fullPath = `extension/GirlsBand/${relativePath}`;
-            const [dirPath, fileName] = [fullPath.split("/").slice(0, -1).join("/"), fullPath.split("/").pop()];
-            await game.promises.createDir(dirPath);
-            await game.promises.writeFile(file.asArrayBuffer(), dirPath, fileName)
-                .catch(err => console.warn(`文件写入失败: ${fullPath}`, err));
-        }
-        unzipProgress.remove();
-        progress.remove();
-        alert("更新完成！");
-    } catch (error) {
-        progress.remove();
-        console.error("更新失败:", error);
-        alert(`更新失败: ${error.message}`);
+        console.error('《GirlsBnad》扩展更新失败:', error);
+        if (bool) alert(`更新失败: ${error.message}`);
     }
 };
+
+async function performUpdate(proxy, remoteManifest, filesToUpdate) {
+    const progress = createProgress("正在更新 GirlsBand 扩展", filesToUpdate.length);
+    game.importedPack = true;
+    try {
+        for (let i = 0; i < totalFiles; i++) {
+            const filePath = filesToUpdate[i];
+            progress.setProgressValue(i + 1);
+            progress.setFileName(`正在下载：${filePath} （${i + 1} / ${filesToUpdate.length}）`);
+            const fileUrl = `${proxy}https://raw.githubusercontent.com/Antarctics/GirlsBand-Noname-Expansion/refs/heads/main/${filePath}`;
+            const response = await fetch(fileUrl);
+            if (!response.ok) throw new Error(`下载文件失败: ${filePath}`);
+
+            const fileData = await response.arrayBuffer();
+            const fullPath = `extension/GirlsBand/${filePath}`;
+            const [dirPath, fileName] = [fullPath.split("/").slice(0, -1).join("/"), fullPath.split("/").pop()];
+
+            await game.promises.createDir(dirPath);
+            await game.promises.writeFile(fileData, dirPath, fileName);
+        }
+
+        const manifestData = new TextEncoder().encode(JSON.stringify(remoteManifest, null, 2));
+        await game.promises.writeFile(manifestData, "extension/GirlsBand", "manifest.json");
+    } finally {
+        progress.remove();
+        delete game.importedPack;
+    }
+}
