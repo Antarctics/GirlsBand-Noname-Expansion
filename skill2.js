@@ -1103,7 +1103,7 @@ const skills = {
         },
         chooseButton: {
             dialog(event, player) {
-                var list = ["kaihua", "yiyi", "shuiyanqijunx"];
+                var list = ["kaihua", "huogong", "shuiyanqijunx"];
                 var dialog = ui.create.dialog("夺目");
                 dialog.add("<div class='text center'>选择要视为的牌</div>");
                 dialog.add([list, "vcard"]);
@@ -1135,7 +1135,7 @@ const skills = {
                     viewAs: { name: links[0][2] },
                     card: links[1],
                     onuse(result, player) {
-                        player.markAuto("gbduomu_temp", links[0][2])
+                        player.markAuto("gbduomu_temp", result.card.name)
                         player.addTempSkill("gbduomu_temp")
                     }
                 }
