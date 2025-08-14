@@ -81,7 +81,7 @@
                   "audio/skill/gbhexian2.mp3":  "a739eed760aa6e25b431fdc5f92942c5ba96a2bb",
                   "image/masking.png":  "3ed082269064f29dbf20a2bd92010b44b1a8b52e",
                   "image/moka.png":  "36c85855d3b8f5d0bf4054a7a81f1fda0489c601",
-                  "info.json":  "5103ae13e12b6cbf08c6bd743e058e08d4991219",
+                  "info.json":  "de1e09d9a783fc24b585405d69ebddef7c6c90ea",
                   "image/mujica.png":  "2b273e7a931746fe47015c273382fe345ad6f9e8",
                   "audio/skill/gbansu2.mp3":  "3448511c33d2560e9b70dc9c1527d2830d7423ba",
                   "audio/skill/gbzhuyi1.mp3":  "2d4e38a952e4d7ba4de4207114560ccab673a5d9",
@@ -160,6 +160,6 @@
                   "image/nyamu.png":  "dfa460f6559a56b6d6933e921d554dc3ab5862ec",
                   "audio/skill/gbmizi2.mp3":  "65c5bd168ba84518d4afb37917aaafd40d622896"
               },
-    "version":  "2.0.3",
-    "update":  "- 修复和奏瑞依【夺目】技能联机无法使用的问题\n- 新增【局部更新】功能，此版本后续【自动更新】将仅需更新单个文件（即无需下载完整包）"
+  "version": "2.0.3",
+  "update": "- 修复和奏瑞依【夺目】技能联机无法使用的问题\n- 新增【局部更新】功能，此版本后续【自动更新】将仅需更新单个文件（即无需下载完整包）"
 }
