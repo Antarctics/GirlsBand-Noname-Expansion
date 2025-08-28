@@ -5048,6 +5048,9 @@ const skills = {
         audio: false,
         enable: ["chooseToUse", "chooseToRespond"],
         usable: 5,
+        hiddenCard(player, name) {
+            return player.getExpansions("gbqixiang").some(card => card.name == name)
+        },
         filter(event, player) {
             return player.hasExpansions("gbqixiang") && player.getExpansions("gbqixiang").some(card => event.filterCard(card, player, event))
         },

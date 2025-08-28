@@ -1,3 +1,4 @@
+import { effect } from "../../game/vue.esm-browser.js";
 import {
     lib,
     game,
@@ -961,6 +962,7 @@ const skills = {
             return player.countCards("he")
         },
         chooseCard(player, source) {
+            if (_status.event.getParent().fixedResult && _status.event.getParent().fixedResult[player.playerid]) return _status.event.getParent().fixedResult[player.playerid]
             const next = player.chooseCard("选择任意张手牌，或点取消展示牌堆顶的一张牌", "h", [1, Infinity])
             next.set("ai", (card) => {
                 let player = _status.event.player
@@ -988,7 +990,9 @@ const skills = {
             if (result) {
                 let targets = result.targets
                 targets.sortBySeat()
+                event.targets = targets
                 game.log(targets, "参加了", "#y合奏")
+                await get.event().trigger("chooseToEnsemble")
                 await player.showCards(result.cards)
                 player.discard(result.cards)
                 event._global_waiting = true;
@@ -998,7 +1002,8 @@ const skills = {
                     game.resume();
                 };
                 let solve = (result, current) => {
-                    if (result.bool) {
+                    if (event.fixedResult && event.fixedResult[current.playerid]) show_list.push([current, event.fixedResult[current.playerid]])
+                    else if (result.bool) {
                         current.popup("手牌")
                         show_list.push([current, result.cards])
                     }
@@ -1018,6 +1023,11 @@ const skills = {
                 await Promise.all(
                     humans.map((current) => {
                         return new Promise(async (resolve, reject) => {
+                            if (event.fixedResult && event.fixedResult[current.playerid]) {
+                                solve(event.fixedResult[current.playerid], current);
+                                resolve();
+                                return;
+                            }
                             if (current.isOnline()) {
                                 current.send(send, current, player);
                                 current.wait((result, player) => {
@@ -1040,6 +1050,10 @@ const skills = {
                 );
                 if (locals.length) {
                     for (let current of locals) {
+                        if (event.fixedResult && event.fixedResult[current.playerid]) {
+                            solve(event.fixedResult[current.playerid], current);
+                            continue;
+                        }
                         const next = lib.skill.gbjixing.chooseCard(current, player);
                         const result = await next.forResult();
                         solve(result, current);
@@ -1244,7 +1258,9 @@ const skills = {
             if (result) {
                 let targets = [player, result.targets[0]]
                 targets.sortBySeat()
+                event.targets = targets
                 game.log(targets, "参加了", "#y合奏")
+                await get.event().trigger("chooseToEnsemble")
                 event._global_waiting = true;
                 let show_list = []
                 const send = (player, source) => {
@@ -1252,7 +1268,8 @@ const skills = {
                     game.resume();
                 };
                 let solve = (result, current) => {
-                    if (result.bool) {
+                    if (event.fixedResult && event.fixedResult[current.playerid]) show_list.push([current, event.fixedResult[current.playerid]])
+                    else if (result.bool) {
                         current.popup("手牌")
                         show_list.push([current, result.cards])
                     }
@@ -1272,6 +1289,11 @@ const skills = {
                 await Promise.all(
                     humans.map((current) => {
                         return new Promise(async (resolve, reject) => {
+                            if (event.fixedResult && event.fixedResult[current.playerid]) {
+                                solve(event.fixedResult[current.playerid], current);
+                                resolve();
+                                return;
+                            }
                             if (current.isOnline()) {
                                 current.send(send, current, player);
                                 current.wait((result, player) => {
@@ -1294,6 +1316,10 @@ const skills = {
                 );
                 if (locals.length) {
                     for (let current of locals) {
+                        if (event.fixedResult && event.fixedResult[current.playerid]) {
+                            solve(event.fixedResult[current.playerid], current);
+                            continue;
+                        }
                         const next = lib.skill.gbkuangchi.chooseCard(current, player);
                         const result = await next.forResult();
                         solve(result, current);
@@ -1421,6 +1447,7 @@ const skills = {
         },
         usable: 3,
         chooseCard(player, source) {
+            if (_status.event.getParent().fixedResult && _status.event.getParent().fixedResult[player.playerid]) return _status.event.getParent().fixedResult[player.playerid]
             const next = player.chooseCard("选择任意张手牌，或点取消展示牌堆顶的一张牌", "h", [1, Infinity])
             next.set("ai", (card) => {
                 let player = _status.event.player
@@ -1443,7 +1470,9 @@ const skills = {
         async content(event, trigger, player) {
             let targets = [player, event.targets[0]]
             targets.sortBySeat()
+            event.targets = targets
             game.log(targets, "参加了", "#y合奏")
+            await get.event().trigger("chooseToEnsemble")
             event._global_waiting = true;
             let show_list = []
             const send = (player, source) => {
@@ -1471,6 +1500,11 @@ const skills = {
             await Promise.all(
                 humans.map((current) => {
                     return new Promise(async (resolve, reject) => {
+                        if (event.fixedResult && event.fixedResult[current.playerid]) {
+                            solve(event.fixedResult[current.playerid], current);
+                            resolve();
+                            return;
+                        }
                         if (current.isOnline()) {
                             current.send(send, current, player);
                             current.wait((result, player) => {
@@ -1493,6 +1527,10 @@ const skills = {
             );
             if (locals.length) {
                 for (let current of locals) {
+                    if (event.fixedResult && event.fixedResult[current.playerid]) {
+                        solve(event.fixedResult[current.playerid], current);
+                        continue;
+                    }
                     const next = lib.skill.gbkuangbiao.chooseCard(current, player);
                     const result = await next.forResult();
                     solve(result, current);
@@ -1622,6 +1660,7 @@ const skills = {
         filterCard: true,
         lose: false,
         chooseCard(player, source) {
+            if (_status.event.getParent().fixedResult && _status.event.getParent().fixedResult[player.playerid]) return _status.event.getParent().fixedResult[player.playerid]
             const next = player.chooseCard("选择任意张手牌，或点取消展示牌堆顶的一张牌", "h", [1, Infinity])
             next.set("ai", (card) => {
                 let player = _status.event.player
@@ -1643,7 +1682,9 @@ const skills = {
             if (result) {
                 let targets = [player].addArray(result.targets)
                 targets.sortBySeat()
+                event.targets = targets
                 game.log(targets, "参加了", "#y合奏")
+                await get.event().trigger("chooseToEnsemble")
                 event._global_waiting = true;
                 let show_list = []
                 const send = (player, source) => {
@@ -1651,7 +1692,8 @@ const skills = {
                     game.resume();
                 };
                 let solve = (result, current) => {
-                    if (result.bool) {
+                    if (event.fixedResult && event.fixedResult[current.playerid]) show_list.push([current, event.fixedResult[current.playerid]])
+                    else if (result.bool) {
                         current.popup("手牌")
                         show_list.push([current, result.cards])
                     }
@@ -1671,6 +1713,11 @@ const skills = {
                 await Promise.all(
                     humans.map((current) => {
                         return new Promise(async (resolve, reject) => {
+                            if (event.fixedResult && event.fixedResult[current.playerid]) {
+                                solve(event.fixedResult[current.playerid], current);
+                                resolve();
+                                return;
+                            }
                             if (current.isOnline()) {
                                 current.send(send, current, player);
                                 current.wait((result, player) => {
@@ -1693,6 +1740,10 @@ const skills = {
                 );
                 if (locals.length) {
                     for (let current of locals) {
+                        if (event.fixedResult && event.fixedResult[current.playerid]) {
+                            solve(event.fixedResult[current.playerid], current);
+                            continue;
+                        }
                         const next = lib.skill.gbcaiyan.chooseCard(current, player);
                         const result = await next.forResult();
                         solve(result, current);
@@ -1787,6 +1838,7 @@ const skills = {
             return player.hasSkill("gbzhiyin_temp")
         },
         chooseCard(player, source) {
+            if (_status.event.getParent().fixedResult && _status.event.getParent().fixedResult[player.playerid]) return _status.event.getParent().fixedResult[player.playerid]
             const next = player.chooseCard("选择任意张手牌，或点取消展示牌堆顶的一张牌", "h", [1, Infinity])
             next.set("ai", (card) => {
                 let player = _status.event.player
@@ -1806,7 +1858,9 @@ const skills = {
             if (result) {
                 let targets = result.targets
                 targets.sortBySeat()
+                event.targets = targets
                 game.log(targets, "参加了", "#y合奏")
+                await get.event().trigger("chooseToEnsemble")
                 event._global_waiting = true;
                 let show_list = []
                 const send = (player, source) => {
@@ -1814,7 +1868,8 @@ const skills = {
                     game.resume();
                 };
                 let solve = (result, current) => {
-                    if (result.bool) {
+                    if (event.fixedResult && event.fixedResult[current.playerid]) show_list.push([current, event.fixedResult[current.playerid]])
+                    else if (result.bool) {
                         current.popup("手牌")
                         show_list.push([current, result.cards])
                     }
@@ -1834,6 +1889,11 @@ const skills = {
                 await Promise.all(
                     humans.map((current) => {
                         return new Promise(async (resolve, reject) => {
+                            if (event.fixedResult && event.fixedResult[current.playerid]) {
+                                solve(event.fixedResult[current.playerid], current);
+                                resolve();
+                                return;
+                            }
                             if (current.isOnline()) {
                                 current.send(send, current, player);
                                 current.wait((result, player) => {
@@ -1856,6 +1916,10 @@ const skills = {
                 );
                 if (locals.length) {
                     for (let current of locals) {
+                        if (event.fixedResult && event.fixedResult[current.playerid]) {
+                            solve(event.fixedResult[current.playerid], current);
+                            continue;
+                        }
                         const next = lib.skill.gbzhiyin.chooseCard(current, player);
                         const result = await next.forResult();
                         solve(result, current);
@@ -1926,6 +1990,325 @@ const skills = {
             temp: {
                 onremove: true
             },
+        }
+    },
+    gbchunhua: {
+        audio: false,
+        enable: "phaseUse",
+        usable: 2,
+        position: "he",
+        filterCard(card, player) {
+            let suit = player.getCards("j").reduce((suit, card) => suit.add(get.suit(card, player)), [])
+            if (suit.includes(get.suit(card, player))) return false
+            return true
+        },
+        cards(list) {
+            for (let card of list) {
+                const namex = "gbchunhua_" + card.name;
+                if (!lib.card[namex]) {
+                    lib.card[namex] = {
+                        type: "special_delay",
+                        fullskin: true,
+                        noEffect: true,
+                        wuxieable: false,
+                    };
+                    lib.card[namex].cardimage = card.name;
+                    lib.translate[namex] = lib.translate[card.name] + "·春华";
+                    lib.translate[namex + "_info"] = "由【春华】技能创造的无效果【延时锦囊牌】";
+                }
+            }
+        },
+        selectCard: 1,
+        lose: false,
+        async content(event, trigger, player) {
+            game.broadcastAll((card) => {
+                lib.skill.gbchunhua.cards(card)
+            }, event.cards)
+            await player.addJudge("gbchunhua_" + event.cards[0].name, event.cards)
+            let num = player.countCards("j")
+            player.draw(num)
+            if (get.suit(event.cards[0], player) == "spade" && num > 0) player.chooseToDiscard(true, "he", num)
+        },
+        ai: {
+            order: 10,
+            result: {
+                player: 1
+            }
+        }
+    },
+    gblingming: {
+        audio: false,
+        trigger: {
+            global: "phaseBegin"
+        },
+        filter(event, player) {
+            return event.player != player
+        },
+        async content(event, trigger, player) {
+            let list = []
+            if (trigger.player.canCompare) list.push("拼点")
+            list.push("议事")
+            list.push("合奏")
+            let result = await player.chooseControl(list, true).set("ai", () => _status.event.controls.randomGet()).forResult()
+            switch (result.control) {
+                case "拼点":
+                    let next = await player.chooseToCompare(trigger.player).forResult()
+                    if (next && next.bool) {
+                        let next2 = await player.chooseBool("是否将" + get.translation(next.player) + "交给" + get.translation(trigger.player) + "并摸一张牌").set("ai", () => {
+                            let player = _status.event.player
+                            let target = _status.currentPhase
+                            if (get.attitude(player, target) > 0) return true
+                            return false
+                        }).forResult()
+                        if (next2 && next2.bool) {
+                            player.give(next.player, trigger.player, "giveAuto")
+                            player.draw()
+                            trigger.player.addTempSkill("gblingming_effect")
+                            trigger.player.markAuto("gblingming_effect", next.player)
+                        }
+                    } else {
+                        game.broadcastAll((card) => {
+                            lib.skill.gbchunhua.cards(card)
+                        }, [next.target])
+                        await player.addJudge("gbchunhua_" + next.target.name, next.target)
+                    }
+                    break
+                case "议事":
+                    player.chooseToDebate([player, trigger.player]).set("callback", async () => {
+                        const {
+                            bool,
+                            opinion,
+                            black,
+                            red,
+                            others,
+                            targets
+                        } = _status.event.debateResult;
+                        let player = _status.event.player
+                        let target = targets.filter(i => i != player)[0]
+                        if (bool && opinion == "red") {
+                            let cards = [...red, ...black, ...others].filter(i => i[0] == player).map(i => i[1])
+                            let next = await player.chooseBool("是否将" + get.translation(cards) + "交给" + get.translation(target) + "并摸一张牌").set("ai", () => {
+                                let player = _status.event.player
+                                let target = _status.currentPhase
+                                if (get.attitude(player, target) > 0) return true
+                                return false
+                            }).forResult()
+                            if (next && next.bool) {
+                                player.give(cards, target)
+                                player.draw()
+                                target.addTempSkill("gblingming_effect")
+                                target.markAuto("gblingming_effect", cards)
+                            }
+                        } else {
+                            let cards = [...red, ...black, ...others].filter(i => i[0] != player).map(i => i[1])
+                            game.broadcastAll((card) => {
+                                lib.skill.gbchunhua.cards(card)
+                            }, cards)
+                            await player.addJudge("gbchunhua_" + cards[0].name, cards)
+                        }
+                    })
+                    break
+                case "合奏":
+                    let targets = [player, trigger.player]
+                    event.targets = targets
+                    game.log(targets, "参加了", "#y合奏")
+                    await get.event().trigger("chooseToEnsemble")
+                    event._global_waiting = true;
+                    let show_list = []
+                    const send = (player, source) => {
+                        lib.skill.gbjixing.chooseCard(player, source);
+                        game.resume();
+                    };
+                    let solve = (result, current) => {
+                        if (event.fixedResult && event.fixedResult[current.playerid]) show_list.push([current, event.fixedResult[current.playerid]])
+                        else if (result.bool) {
+                            current.popup("手牌")
+                            show_list.push([current, result.cards])
+                        }
+                        else {
+                            current.popup("牌堆")
+                            let card = get.cards(1)
+                            game.cardsGotoOrdering(card)
+                            show_list.push([current, card])
+                        }
+                    }
+                    let time = 10000;
+                    if (lib.configOL && lib.configOL.choose_timeout) time = parseInt(lib.configOL.choose_timeout) * 1000;
+                    targets.forEach(current => current.showTimer(time));
+                    const humans = targets.filter(current => current === game.me || current.isOnline()),
+                        locals = targets.slice(0);
+                    locals.removeArray(humans);
+                    await Promise.all(
+                        humans.map((current) => {
+                            return new Promise(async (resolve, reject) => {
+                                if (event.fixedResult && event.fixedResult[current.playerid]) {
+                                    solve(event.fixedResult[current.playerid], current);
+                                    resolve();
+                                    return;
+                                }
+                                if (current.isOnline()) {
+                                    current.send(send, current, player);
+                                    current.wait((result, player) => {
+                                        solve(result, player);
+                                        resolve();
+                                    });
+                                } else if (current == game.me) {
+                                    const next = lib.skill.gbjixing.chooseCard(current, player);
+                                    const solver = (result, player) => {
+                                        solve(result, player);
+                                        resolve();
+                                    };
+                                    if (_status.connectMode) game.me.wait(solver);
+                                    const result = await next.forResult();
+                                    if (_status.connectMode) game.me.unwait(result, current);
+                                    else solver(result, current);
+                                }
+                            });
+                        })
+                    );
+                    if (locals.length) {
+                        for (let current of locals) {
+                            if (event.fixedResult && event.fixedResult[current.playerid]) {
+                                solve(event.fixedResult[current.playerid], current);
+                                continue;
+                            }
+                            const next = lib.skill.gbjixing.chooseCard(current, player);
+                            const result = await next.forResult();
+                            solve(result, current);
+                        }
+                    }
+                    delete event._global_waiting;
+                    let name = [],
+                        item = [],
+                        cards = []
+                    for (let arr of show_list) {
+                        game.log(arr[0], "展示了", "#y", arr[1])
+                        cards.addArray(arr[1])
+                        name.push({ item: get.translation(arr[0]), ratio: show_list.length })
+                        item.push({ item: arr[1], ratio: show_list.length })
+                    }
+                    game.broadcastAll((show_list, name, item) => {
+                        game.pause()
+                        let dialog = ui.create.dialog("合奏")
+                        if (show_list.length >= 4) {
+                            const half = Math.ceil(name.length / 2)
+                            dialog.addNewRow(...name.slice(0, half))
+                            dialog.addNewRow(...item.slice(0, half))
+                            dialog.addNewRow(...name.slice(half))
+                            dialog.addNewRow(...item.slice(half))
+                            dialog.css({ height: "60%" });
+                        } else {
+                            dialog.addNewRow(...name)
+                            dialog.addNewRow(...item)
+                            dialog.css({ height: "30%" });
+                        }
+                        setTimeout(() => {
+                            game.resume()
+                            dialog.close()
+                        }, 2000)
+                    }, show_list, name, item)
+                    let source = show_list.filter(item => item[0] == player).flatMap(list => list[1]).flat()
+                    let target = show_list.filter(item => item[0] != player).flatMap(list => list[1]).flat()
+                    if (source.length == target.length) {
+                        let next1 = await player.chooseBool("是否将" + get.translation(source) + "交给" + get.translation(trigger.player) + "并摸一张牌").set("ai", () => {
+                            let player = _status.event.player
+                            let target = _status.currentPhase
+                            if (get.attitude(player, target) > 0) return true
+                            return false
+                        }).forResult()
+                        if (next1 && next1.bool) {
+                            player.give(source, trigger.player)
+                            player.draw()
+                            trigger.player.addTempSkill("gblingming_effect")
+                            trigger.player.markAuto("gblingming_effect", source)
+                        }
+                    } else {
+                        game.broadcastAll((card) => {
+                            lib.skill.gbchunhua.cards(card)
+                        }, target)
+                        for (let card of target) {
+                            await player.addJudge("gbchunhua_" + card.name, card)
+                        }
+                    }
+                    break
+            }
+        },
+        subSkill: {
+            effect: {
+                audio: false,
+                onremove: true,
+                forced: true,
+                trigger: {
+                    player: "useCard"
+                },
+                filter(event, player) {
+                    return event.card.isCard && event.cards.length == 1 && player.getStorage("gblingming_effect").includes(event.cards[0])
+                },
+                async content(event, trigger, player) {
+                    trigger.directHit.addArray(game.players)
+                    game.log(trigger.card, "不可被响应")
+                }
+            }
+        }
+    },
+    gbzhaying: {
+        audio: false,
+        trigger: {
+            global: ["chooseToDebateBegin", "chooseToEnsemble"],
+            target: "chooseToCompareBegin",
+            player: "chooseToCompareBegin"
+        },
+        filter(event, player, name) {
+            if (event.name == "chooseToDebate") return event.list.includes(player) && player.countCards("j")
+            if (name == "chooseToEnsemble") return event.targets.includes(player) && player.countCards("j")
+            return player.countCards("j")
+        },
+        charlotte: true,
+        async cost(event, trigger, player) {
+            event.result = await player.chooseButton(["乍影", `选择${event.triggername != "chooseToEnsemble" ? "一" : "任意"}张牌作为${event.triggername == "chooseToDebateBegin" ? "议事" : event.triggername == "chooseToEnsemble" ? "合奏" : "拼点"}结果。`, [player.getCards("j"), "card"]], true, event.triggername != "chooseToEnsemble" ? 1 : [1, Infinity])
+                .set("ai", (button) => 6 - get.value(button.link))
+                .forResult()
+            event.result.cost_data = event.result.links
+        },
+        async content(event, trigger, player) {
+            if (event.triggername != "chooseToDebateBegin") {
+                if (!trigger.fixedResult) trigger.fixedResult = {}
+                trigger.fixedResult[player.playerid] = event.triggername == "chooseToEnsemble" ? event.cost_data : event.cost_data[0]
+            } else {
+                if (!trigger.fixedResult) trigger.fixedResult = [];
+                trigger.fixedResult.push([player, event.cost_data[0]]);
+            }
+        },
+        group: ["gbzhaying_1", "gbzhaying_2"],
+        subSkill: {
+            1: {
+                audio: false,
+                forced: true,
+                trigger: {
+                    player: "phaseBegin"
+                },
+                filter(event, player) {
+                    return player.countCards("j")
+                },
+                async content(event, trigger, player) {
+                    let cards = player.getCards("j")
+                    player.gain(cards)
+                    player.gain(lib.card.ying.getYing(cards.length))
+                }
+            },
+            2: {
+                audio: false,
+                forced: true,
+                trigger: {
+                    player: "phaseDiscardEnd"
+                },
+                filter(event, player) {
+                    return event.cards && event.cards.some(card => card.name == "ying")
+                },
+                async content(event, trigger, player) {
+                    player.discard(player.getCards("h"))
+                }
+            }
         }
     }
 }

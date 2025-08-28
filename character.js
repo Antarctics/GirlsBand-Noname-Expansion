@@ -474,6 +474,14 @@ const characters = {
         names: "珠手|知由",
         img: "extension/GirlsBand/image/chuchu.png",
     },
+    gb_sp_fengchuanxiangzi: {
+        sex: "female",
+        group: "gbmujica",
+        hp: 3,
+        skills: ["gbchunhua", "gblingming", "gbzhaying"],
+        names: "丰川|祥子",
+        img: "extension/GirlsBand/image/sp_saki.png",
+    },
 };
 
 const characterSubstitutes = {
@@ -536,6 +544,7 @@ const characterTitles = {
     gb_zuotengyimu: "MASKING",
     gb_ruyuanlingwangna: "PAREO",
     gb_zhushouzhiyou: "Chuchu",
+    gb_sp_fengchuanxiangzi: "春日乍影",
 };
 const characterIntros = {
     zhuiminglixi: "椎名立希，所属动漫《BanG Dream! It's MyGO!!!!!》中的人物。MyGO!!!!!的鼓手，同时也负责作曲，在拿到灯的歌词以后，创作出切合她世界观的歌曲。花咲川女子学园高中一年级学生，是喜欢一人独处的独狼。",
@@ -601,7 +610,7 @@ const characterSort = {
     gb_mygo: ["gb_zhuiminglixi", "gb_changqisushi", "gb_yaolenai", "gb_qianzaoaiyin", "gb_gaosongdeng"],
     gb_sp_mygo: ["gb_sp_changqisushi", "gb_sp_qianzaoaiyin", "gb_sp_gaosongdeng"],
     gb_mujica: ["gb_fengchuanxiangzi", "gb_ruoyemu", "gb_sanjiaochuhua", "gb_bafanhailing", "gb_youtiansiruomai", "gb_mortis", "gb_shen_fengchuanxiangzi"],
-    gb_sp_mujica: ["gb_sp_mortis", "gb_sp_ruoyemu", "gb_sp_ruoyemu"],
+    gb_sp_mujica: ["gb_sp_mortis", "gb_sp_ruoyemu", "gb_sp_ruoyemu","gb_sp_fengchuanxiangzi"],
     gb_band: ["gb_houtengyili", "gb_yidizhihongxia", "gb_shantianliang", "gb_xiduoyudai"],
     gb_TOGETOGE: ["gb_jinqinrencai", "gb_heyuanmutaoxiang", "gb_anhemao", "gb_hailaozhongzhi", "gb_lupa"],
     gb_kon: ["gb_pingzewei", "gb_qiushanling", "gb_tianjingzhonglv", "gb_qinchuichou", "gb_zhongyezi"],

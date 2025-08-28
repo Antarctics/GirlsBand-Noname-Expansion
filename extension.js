@@ -220,7 +220,7 @@ game.import("extension", function (lib, game, ui, get, ai, _status) {
             },
             "gb_check_update": {
                 name: `<font color="#ff2676ff">自动检测更新`,
-                init: false,
+                init: true,
                 intro: "每次启动游戏后自动检测扩展更新",
             },
             "gb_update": {
@@ -236,12 +236,12 @@ game.import("extension", function (lib, game, ui, get, ai, _status) {
             <div style="color:#ffa348">• 有问题可加群：</div><br>
             <div style="color:#ffa348">&nbsp;&nbsp;Q:1001742343</div><br>
             <div style="color:#ffa348">• 角色设计：文茄</div><br>
-            <div style="color:#ffa348">• 版本号：v2.0.3</div><br>
+            <div style="color:#ffa348">• 版本号：v2.0.4</div><br>
             `,
             author: "Rin",
             diskURL: "",
             forumURL: "",
-            version: "2.0.3",
+            version: "2.0.4",
         },
         files: {},
         connect: true
@@ -265,9 +265,14 @@ const update = async (bool) => {
         const remoteManifest = await manifestResponse.json();
         const filesToUpdate = [];
         for (const [filePath, remoteHash] of Object.entries(remoteManifest.files)) {
-            const localHash = localManifest.files[filePath];
-            if (localHash !== remoteHash) {
+            const fileExists = await game.promises.checkFile(`extension/GirlsBand/${filePath}`)
+            if (fileExists !== 1) {
                 filesToUpdate.push(filePath);
+            } else {
+                const localHash = localManifest.files[filePath];
+                if (localHash !== remoteHash) {
+                    filesToUpdate.push(filePath);
+                }
             }
         }
 

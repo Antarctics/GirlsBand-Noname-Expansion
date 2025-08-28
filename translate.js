@@ -30,6 +30,8 @@ const translates = {
     gb_fengchuanxiangzi: "丰川祥子",
     gb_shen_fengchuanxiangzi: "神丰川祥子",
     gb_shen_fengchuanxiangzi_prefix: "神",
+    gb_sp_fengchuanxiangzi: "SP丰川祥子",
+    gb_sp_fengchuanxiangzi_prefix: "SP",
     gb_sp_changqisushi: "SP长崎素世",
     gb_sp_changqisushi_prefix: "SP",
     gb_sp_qianzaoaiyin: "SP千早爱音",
@@ -426,6 +428,13 @@ const translates = {
     gbzhiyou_info: "锁定技，准备阶段开始时，你可以观看一名其他角色的手牌并展示其中至多X张花色均不同的牌（X为你的体力上限），然后令其选择一项：①将展示牌交给你，然后摸等量张牌；②弃置展示牌，然后弃置你一张牌。",
     gbzhiyin: "制音",
     gbzhiyin_info: "回合内每阶段限一次，若你于本阶段获得过牌，则本阶段结束时，你可以令至多两名其他角色进行“合奏”。然后你选择一项：①弃置合奏牌，然后分别摸等量张牌；②你获得合奏牌，然后令未因此失去牌的目标角色失去1点体力。",
+
+    gbchunhua: "春华",
+    gbchunhua_info: "出牌阶段限两次，你可以将一张与判定区花色均不同的牌置入判定区，然后你摸X张牌（X为你判定区内牌的数量），若你以此法置入了黑桃牌，你弃置等量张牌。",
+    gblingming: "蛉鸣",
+    gblingming_info: "其他角色的回合开始时，你可以选择与其拼点/议事/合奏：若你赢/意见为红/牌数相同，你可以将你的拼点/议事/合奏牌交给其并摸一张牌，本回合其使用此牌无法被响应，否则，你将其的拼点/议事/合奏牌置入你的判定区内。",
+    gbzhaying: "乍影",
+    gbzhaying_info: "锁定技，若你判定区有牌，你仅能以判定区的牌进行拼点/议事/合奏。回合开始时，你获得判定区中的牌并摸等量张【影】。弃牌阶段，若你弃置了【影】，你弃置所有手牌，然后增加1点体力上限。",
 }
 const pinyins = {
     椎名立希: ["Shiina", "Taki"],
