@@ -93,7 +93,7 @@
                   "image/eve.png":  "5c258369ee46db303912a364a3c26fe0edc56833",
                   "image/roselia.png":  "0c9a3bd72870d2e5010748e7dc020f10cf0090fb",
                   "image/bass.jpg":  "7decbfbcbd146f26e35935448f92143a431e0d81",
-                  "skill2.js":  "be3f86d3133aba13f298ca3b75d4557ec9638dce",
+                  "skill2.js":  "3c273302ac60e3473ac8d131e29a393fd539df2a",
                   "audio/skill/gbzhuyin1.mp3":  "46604745b08b3f59d3818bff3f1c58ac8880ac62",
                   "image/layer.png":  "7083ed661bdae5eb995b0f8f19e310edb340f125",
                   "audio/skill/gbyingxiang3.mp3":  "c23910237245b904d63c67b524ad704dd043462a",
@@ -142,7 +142,7 @@
                   "skill1.js":  "752f32bb7f82aac66948782fd328c963a559083d",
                   "audio/skill/gbmizi1.mp3":  "2f76590025aa9d9779cb59ce187c186297506c47",
                   "audio/skill/gbchenggu3.mp3":  "331b14b28ea479954607dcbf2b7ebcc0ecbff6cc",
-                  "translate.js":  "458ba75ff1c5423d33cc636f60d55d9b9e731016",
+                  "translate.js":  "315304d8362f4ede518e0f9f9e59494ecd11c10c",
                   "image/mio.png":  "f14a585bbff015f783d5bef81f0b09393c3cd99c",
                   "image/yukina.png":  "5c8fb5b3f1f5b65831025cee064b548f148b3cff",
                   "audio/skill/gbchunying1.mp3":  "2a47d32994497eaebc4fbcbf037abf972b7e5087",
@@ -162,5 +162,5 @@
                   "audio/skill/gbmizi2.mp3":  "65c5bd168ba84518d4afb37917aaafd40d622896"
               },
     "version":  "2.0.6",
-    "update":  "- 修改SP丰川祥子【乍影】技能\n- 调整鳰原令王那血量上限：8→6"
+    "update":  "- 修改SP丰川祥子【乍影】技能效果\n- 调整鳰原令王那血量上限：8→6\n- 修复朝日六花【革面】摸牌无效的问题"
 }

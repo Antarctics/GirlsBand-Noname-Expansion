@@ -1207,7 +1207,7 @@ const skills = {
                 if (next.control == "选项一") {
                     let num = target.countCards("h") - player.countCards("h")
                     if (num > 0) target.chooseToDiscard(true, "h", num)
-                    else target.draw(num)
+                    else target.draw(-num)
                 } else {
                     player.draw()
                     player.addMark("gbgemian_temp", 1, false)
