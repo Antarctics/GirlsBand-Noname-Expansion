@@ -256,9 +256,9 @@ const update = async (bool) => {
             3: "https://tvv.tw/"
         };
         var proxy = proxyList[lib.config.extension_GirlsBand_gb_update_web] || "",
-        lastError,
-        manifestResponse,
-        remoteManifest
+            lastError,
+            manifestResponse,
+            remoteManifest
         try {
             manifestResponse = await fetch(`${proxy}https://raw.githubusercontent.com/Antarctics/GirlsBand-Noname-Expansion/refs/heads/main/manifest.json`);
             if (!manifestResponse.ok) throw new Error(`HTTP ${manifestResponse.status}`);
@@ -269,7 +269,7 @@ const update = async (bool) => {
             lastError = error;
             for (const [key, proxyUrl] of Object.entries(proxyList)) {
                 if (proxyUrl === proxy) continue;
-                
+
                 try {
                     manifestResponse = await fetch(`${proxyUrl}https://raw.githubusercontent.com/Antarctics/GirlsBand-Noname-Expansion/refs/heads/main/manifest.json`);
                     if (!manifestResponse.ok) throw new Error(`HTTP ${manifestResponse.status}`);
@@ -296,7 +296,9 @@ const update = async (bool) => {
             } else {
                 try {
                     const fileData = await game.promises.readFile(`extension/GirlsBand/${filePath}`);
-                    const localHash = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-1', fileData))).map(b => b.toString(16).padStart(2, '0')).join('')
+                    const text = new TextDecoder().decode(fileData);
+                    const crlfData = new TextEncoder().encode(text.replace(/\r\n/g, '\n').replace(/\r/g, '\n').replace(/\n/g, '\r\n'));
+                    const localHash = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-1', crlfData))).map(b => b.toString(16).padStart(2, '0')).join('')
                     if (localHash !== remoteHash) {
                         filesToUpdate.push(filePath);
                     }
