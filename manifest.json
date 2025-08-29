@@ -119,7 +119,7 @@
                   "audio/skill/gblvefei2.mp3":  "37c287f10d5b52629e760488459b22a805fb286a",
                   "image/band.png":  "8b56aeb0a54dc84a5649fac1d318748688ca0e34",
                   "image/sakiko.png":  "f8640c7073a041ee48a51ff10d0bde11e9b112de",
-                  "extension.js":  "33441296fc9295e97541fac40a96c7add988bd2e",
+                  "extension.js":  "374264577ce30236b10262c996852093191ac913",
                   "image/ran.png":  "d2b048c78410618e7ab0ac3cd102148c62d8fd1e",
                   "image/rui.png":  "6c825dabb7fa4232ed90e833ac84d44b6b05ebc0",
                   "image/momoka.png":  "25b47d65490c8a10f819187d98aab46ce86da6de",
@@ -161,6 +161,6 @@
                   "image/nyamu.png":  "dfa460f6559a56b6d6933e921d554dc3ab5862ec",
                   "audio/skill/gbmizi2.mp3":  "65c5bd168ba84518d4afb37917aaafd40d622896"
               },
-    "version":  "2.0.6",
-    "update":  "- 修改SP丰川祥子【乍影】技能效果\n- 调整鳰原令王那血量上限：8→6\n- 修复朝日六花【革面】摸牌无效的问题"
+  "version": "2.0.6",
+  "update": "- 修改SP丰川祥子【乍影】技能效果\n- 调整鳰原令王那血量上限：8→6\n- 修复朝日六花【革面】摸牌无效的问题"
 }

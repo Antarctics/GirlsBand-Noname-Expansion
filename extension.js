@@ -312,14 +312,14 @@ const update = async (bool) => {
             if (bool) alert('已经是最新版本，无需更新');
             return;
         }
-        if (confirm(`《GirlsBnad》发现新版本 ${remoteManifest.version}\n当前共有 ${filesToUpdate.length} 个文件需要更新，是否继续？\n更新说明:\n${remoteManifest.update || '无'}`)) {
+        if (confirm(`《GirlsBand》发现新版本 ${remoteManifest.version}\n当前共有 ${filesToUpdate.length} 个文件需要更新，是否继续？\n更新说明:\n${remoteManifest.update || '无'}`)) {
             await performUpdate(proxy, remoteManifest, filesToUpdate);
             alert('更新完成！');
             game.reload()
         }
     } catch (error) {
         delete game.importedPack;
-        console.error('《GirlsBnad》扩展更新失败:', error);
+        console.error('《GirlsBand》扩展更新失败:', error);
         if (bool) alert(`更新失败: ${error.message}`);
     }
 };
