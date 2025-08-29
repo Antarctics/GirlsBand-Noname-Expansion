@@ -4319,8 +4319,7 @@ const skills = {
                     return event == next
                 })
                 .then(() => {
-                    player.chooseControlList("###人偶###", ["翻面", "弃置所有手牌并获得两张【影】,然后令所有未翻面角色各失去1点体力。"])
-                        .set("forced", true)
+                    player.chooseControlList("###人偶###", ["翻面", "弃置所有手牌并获得两张【影】,然后令所有未翻面角色各失去1点体力。"], true)
                         .set("ai", () => {
                             let player = _status.event.player
                             let is = game.filterPlayer(p => get.attitude(player, p) > 0 && !p.isTurnedOver()).reduce((num, p) => num += get.effect(p, {

@@ -1997,6 +1997,15 @@ const skills = {
         enable: "phaseUse",
         usable: 2,
         position: "he",
+        check(card) {
+            let player = _status.event.player,
+                yingNum = player.countCards("h", card => card.name == "ying"),
+                judgeNum = player.countCards("j")
+            if (get.suit(card, player) == "spade" && !yingNum) return 1
+            if (get.suit(card, player) == "spade" && yingNum && (judgeNum + 1) >= yingNum) return 10 - get.value(card)
+            if (get.suit(card, player) == "spade" && player.countSkill("gbchunhua") == 1 && yingNum) return 10 - get.value(card)
+            if (get.suit(card, player) != "spade") return 6 - get.value(card)
+        },
         filterCard(card, player) {
             let suit = player.getCards("j").reduce((suit, card) => suit.add(get.suit(card, player)), [])
             if (suit.includes(get.suit(card, player))) return false
@@ -2044,12 +2053,35 @@ const skills = {
         filter(event, player) {
             return event.player != player
         },
+        chooseCard(player, source) {
+            if (_status.event.getParent().fixedResult && _status.event.getParent().fixedResult[player.playerid]) return _status.event.getParent().fixedResult[player.playerid]
+            const next = player.chooseCard("选择任意张手牌，或点取消展示牌堆顶的一张牌", "h", [1, Infinity])
+            next.set("ai", (card) => {
+                return false
+            })
+            next.set("source", source)
+            next.set("_global_waiting", true)
+            return next;
+        },
         async content(event, trigger, player) {
             let list = []
-            if (trigger.player.canCompare) list.push("拼点")
+            if (player.canCompare(trigger.player)) list.push("拼点")
             list.push("议事")
             list.push("合奏")
-            let result = await player.chooseControl(list, true).set("ai", () => _status.event.controls.randomGet()).forResult()
+            let result = await player.chooseControl(list, true).set("ai", () => {
+                let player = _status.event.player
+                let target = _status.currentPhase
+                if (player.canCompare(target) && get.attitude(player, target) < 0) {
+                    var hs = player.getCards("h");
+                    if (hs.length > target.countCards("h"))
+                        for (var i = 0; i < hs.length; i++) {
+                            var val = get.value(hs[0]);
+                            if (hs[i].number >= 10 && val <= 6) return "拼点"
+                            if (hs[i].number >= 8 && val <= 3) return "拼点"
+                        }
+                }
+                return ["议事", "合奏"].randomGet()
+            }).forResult()
             switch (result.control) {
                 case "拼点":
                     let next = await player.chooseToCompare(trigger.player).forResult()
@@ -2101,10 +2133,12 @@ const skills = {
                             }
                         } else {
                             let cards = [...red, ...black, ...others].filter(i => i[0] != player).map(i => i[1])
-                            game.broadcastAll((card) => {
-                                lib.skill.gbchunhua.cards(card)
-                            }, cards)
-                            await player.addJudge("gbchunhua_" + cards[0].name, cards)
+                            if (cards.length > 0) {
+                                game.broadcastAll((card) => {
+                                    lib.skill.gbchunhua.cards(card)
+                                }, cards)
+                                await player.addJudge("gbchunhua_" + cards[0].name, cards)
+                            }
                         }
                     })
                     break
@@ -2116,7 +2150,7 @@ const skills = {
                     event._global_waiting = true;
                     let show_list = []
                     const send = (player, source) => {
-                        lib.skill.gbjixing.chooseCard(player, source);
+                        lib.skill.gblingming.chooseCard(player, source);
                         game.resume();
                     };
                     let solve = (result, current) => {
@@ -2153,7 +2187,7 @@ const skills = {
                                         resolve();
                                     });
                                 } else if (current == game.me) {
-                                    const next = lib.skill.gbjixing.chooseCard(current, player);
+                                    const next = lib.skill.gblingming.chooseCard(current, player);
                                     const solver = (result, player) => {
                                         solve(result, player);
                                         resolve();
@@ -2172,7 +2206,7 @@ const skills = {
                                 solve(event.fixedResult[current.playerid], current);
                                 continue;
                             }
-                            const next = lib.skill.gbjixing.chooseCard(current, player);
+                            const next = lib.skill.gblingming.chooseCard(current, player);
                             const result = await next.forResult();
                             solve(result, current);
                         }
@@ -2302,11 +2336,17 @@ const skills = {
                 trigger: {
                     player: "phaseDiscardEnd"
                 },
+                mod: {
+                    aiOrder(player, card, num) {
+                        if (card.name == "ying") return num + 6
+                    }
+                },
                 filter(event, player) {
                     return event.cards && event.cards.some(card => card.name == "ying")
                 },
                 async content(event, trigger, player) {
                     player.discard(player.getCards("h"))
+                    player.gainMaxHp()
                 }
             }
         }

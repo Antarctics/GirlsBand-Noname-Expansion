@@ -236,12 +236,12 @@ game.import("extension", function (lib, game, ui, get, ai, _status) {
             <div style="color:#ffa348">• 有问题可加群：</div><br>
             <div style="color:#ffa348">&nbsp;&nbsp;Q:1001742343</div><br>
             <div style="color:#ffa348">• 角色设计：文茄</div><br>
-            <div style="color:#ffa348">• 版本号：v2.0.4</div><br>
+            <div style="color:#ffa348">• 版本号：v2.0.5</div><br>
             `,
             author: "Rin",
             diskURL: "",
             forumURL: "",
-            version: "2.0.4",
+            version: "2.0.5",
         },
         files: {},
         connect: true
@@ -255,22 +255,53 @@ const update = async (bool) => {
             2: "https://hk.gh-proxy.com/",
             3: "https://tvv.tw/"
         };
-        const proxy = proxyList[lib.config.extension_GirlsBand_gb_update_web] || "";
+        var proxy = proxyList[lib.config.extension_GirlsBand_gb_update_web] || "",
+        lastError,
+        manifestResponse,
+        remoteManifest
+        try {
+            manifestResponse = await fetch(`${proxy}https://raw.githubusercontent.com/Antarctics/GirlsBand-Noname-Expansion/refs/heads/main/manifest.json`);
+            if (!manifestResponse.ok) throw new Error(`HTTP ${manifestResponse.status}`);
+            remoteManifest = await manifestResponse.json();
+            console.log(`使用默认镜像成功获取清单`);
+        } catch (error) {
+            console.warn(`获取清单失败:`, error);
+            lastError = error;
+            for (const [key, proxyUrl] of Object.entries(proxyList)) {
+                if (proxyUrl === proxy) continue;
+                
+                try {
+                    manifestResponse = await fetch(`${proxyUrl}https://raw.githubusercontent.com/Antarctics/GirlsBand-Noname-Expansion/refs/heads/main/manifest.json`);
+                    if (!manifestResponse.ok) throw new Error(`HTTP ${manifestResponse.status}`);
+                    remoteManifest = await manifestResponse.json();
+                    proxy = proxyUrl;
+                    lastError = null;
+                    console.log(`使用备用镜像 ${proxyUrl} 成功获取清单`);
+                    break;
+                } catch (error) {
+                    lastError = error;
+                    console.warn(`备用镜像 ${proxyUrl} 获取清单失败:`, error);
+                }
+            }
+        }
+        if (lastError) {
+            throw new Error('所有镜像尝试均失败，请检查网络连接');
+        }
 
-        let localManifest = { files: {} };
-        const localManifestData = await game.promises.readFile("extension/GirlsBand/manifest.json");
-        localManifest = JSON.parse(new TextDecoder().decode(localManifestData));
-        const manifestResponse = await fetch(`${proxy}https://raw.githubusercontent.com/Antarctics/GirlsBand-Noname-Expansion/refs/heads/main/manifest.json`);
-        if (!manifestResponse.ok) throw new Error('获取远程清单失败，请尝试更换镜像或检查网络');
-        const remoteManifest = await manifestResponse.json();
         const filesToUpdate = [];
         for (const [filePath, remoteHash] of Object.entries(remoteManifest.files)) {
             const fileExists = await game.promises.checkFile(`extension/GirlsBand/${filePath}`)
             if (fileExists !== 1) {
                 filesToUpdate.push(filePath);
             } else {
-                const localHash = localManifest.files[filePath];
-                if (localHash !== remoteHash) {
+                try {
+                    const fileData = await game.promises.readFile(`extension/GirlsBand/${filePath}`);
+                    const localHash = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-1', fileData))).map(b => b.toString(16).padStart(2, '0')).join('')
+                    if (localHash !== remoteHash) {
+                        filesToUpdate.push(filePath);
+                    }
+                } catch (error) {
+                    console.error(`计算文件 ${filePath} 哈希值时出错:`, error);
                     filesToUpdate.push(filePath);
                 }
             }
@@ -280,7 +311,6 @@ const update = async (bool) => {
             if (bool) alert('已经是最新版本，无需更新');
             return;
         }
-
         if (confirm(`《GirlsBnad》发现新版本 ${remoteManifest.version}\n当前共有 ${filesToUpdate.length} 个文件需要更新，是否继续？\n更新说明:\n${remoteManifest.update || '无'}`)) {
             await performUpdate(proxy, remoteManifest, filesToUpdate);
             alert('更新完成！');
