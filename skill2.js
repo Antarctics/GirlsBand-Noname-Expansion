@@ -2334,7 +2334,7 @@ const skills = {
                 audio: false,
                 forced: true,
                 trigger: {
-                    player: "phaseDiscardEnd"
+                    player: "phaseDiscardAfter"
                 },
                 mod: {
                     aiOrder(player, card, num) {
@@ -2346,7 +2346,7 @@ const skills = {
                 },
                 async content(event, trigger, player) {
                     player.discard(player.getCards("h"))
-                    player.gainMaxHp()
+                    player.addSkill("gbwuwang")
                 }
             }
         }

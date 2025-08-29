@@ -461,7 +461,7 @@ const characters = {
         sex: "female",
         group: "gbras",
         hp: 2,
-        maxHp: 8,
+        maxHp: 6,
         skills: ["gbzhongquan", "gbcaiyan"],
         names: "鳰原|令王那",
         img: "extension/GirlsBand/image/pareo.png",

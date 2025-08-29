@@ -236,12 +236,12 @@ game.import("extension", function (lib, game, ui, get, ai, _status) {
             <div style="color:#ffa348">• 有问题可加群：</div><br>
             <div style="color:#ffa348">&nbsp;&nbsp;Q:1001742343</div><br>
             <div style="color:#ffa348">• 角色设计：文茄</div><br>
-            <div style="color:#ffa348">• 版本号：v2.0.5</div><br>
+            <div style="color:#ffa348">• 版本号：v2.0.6</div><br>
             `,
             author: "Rin",
             diskURL: "",
             forumURL: "",
-            version: "2.0.5",
+            version: "2.0.6",
         },
         files: {},
         connect: true
