@@ -249,6 +249,7 @@ game.import("extension", function (lib, game, ui, get, ai, _status) {
 })
 const update = async (bool) => {
     try {
+        game.importedPack = true;
         const proxyList = {
             0: "",
             1: "https://gh-proxy.com/",
@@ -317,6 +318,7 @@ const update = async (bool) => {
             game.reload()
         }
     } catch (error) {
+        delete game.importedPack;
         console.error('《GirlsBnad》扩展更新失败:', error);
         if (bool) alert(`更新失败: ${error.message}`);
     }
@@ -324,8 +326,8 @@ const update = async (bool) => {
 
 async function performUpdate(proxy, remoteManifest, filesToUpdate) {
     const progress = createProgress("正在更新 GirlsBand 扩展", filesToUpdate.length);
-    game.importedPack = true;
     try {
+        game.importedPack = true;
         for (let i = 0; i < filesToUpdate.length; i++) {
             const filePath = filesToUpdate[i];
             progress.setProgressValue(i + 1);
