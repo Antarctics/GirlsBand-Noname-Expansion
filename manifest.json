@@ -25,7 +25,7 @@
                   "audio/skill/gbduzou2.mp3":  "d37e55a4abfc1abdefae48aed40b23f7c28a322b",
                   "audio/skill/gbbeihua1.mp3":  "331b14b28ea479954607dcbf2b7ebcc0ecbff6cc",
                   "image/486.png":  "38d47bac0a5586495fc249e900dd392eaa72961a",
-                  "dynamicTranslate.js":  "6d398dc8091c4c72208621580c30f42ff39d12a4",
+                  "dynamicTranslate.js":  "a8d11fdc886cb34296fea94524e13ce0da71416d",
                   "audio/skill/gbxianzhong3.mp3":  "3944689102960d029d5eddb62b0f3714039f2066",
                   "audio/skill/gblvefei4.mp3":  "2a8ea5247bc4507dfd5b27a4a3f66c2a24a7cc7f",
                   "audio/skill/gbzhuyi3.mp3":  "d0e7c6197f7a7d5880fdc75ed16cd80e069549f3",
@@ -52,7 +52,7 @@
                   "audio/skill/gbchenggu1.mp3":  "83647914c273e60296530fdca5c2ca9429cd4747",
                   "audio/skill/gblvefei1.mp3":  "97007bdf4d7df5ef0c21e9f16638a39dfa552579",
                   "image/aya.png":  "6388dd1fef0142216c65ad5a602935db2db53f82",
-                  "start.ps1":  "86431489f2601c4d24bb47669ba508ec26461984",
+                  "start.ps1":  "58fa299931ef105655858d56ad02304fbe47d66a",
                   "image/shen_saki.png":  "36085b62820a5be429a06b531f0737acf8eb4183",
                   "audio/skill/gbsumou3.mp3":  "5e984b0d9609f2011d4d47dfb0fdb940f6e1e0d0",
                   "image/keys.jpg":  "b343640675ac9cc081af81f5253c0fb3a54631e4",
@@ -93,7 +93,7 @@
                   "image/eve.png":  "5c258369ee46db303912a364a3c26fe0edc56833",
                   "image/roselia.png":  "0c9a3bd72870d2e5010748e7dc020f10cf0090fb",
                   "image/bass.jpg":  "7decbfbcbd146f26e35935448f92143a431e0d81",
-                  "skill2.js":  "3c273302ac60e3473ac8d131e29a393fd539df2a",
+                  "skill2.js":  "e1e92e509cc442f9619563228cababa667d335b6",
                   "audio/skill/gbzhuyin1.mp3":  "46604745b08b3f59d3818bff3f1c58ac8880ac62",
                   "image/layer.png":  "7083ed661bdae5eb995b0f8f19e310edb340f125",
                   "audio/skill/gbyingxiang3.mp3":  "c23910237245b904d63c67b524ad704dd043462a",
@@ -139,7 +139,7 @@
                   "audio/skill/gbsumou2.mp3":  "7e95013785f235d05efa85457b958fd99f8cd190",
                   "image/tomo.png":  "be729dc73517ae6b09b732139118ce8feb589f56",
                   "image/band.jpg":  "63ae2a2b8edb7c93d07776cdae516d8f1db2d081",
-                  "skill1.js":  "752f32bb7f82aac66948782fd328c963a559083d",
+                  "skill1.js":  "2bd7ada602748ee1c3f83efdc61aa62b45e10126",
                   "audio/skill/gbmizi1.mp3":  "2f76590025aa9d9779cb59ce187c186297506c47",
                   "audio/skill/gbchenggu3.mp3":  "331b14b28ea479954607dcbf2b7ebcc0ecbff6cc",
                   "translate.js":  "315304d8362f4ede518e0f9f9e59494ecd11c10c",
@@ -161,6 +161,6 @@
                   "image/nyamu.png":  "dfa460f6559a56b6d6933e921d554dc3ab5862ec",
                   "audio/skill/gbmizi2.mp3":  "65c5bd168ba84518d4afb37917aaafd40d622896"
               },
-  "version": "2.0.6",
-  "update": "- 修改SP丰川祥子【乍影】技能效果\n- 调整鳰原令王那血量上限：8→6\n- 修复朝日六花【革面】摸牌无效的问题"
+    "version":  "2.0.7",
+    "update":  "- 修复由部分未知扩展导致的本扩展报错问题\n- 修复由【合奏】机制修改导致的佐藤益木【狂飙】提示文字出错\n- 修复白鹭千圣【魅影】局内文字描述与局外不符的问题\n- 修复SP丰川祥子【乍影】实际效果与描述不符的问题"
 }

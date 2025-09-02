@@ -10,7 +10,7 @@ import {
 /** @type { importCharacterConfig['skill'] } */
 const skills = {
     // 丸山彩
-    gbwuyin: {
+    gbwuy: {
         audio: false,
         enable: "phaseUse",
         usable: 1,
@@ -508,7 +508,7 @@ const skills = {
                 filter(event, player) {
                     return player.countCards("hes", card => get.type(card, "trick") == "trick")
                 },
-                prompt: "将一张非基本牌当杀使用或打出",
+                prompt: "将一张锦囊牌当杀使用或打出",
                 check(card) {
                     return 6 - get.value(card)
                 },
@@ -1569,7 +1569,7 @@ const skills = {
             let source = show_list.filter(item => item[0] == player).flatMap(list => list[1]).flat()
             let target = show_list.filter(item => item[0] != player).flatMap(list => list[1]).flat()
             if (source.length >= target.length) {
-                let next = await player.chooseControlList("狂飙", "获得" + get.translation(event.targets[0]) + "的合奏牌", "弃置X张牌并摸等量张牌（X为你与其合奏牌数之差，且至多为4）", true).set("ai", () => {
+                let next = await player.chooseControlList("狂飙", "获得" + get.translation(event.targets[1]) + "的合奏牌", "弃置X张牌并摸等量张牌（X为你与其合奏牌数之差，且至多为4）", true).set("ai", () => {
                     let player = _status.event.player
                     let list = _status.event.show_list
                     let source = show_list.filter(item => item[0] == player).flatMap(list => list[1]).flat()
@@ -2345,7 +2345,7 @@ const skills = {
                     return event.cards && event.cards.some(card => card.name == "ying")
                 },
                 async content(event, trigger, player) {
-                    player.discard(player.getCards("h"))
+                    await player.discard(player.getCards("h"))
                     player.addSkill("gbwuwang")
                 }
             }

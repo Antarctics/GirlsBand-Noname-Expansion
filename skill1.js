@@ -1572,7 +1572,7 @@ const skills = {
                 })
                 .forResult()
             if (result.bool) {
-                for (let i in result.cards) {
+                for (let i = 0; i < result.cards.length; i++) {
                     result.targets[i].addToExpansion(result.cards[i], "giveAuto").gaintag.add("gbyoumeng_fire")
                 }
             }
@@ -6995,7 +6995,7 @@ const skills = {
                     player: "loseAfter"
                 },
                 filter(event, player) {
-                    for (var i in event.gaintag_map) {
+                    for (var i = 0; i <= event.gaintag_map.length; i++) {
                         if (event.gaintag_map[i].includes("gbchenyang_tag") && !player.countCards("h", card => card.hasGaintag("gbchenyang_tag"))) return true
                     }
                 },
@@ -7143,7 +7143,7 @@ const skills = {
                     player: "loseAfter"
                 },
                 filter(event, player) {
-                    for (var i in event.gaintag_map) {
+                    for (var i = 0; i <= event.gaintag_map.length; i++) {
                         if (event.gaintag_map[i].includes("gbhongri_tag")) return true
                     }
                 },
@@ -7302,7 +7302,7 @@ const skills = {
                     }, player, player) > 0
                 },
                 filter(event, player) {
-                    for (var i in event.gaintag_map) {
+                    for (var i = 0; i <= event.gaintag_map.length; i++) {
                         if (event.gaintag_map[i].includes("gbfeishou_tag")) return true
                     }
                 },
@@ -7448,7 +7448,7 @@ const skills = {
                 },
                 prompt2: "失去1点体力并摸三张牌",
                 filter(event, player) {
-                    for (var i in event.gaintag_map) {
+                    for (var i = 0; i <= event.gaintag_map.length; i++) {
                         if (event.gaintag_map[i].includes("gbfanzhi_tag")) return true
                     }
                 },
