@@ -117,7 +117,10 @@ const translates = {
     "#ext:GirlsBand/audio/skill/gbxiwei1": "太差劲了",
     "#ext:GirlsBand/audio/skill/gbxiwei2": "哈？",
     "#ext:GirlsBand/audio/skill/gbxiwei3": "哈？",
-
+    // 注释
+    议事: "所有参与议事的角色同时展示一张手牌，此牌的颜色称为“意见”：<br>若红色“意见”较多，则议事结果为红色；<br>若黑色“意见”较多，则议事结果为黑色；<br>若二者数量持平，则议事无结果。",
+    合奏: "所有参与合奏的角色需选择任意一项：<br>①展示任意张手牌；<br>②展示牌堆顶的一张牌。<br>以此法展示的牌视为“合奏”牌",
+    
     // 技能
     gblixi: "立袭",
     gbxiwei: "希威",
@@ -488,9 +491,5 @@ const pinyins = {
     鳰原令王那: ["Nyūbara", "Reona"],
     珠手知由: ["Tamade", "Chiyu"],
 }
-const keywordInfo = {
-    议事: "所有参与议事的角色同时展示一张手牌，此牌的颜色称为“意见”：<br>若红色“意见”较多，则议事结果为红色；<br>若黑色“意见”较多，则议事结果为黑色；<br>若二者数量持平，则议事无结果。",
-    合奏: "所有参与合奏的角色需选择任意一项：<br>①展示任意张手牌；<br>②展示牌堆顶的一张牌。<br>以此法展示的牌视为“合奏”牌"
-}
-export { pinyins, keywordInfo };
+export { pinyins };
 export default translates;

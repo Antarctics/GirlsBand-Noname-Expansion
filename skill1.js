@@ -1660,12 +1660,14 @@ const skills = {
                     if (opinion != "black") {
                         for (let target of targets.sortBySeat()) {
                             target.draw()
-                            let card = await target.chooseCard("传庭", "选择一张牌置于武将牌上，称为『火』", 1, "he", true)
-                                .set("ai", (card) => {
-                                    return 6 - get.value(card)
-                                })
-                                .forResultCards()
-                            if (card) target.addToExpansion(card[0]).gaintag.add("gbyoumeng_fire")
+                            if (!target.hasExpansions("gbyoumeng_fire")) {
+                                let card = await target.chooseCard("传庭", "选择一张牌置于武将牌上，称为『火』", 1, "he", true)
+                                    .set("ai", (card) => {
+                                        return 6 - get.value(card)
+                                    })
+                                    .forResultCards()
+                                if (card.length) target.addToExpansion(card[0]).gaintag.add("gbyoumeng_fire")
+                            }
                         }
                     }
                     if (opinion != "red") {
@@ -4647,6 +4649,7 @@ const skills = {
             player: "damageBegin4",
             source: "damageBegin2"
         },
+        derivation: ["gbfuxi", "gbruoye", "gbzicheng"],
         persevereSkill: true,
         mod: {
             aiValue(player, card, num) {
@@ -7070,9 +7073,12 @@ const skills = {
                 .forResult()
             switch (result.control) {
                 case "选项一":
+                    let cards = player.getCards("h", card => card.hasGaintag("gbchenyang_tag"))
                     player.addTempSkill("nzry_cunmu")
-                    player.give(player.getCards("h", card => card.hasGaintag("gbchenyang_tag")), target, "giveAuto").gaintag.add("gbchenyang_tag")
-                    target.addSkill("gbxinzhong_temp")
+                    if (cards) {
+                        player.give(cards, target, "giveAuto").gaintag.add("gbchenyang_tag")
+                        target.addSkill("gbxinzhong_temp")
+                    }
                     break
                 case "选项二":
                     target.addTempSkill("nzry_cunmu")

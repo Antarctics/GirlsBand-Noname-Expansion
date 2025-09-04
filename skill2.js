@@ -10,7 +10,7 @@ import {
 /** @type { importCharacterConfig['skill'] } */
 const skills = {
     // 丸山彩
-    gbwuy: {
+    gbwuyin: {
         audio: false,
         enable: "phaseUse",
         usable: 1,
@@ -2297,6 +2297,7 @@ const skills = {
             if (name == "chooseToEnsemble") return event.targets.includes(player) && player.countCards("j")
             return player.countCards("j")
         },
+        derivation:"gbwuwang",
         charlotte: true,
         async cost(event, trigger, player) {
             event.result = await player.chooseButton(["乍影", `选择${event.triggername != "chooseToEnsemble" ? "一" : "任意"}张牌作为${event.triggername == "chooseToDebateBegin" ? "议事" : event.triggername == "chooseToEnsemble" ? "合奏" : "拼点"}结果。`, [player.getCards("j"), "card"]], true, event.triggername != "chooseToEnsemble" ? 1 : [1, Infinity])
