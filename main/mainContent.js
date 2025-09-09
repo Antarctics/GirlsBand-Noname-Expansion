@@ -278,5 +278,5 @@ export default function () {
         }
     });
 
-    if (lib.config.extension_GirlsBand_auto_update && navigator.onLine) update(true);
+    if (lib.config.extension_GirlsBand_auto_update && navigator.onLine) update(false);
 };
