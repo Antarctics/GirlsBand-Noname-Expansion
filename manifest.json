@@ -5,7 +5,7 @@
                   "image/drummer.jpg":  "62d07ff1b01bb865276cfab19c7e2ee1e1241261",
                   "audio/skill/gbfuming_fail1.mp3":  "e41a872245246d7138cdffd6e138744d006543e2",
                   "audio/skill/gbchenggu4.mp3":  "5c41b724757797e6930717045ead0135cbcfc5a7",
-                  "card.js":  "d3be4b75cc9e855c6bbdd5f15e6da2d53b1756b0",
+                  "audio/skill/gbhexian1.mp3":  "e9e957404e7e2721896bdf66a727004546bcc8dc",
                   "audio/die/uika.mp3":  "53307714a33c2a2b7dc339f496aaecb0dd55a8a9",
                   "image/tomorin.png":  "2633cb1995f2af3109a5045c924db182311da3f4",
                   "image/sp_mutsumi.png":  "847227a1e0c8f3c92a4f1198a4898c867b50f574",
@@ -16,8 +16,8 @@
                   "audio/skill/gbjianqiu1.mp3":  "d1db21bb16f266d2c09e90b20ad126920c24ad1f",
                   "image/3.png":  "6a4fab32a1fce5a1dd9b4c60205d7132fc4902f3",
                   "audio/skill/gbqilu2.mp3":  "da4fea17c10de87c63d3114d89c8e94fa156b909",
+                  "main/mode.js":  "a9ddd5ce2faa42065eef254754183b2ddda0cb09",
                   "audio/skill/gbqilu1.mp3":  "c73f7850e554aa9b34c8c9afc461a1189e0e5022",
-                  "audio/skill/gbhexian1.mp3":  "e9e957404e7e2721896bdf66a727004546bcc8dc",
                   "image/chuchu.png":  "5356429be8af14bd338a9d232736989036ed92e7",
                   "image/diehard.jpg":  "d61650028272f162069377605b098c184cd5d554",
                   "image/nana.png":  "991ae22e23be68a086605593cf95e3f516276ae9",
@@ -25,7 +25,7 @@
                   "audio/skill/gbduzou2.mp3":  "d37e55a4abfc1abdefae48aed40b23f7c28a322b",
                   "audio/skill/gbbeihua1.mp3":  "331b14b28ea479954607dcbf2b7ebcc0ecbff6cc",
                   "image/486.png":  "38d47bac0a5586495fc249e900dd392eaa72961a",
-                  "dynamicTranslate.js":  "a1d662b13f91c818892fe1b951813da2d3e0347e",
+                  "dynamicTranslate.js":  "b4b942a2d5d51b66a9fa0d1b2597bd3614b0f37b",
                   "audio/skill/gbxianzhong3.mp3":  "3944689102960d029d5eddb62b0f3714039f2066",
                   "audio/skill/gblvefei4.mp3":  "2a8ea5247bc4507dfd5b27a4a3f66c2a24a7cc7f",
                   "audio/skill/gbzhuyi3.mp3":  "d0e7c6197f7a7d5880fdc75ed16cd80e069549f3",
@@ -38,7 +38,7 @@
                   "image/4.png":  "3dcae2483eb030b1cb3a00c3590a30846531c140",
                   "audio/春日影.mp3":  "3a9b50ec7bd657bc8f9b4bfb8a781d7e7c5136f9",
                   "audio/skill/gbchenggu5.mp3":  "6036a8239edce3828ef69006a18da1d528d71e2e",
-                  "character.js":  "e8c52574162a54e09f396f28cb412c1e16ebfa75",
+                  "character.js":  "ffcd11a17170decc47cd5a4b00344bfbdf3f0a5c",
                   "audio/skill/gbzhuyin3.mp3":  "f4e924b0c81e29909452de2c12576fb36d0b1556",
                   "image/tsumugi.png":  "e49db025f46e1d33e2a5014102a59aa21a5c8f66",
                   "audio/skill/gbchunying3.mp3":  "0ed78c6f22cebcbef7befa8a2c777c5d09f90ee7",
@@ -46,13 +46,15 @@
                   "image/guitar.jpg":  "704ee8851b3dc14c9d7f6a51543d1c4ddaf4dba4",
                   "audio/Daylight -デイライト- (Instrumental).mp3":  "70f4bcebf9d5990277a50a4d06e5f15f4f35d36e",
                   "audio/skill/gbyingxiang1.mp3":  "d12da60062549aaa5da4e4872837b8c7eab12e91",
+                  "main/preContent.js":  "b19c758df38099575770de7ecaed02dfb42f3ef8",
                   "audio/skill/gbduzou1.mp3":  "332fc8ac0c7148c1e4ae3458be7e53f172406bf5",
                   "audio/GO!GO!MANIAC.mp3":  "96774240af35685d490f5608debbebf061984133",
                   "audio/skill/gbxiwei2.mp3":  "04b5d727e51840ee296c8ca5c05bcfe1a7a9cf0d",
+                  "image/sp_uika.png":  "113ae0bbca1d3c31e855115bd2ca69ccfc66f182",
                   "audio/skill/gbchenggu1.mp3":  "83647914c273e60296530fdca5c2ca9429cd4747",
                   "audio/skill/gblvefei1.mp3":  "97007bdf4d7df5ef0c21e9f16638a39dfa552579",
                   "image/aya.png":  "6388dd1fef0142216c65ad5a602935db2db53f82",
-                  "start.ps1":  "423110c5950976a19b1b21477937e32cdc294121",
+                  "start.ps1":  "2c3c8c91759298da6c341cf8332b8634bb982920",
                   "image/shen_saki.png":  "36085b62820a5be429a06b531f0737acf8eb4183",
                   "audio/skill/gbsumou3.mp3":  "5e984b0d9609f2011d4d47dfb0fdb940f6e1e0d0",
                   "image/keys.jpg":  "b343640675ac9cc081af81f5253c0fb3a54631e4",
@@ -73,7 +75,6 @@
                   "audio/skill/gbzhuyin2.mp3":  "fcc71263bd7f2f2e0640330f9466558a5a106728",
                   "image/uika.png":  "52b6271eaa47bafb8ecf7b035c8c5ab2b122a0ae",
                   "audio/skill/gbchunying2.mp3":  "e222ebadd154e04cd4f8fb0017ce3182c0312931",
-                  "mode.js":  "01715e69f60f4d16fd658792c4b064617993baa1",
                   "image/tsugumi.png":  "2a94f78e154bc69c9e33d2cff1bdb39c91df5157",
                   "audio/skill/gblixi2.mp3":  "0c0bcdcb3ec275fe64b9557dbcc015bb7dceedfb",
                   "image/nijika.png":  "1199362f619d853827acc7613f6e235c65f67462",
@@ -93,7 +94,7 @@
                   "image/eve.png":  "5c258369ee46db303912a364a3c26fe0edc56833",
                   "image/roselia.png":  "0c9a3bd72870d2e5010748e7dc020f10cf0090fb",
                   "image/bass.jpg":  "7decbfbcbd146f26e35935448f92143a431e0d81",
-                  "skill2.js":  "f62fe5ebaf02d89aefae2e89aebded6ff2ccb1ef",
+                  "skill2.js":  "ea9f2a14150670336f9bbb10c8d5c4f381eb0cf2",
                   "audio/skill/gbzhuyin1.mp3":  "46604745b08b3f59d3818bff3f1c58ac8880ac62",
                   "image/layer.png":  "7083ed661bdae5eb995b0f8f19e310edb340f125",
                   "audio/skill/gbyingxiang3.mp3":  "c23910237245b904d63c67b524ad704dd043462a",
@@ -103,10 +104,10 @@
                   "image/sp_mortis.png":  "9778e4c83d05dd15b0806fc4ec92448ad53816d5",
                   "audio/skill/gbjianqiu2.mp3":  "5eab599164fc3009c4b357f1d0695e3d2c0e6372",
                   "image/kon.jpg":  "6e813091b6a2d6c3e0e3da56cb7bc93defefa8d0",
-                  "image/lock.png":  "526ea37f9f29c71fa962b28329dbb1ec03a5f312",
-                  "详情请看我！.txt":  "26d3a0a7d7bbd7a9f87f7e95da846102eb75ad96",
+                  "main/update.js":  "f64f0644abae6fba5e3e7c5b931dd5724efb0780",
                   "image/kita.png":  "8ee5e3978474067de79983273b986d2d2a950367",
                   "audio/Hey-day狂騒曲(カプリチオ).mp3":  "af82a843d34b456dab971683f88ec9d71245257c",
+                  "main/mainContent.js":  "4d19845d90a274ac1a311455ef38e82ed845da59",
                   "audio/skill/gbhexian3.mp3":  "313ea0134d658f1be9fb39d0bdfbc72daca22ea7",
                   "image/anon.jpg":  "c8dde2172169374703a336f497215a40d9c0c62f",
                   "image/rupa.png":  "b917039bd5dec61568c4dc23fd34a1c5de6b116a",
@@ -115,11 +116,12 @@
                   "image/himari.png":  "945cb59f0058676f1d56b4d7ff710206cab217eb",
                   "image/gbkon.jpg":  "6e813091b6a2d6c3e0e3da56cb7bc93defefa8d0",
                   "image/vocalist.jpg":  "97fa4090cd7e9ba301ca114541a74cc27b1eb77e",
-                  "README.md":  "a2ff9d6116fad38a6ef955c8018bdba966e73417",
+                  "image/lock.png":  "526ea37f9f29c71fa962b28329dbb1ec03a5f312",
+                  "package.js":  "0fa30dc80afea5b1b157d57b1ed990f8d11e5e05",
                   "audio/skill/gblvefei2.mp3":  "37c287f10d5b52629e760488459b22a805fb286a",
                   "image/band.png":  "8b56aeb0a54dc84a5649fac1d318748688ca0e34",
                   "image/sakiko.png":  "f8640c7073a041ee48a51ff10d0bde11e9b112de",
-                  "extension.js":  "6996140db16e38b546657211e045eded71edab5b",
+                  "extension.js":  "b14d6c6f85d45ac58fad4316613828afde4373c8",
                   "image/ran.png":  "d2b048c78410618e7ab0ac3cd102148c62d8fd1e",
                   "image/rui.png":  "6c825dabb7fa4232ed90e833ac84d44b6b05ebc0",
                   "image/momoka.png":  "25b47d65490c8a10f819187d98aab46ce86da6de",
@@ -139,10 +141,10 @@
                   "audio/skill/gbsumou2.mp3":  "7e95013785f235d05efa85457b958fd99f8cd190",
                   "image/tomo.png":  "be729dc73517ae6b09b732139118ce8feb589f56",
                   "image/band.jpg":  "63ae2a2b8edb7c93d07776cdae516d8f1db2d081",
-                  "skill1.js":  "661dd8c6d8a43503ebc2d4f040d5477d027c90a4",
+                  "skill1.js":  "6bfe20bc8cb005481ef74bfd122a51085e16d7b1",
                   "audio/skill/gbmizi1.mp3":  "2f76590025aa9d9779cb59ce187c186297506c47",
                   "audio/skill/gbchenggu3.mp3":  "331b14b28ea479954607dcbf2b7ebcc0ecbff6cc",
-                  "translate.js":  "fb70d0cf8ee96d28ee3cebc01ea2d937034b2d90",
+                  "translate.js":  "295766f0571cb00476005a9cd8bf5adf6716fd09",
                   "image/mio.png":  "f14a585bbff015f783d5bef81f0b09393c3cd99c",
                   "image/yukina.png":  "5c8fb5b3f1f5b65831025cee064b548f148b3cff",
                   "audio/skill/gbchunying1.mp3":  "2a47d32994497eaebc4fbcbf037abf972b7e5087",
@@ -161,6 +163,36 @@
                   "image/nyamu.png":  "dfa460f6559a56b6d6933e921d554dc3ab5862ec",
                   "audio/skill/gbmizi2.mp3":  "65c5bd168ba84518d4afb37917aaafd40d622896"
               },
-    "version":  "2.0.8",
-    "update":  "- 修复祐天寺若麦【传庭】实际效果与描述不符的问题\n- 修复丸山彩【五音】技能失效的问题\n- 新增【名词注释】功能，特点如下：\n  · 自动匹配注释\n  · 自动更新词库\n  · 避免多次注释\n  · 全局生效"
+    "version":  "2.1.0",
+    "update":  `
+🎮 新增内容：
+• SP三角初华 全新角色登场
+• 乐队模式新增联机功能
+
+🎯 角色调整：
+• 调整宇田川巴【巴锋】技能效果
+• 调整神丰川祥子武将分包
+
+🔧 问题修复：
+• 修复【红日】【尘阳】【绯手】【凡志】技能效果
+• 修复安和昴【声无】技能异常
+• 修复珠手知由【制音】描述问题
+• 修复大和麻弥【善器】效果问题
+• 修复SP丰川祥子【蛉鸣】选项错误
+
+⚡ 系统优化：
+• 优化SP丰川祥子AI表现
+• 加快手机端更新检测速度
+• 提升名词注释精准度
+• 优化自动更新检测机制
+• 规范化扩展代码框架
+
+⚙️ 功能调整：
+• 调整主唱模式选将规则
+• 身份牌添加注释功能
+• 规范化注释提示框接口
+• 标准化合奏机制实现
+
+详细更新内容可在游戏中查看说明。
+`
 }

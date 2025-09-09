@@ -5,7 +5,7 @@ import {
     get,
     ai,
     _status
-} from "../../noname.js";
+} from "../../../noname.js";
 /** @type { importCharacterConfig['skill'] } */
 const skills = {
     // 立希
@@ -259,7 +259,7 @@ const skills = {
             markcount: "expansion"
         },
         skillAnimation: true,
-        animationColor: "soil",
+        animationColor: "gbmygo",
         filter(event, player) {
             return player.countExpansions("gbfuming") >= 5
         },
@@ -1396,7 +1396,7 @@ const skills = {
         async content(event, trigger, player) {
             let result = await player.chooseButton(["献忠", [player.getExpansions("gbbeihua"), "card"]], true)
                 .set("ai", (button) => {
-                    let val = get.value(button.link)
+                    let val = player.hasUseTarget(button.link) ? get.value(button.link) : 1
                     if (!player.countCards("h", card => card.suit == button.link.suit)) val += 1
                     return val
                 })
@@ -1438,6 +1438,13 @@ const skills = {
         trigger: {
             player: "phaseDiscardEnd",
             source: "damageBegin1",
+        },
+        mod: {
+            aiUseful(player, card, num) {
+                if (card.name == "ying") {
+                    return num + 4
+                }
+            },
         },
         async cost(event, trigger, player) {
             event.result = await player.chooseBool("成孤", "是否展示所有手牌")
@@ -3162,7 +3169,7 @@ const skills = {
                     if (next && next.bool) {
                         let bool = false
                         if (!target.countCards("h", card => !next.cards.includes(card))) bool = true
-                        let next1 = target.addToExpansion(next.cards, "giveAuto")
+                        let next1 = player.addToExpansion(next.cards, "giveAuto")
                         next1.gaintag.add("gbxuzi")
                         await next1
                         let card = await player.chooseButton(["获得一张『嘘』", player.getExpansions("gbxuzi")], 1, true)
@@ -6998,7 +7005,7 @@ const skills = {
                     player: "loseAfter"
                 },
                 filter(event, player) {
-                    for (var i = 0; i <= event.gaintag_map.length; i++) {
+                    for (var i in event.gaintag_map) {
                         if (event.gaintag_map[i].includes("gbchenyang_tag") && !player.countCards("h", card => card.hasGaintag("gbchenyang_tag"))) return true
                     }
                 },
@@ -7149,7 +7156,7 @@ const skills = {
                     player: "loseAfter"
                 },
                 filter(event, player) {
-                    for (var i = 0; i <= event.gaintag_map.length; i++) {
+                    for (var i in event.gaintag_map) {
                         if (event.gaintag_map[i].includes("gbhongri_tag")) return true
                     }
                 },
@@ -7308,7 +7315,7 @@ const skills = {
                     }, player, player) > 0
                 },
                 filter(event, player) {
-                    for (var i = 0; i <= event.gaintag_map.length; i++) {
+                    for (var i in event.gaintag_map) {
                         if (event.gaintag_map[i].includes("gbfeishou_tag")) return true
                     }
                 },
@@ -7334,11 +7341,11 @@ const skills = {
         logTarget: "player",
         async cost(event, trigger, player) {
             let list = []
-            if (trigger.player != player && player.countCards("hs", card => card.name == "sha" || get.type(card) == "trick")) list.push("选项一")
+            if (trigger.player != player && player.countCards("hs", card => card.name == "sha" || get.tag(card, "damage") && get.tag(card, "damage") == "trick")) list.push("选项一")
             list.push("选项二")
             list.push("cancel2")
             let result = await player.chooseControl(list)
-                .set("choiceList", [`对${get.translation(trigger.player)}使用一张【杀】或普通锦囊牌，若此牌造成伤害，你获得其一张牌`, `摸一张牌并将一张「绯」置于牌堆顶，${get.translation(trigger.player)}本回合获得〖马术〗`])
+                .set("choiceList", [`对${get.translation(trigger.player)}使用一张【杀】或伤害类锦囊牌，若此牌造成伤害，你获得其一张牌`, `摸一张牌并将一张「绯」置于牌堆顶，${get.translation(trigger.player)}本回合获得〖马术〗`])
                 .set("prompt", "巴锋")
                 .set("ai", () => {
                     let player = _status.event.player
@@ -7347,7 +7354,7 @@ const skills = {
                     if (target.countCards("j") && !target.hasWuxie()) return "选项二"
                     for (let name of lib.inpile) {
                         if (!player.canUse(name, target, true, true)) continue
-                        if (get.type(name) == "trick") {
+                        if (get.type(name) == "trick" && get.tag(card, "damage")) {
                             if (player.hasCard(name, "hs") && get.effect(target, {
                                 name: name
                             }, player, player) > 0) return "选项一"
@@ -7370,10 +7377,10 @@ const skills = {
             game.log(target, "选择了", "#g【巴锋】", "的", "#y" + event.cost_data)
             switch (event.cost_data) {
                 case "选项一":
-                    let next = await player.chooseCard("巴锋", `对${get.translation(trigger.player)}使用一张【杀】或普通锦囊牌`, "hs", true)
+                    let next = await player.chooseCard("巴锋", `对${get.translation(trigger.player)}使用一张【杀】或伤害类锦囊牌`, "hs", true)
                         .set("target", trigger.player)
                         .set("filterCard", card => {
-                            if (card.name == "sha" || get.type(card) == "trick") return player.canUse(card, target, true, true)
+                            if (card.name == "sha" || get.tag(card, "damage") && get.type(card) == "trick") return player.canUse(card, target, true, true)
                         })
                         .set("ai", (card) => {
                             let player = _status.event.player
@@ -7454,7 +7461,7 @@ const skills = {
                 },
                 prompt2: "失去1点体力并摸三张牌",
                 filter(event, player) {
-                    for (var i = 0; i <= event.gaintag_map.length; i++) {
+                    for (var i in event.gaintag_map) {
                         if (event.gaintag_map[i].includes("gbfanzhi_tag")) return true
                     }
                 },

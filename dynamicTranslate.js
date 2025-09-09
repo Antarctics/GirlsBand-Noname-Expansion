@@ -1,4 +1,4 @@
-import { lib, game, ui, get, ai, _status } from "../../noname.js";
+import { lib, game, ui, get, ai, _status } from "../../../noname.js";
 const dynamicTranslates = {
     gbchunying(player) {
         if (!player.storage.gbchunying) return `转换技，出牌阶段限一次，你可以展示一名其他角色的一张手牌，然后你令其使用此牌：<span class="bluetext">阳：与你拼点：若你赢，你获得拼点的牌；若你没赢，此技能视为未使用过；</span>阴：与你“议事”，若结果为：红色，你获得“议事”的牌；黑色，你摸一张牌且本回合手牌上限+1。`
@@ -44,7 +44,7 @@ const dynamicTranslates = {
             "②当你使用牌时，若此牌点数小于你使用的上一张牌，你可以重铸一名角色的一张牌；",
             "③当你使用【杀】或普通锦囊牌时，你可以令一名其他角色成为此牌的目标；",
             "④当你对其他角色造成伤害时，你可以防止此伤害并获得其一张牌（每回合每名角色限一次）；",
-            "⑤弃置X张牌并摸3张牌（X为你本回合“gbtiancai”发动的次数）。"
+            "⑤弃置X张牌并摸3张牌（X为你本回合〖添彩〗发动的次数）。"
         ]
         for (let i = 1; i <= 5; i++) {
             let option = "选项" + get.cnNumber(i, true);

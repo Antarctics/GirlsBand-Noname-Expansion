@@ -70,6 +70,14 @@ const characters = {
         dieAudios: ["ext:GirlsBand/audio/die/uika"],
         img: "extension/GirlsBand/image/uika.png",
     },
+    gb_sp_sanjiaochuhua: {
+        sex: "female",
+        group: "gbmujica",
+        hp: 3,
+        skills: ["gbshiqi", "gbbeiqiu", "gbduoxin"],
+        names: "三角|初华",
+        img: "extension/GirlsBand/image/sp_uika.png",
+    },
     gb_youtiansiruomai: {
         sex: "female",
         group: "gbmujica",
@@ -513,6 +521,7 @@ const characterTitles = {
     gb_qinchuichou: "键盘魔法",
     gb_zhongyezi: "野马喵行",
     gb_shen_fengchuanxiangzi: "遗忘神明",
+    gb_sp_fengchuanxiangzi: "悬权而动",
     gb_sp_changqisushi: "千层套路",
     gb_sp_qianzaoaiyin: "英伦天才",
     gb_sp_mortis: "死亡骑士",
@@ -605,12 +614,14 @@ const characterReplaces = {
     gb_mortis: ["gb_sp_mortis", "gb_mortis"],
     gb_gaosongdeng: ["gb_sp_gaosongdeng", "gb_gaosongdeng"],
     gb_ruoyemu: ["gb_sp_ruoyemu", "gb_ruoyemu"],
+    gb_fengchuanxiangzi: ["gb_fengchuanxiangzi", "gb_sp_fengchuanxiangzi"],
+    gb_sanjiaochuhua: ["gb_sanjiaochuhua", "gb_sp_sanjiaochuhua"]
 };
 const characterSort = {
     gb_mygo: ["gb_zhuiminglixi", "gb_changqisushi", "gb_yaolenai", "gb_qianzaoaiyin", "gb_gaosongdeng"],
     gb_sp_mygo: ["gb_sp_changqisushi", "gb_sp_qianzaoaiyin", "gb_sp_gaosongdeng"],
     gb_mujica: ["gb_fengchuanxiangzi", "gb_ruoyemu", "gb_sanjiaochuhua", "gb_bafanhailing", "gb_youtiansiruomai", "gb_mortis", "gb_shen_fengchuanxiangzi"],
-    gb_sp_mujica: ["gb_sp_mortis", "gb_sp_ruoyemu", "gb_sp_ruoyemu","gb_sp_fengchuanxiangzi"],
+    gb_sp_mujica: ["gb_sp_mortis", "gb_sp_ruoyemu", "gb_sp_ruoyemu", "gb_sp_fengchuanxiangzi", "gb_sp_sanjiaochuhua"],
     gb_band: ["gb_houtengyili", "gb_yidizhihongxia", "gb_shantianliang", "gb_xiduoyudai"],
     gb_TOGETOGE: ["gb_jinqinrencai", "gb_heyuanmutaoxiang", "gb_anhemao", "gb_hailaozhongzhi", "gb_lupa"],
     gb_kon: ["gb_pingzewei", "gb_qiushanling", "gb_tianjingzhonglv", "gb_qinchuichou", "gb_zhongyezi"],

@@ -1,0 +1,282 @@
+import { lib, game, ui, get, ai, _status } from "../../../noname.js";
+import update from "./update.js";
+export default function () {
+    /**
+     * 合奏机制 - 让玩家选择展示手牌或从牌堆展示牌
+     * @param {Array|Player} players - 参与玩家
+     * @param {Function} [filter] - 卡牌过滤函数
+     * @param {Function} [callback] - 回调函数
+     */
+    lib.element.player.chooseToEnsemble = function () {
+        const event = game.createEvent("chooseToEnsemble");
+        event.player = this;
+
+        for (let arg of arguments) {
+            const type = get.itemtype(arg);
+            if (type === "players" || type === "player") {
+                event.list = Array.isArray(arg) ? arg.slice() : [arg];
+            } else if (typeof arg === 'function') {
+                event.filterCard ? event.callback = arg : event.filterCard = arg;
+            }
+        }
+
+        event.setContent("chooseToEnsemble");
+        return event;
+    }
+
+    lib.element.content.chooseToEnsemble = async function () {
+        const event = get.event();
+        if (!event.list) return event.result = { bool: false };
+
+        const results = [], allCards = [];
+        event.videoId = lib.status.videoId++;
+
+        const targets = event.list.filter(target => !event.fixedResult?.[target.playerid]);
+        if (targets.length) {
+            const next = await event.player
+                .chooseCardOL(targets, `${get.translation(event.player)}发起了合奏，请选择展示的牌`)
+                .set("type", "ensemble")
+                .set("source", event.player)
+                .set("filterCard", event.filterCard || (() => true))
+                .set("ai", event.ai || (card => event.player.countCards("h") > 3 && (6 - get.value(card) ? Math.random() < 0.3 : false)))
+                .set("selectCard", [1, Infinity])
+                .forResult();
+
+            let idx = 0;
+            for (const target of event.list) {
+                if (event.fixedResult?.[target.playerid]) {
+                    const cards = [].concat(event.fixedResult[target.playerid]);
+                    game.log(target, "展示了", "#y", cards);
+                    results.push([target, cards]);
+                    allCards.push(cards);
+                    continue;
+                }
+
+                const result = next[idx++];
+                if (result.bool) {
+                    game.log(target, "从", "#g手牌中", "展示了", "#y", result.cards);
+                    target.popup("手牌");
+                    results.push([target, result.cards]);
+                    allCards.push(result.cards);
+                } else {
+                    const card = get.cards(1);
+                    game.cardsGotoOrdering(card);
+                    game.log(target, "从", "#g牌堆中", "展示了", "#y", card);
+                    target.popup("牌堆");
+                    results.push([target, [card]]);
+                    allCards.push([card]);
+                }
+            }
+        }
+
+        event.trigger("EnsembleShow");
+
+        game.broadcastAll((player, id, results) => {
+            game.pause();
+            const dialog = ui.create.dialog(`${get.translation(player)}发起了合奏`, "hidden");
+            dialog.videoId = id;
+
+            const names = results.map(([target]) => ({ item: get.translation(target), ratio: results.length }));
+            const cards = results.map(([_, cardList]) => ({ item: cardList, ratio: results.length }));
+
+            if (results.length >= 4) {
+                const half = Math.ceil(results.length / 2);
+                dialog.addNewRow(...names.slice(0, half), ...names.slice(half));
+                dialog.addNewRow(...cards.slice(0, half), ...cards.slice(half));
+                dialog.css({ height: "60%" });
+            } else {
+                dialog.addNewRow(...names);
+                dialog.addNewRow(...cards);
+                dialog.css({ height: "30%" });
+            }
+
+            dialog.open();
+            setTimeout(() => { game.resume(); dialog.close(); }, 3000);
+        }, event.player, event.videoId, results);
+
+        event.result = { bool: true, cards: allCards, targets: event.list, list: results, player: event.player };
+        if (event.callback) {
+            const cbEvent = game.createEvent("ensembleCallback");
+            cbEvent.player = event.player;
+            cbEvent.ensembleResult = get.copy(event.result);
+            cbEvent.setContent(event.callback);
+        }
+    }
+
+    // 特殊名词注释系统
+    if (lib.config.extension_GirlsBand_gb_poptip)
+        get.skillInfoTranslation = (skill, player) => {
+            let str = player && lib.dynamicTranslate[skill] ? lib.dynamicTranslate[skill](player, skill) : lib.translate[skill + "_info"] || "";
+
+            if (typeof str !== "string") {
+                console.warn(`孩子，你${skill}的翻译传的是什么？！`);
+                return "";
+            }
+
+            if (!window.name2KeywordMap || window.name2KeywordMap._lastUpdateLength !== Object.keys(lib.translate).length) {
+                window.name2KeywordMap = new Map();
+                window.name2KeywordMap._lastUpdateLength = Object.keys(lib.translate).length;
+                const tempMap = new Map();
+
+                for (const key in lib.translate) {
+                    if (key.endsWith('_info')) continue;
+                    const name = lib.translate[key];
+                    if (!name) continue;
+                    if (!tempMap.has(name)) tempMap.set(name, []);
+                    tempMap.get(name).push(key);
+                }
+
+                for (const [name, keywords] of tempMap.entries()) {
+                    if (!name) continue;
+                    if (keywords.length === 1) {
+                        window.name2KeywordMap.set(name, keywords);
+                    } else {
+                        const namePinyin = get.pinyin(name, false).join('');
+                        const scored = [];
+
+                        for (const keyword of keywords) {
+                            let maxScore = 0;
+                            for (const part of keyword.split('_')) {
+                                let bestMatch = 0;
+                                for (let start = 0; start <= part.length - namePinyin.length; start++) {
+                                    let match = 0;
+                                    for (let i = 0; i < namePinyin.length; i++) {
+                                        if (part[start + i] === namePinyin[i]) match++;
+                                        else break;
+                                    }
+                                    if (match > bestMatch) bestMatch = match;
+                                }
+                                const score = bestMatch / keyword.length;
+                                if (score > maxScore) maxScore = score;
+                            }
+                            scored.push({ keyword, score: maxScore });
+                        }
+
+                        scored.sort((a, b) => b.score - a.score);
+                        window.name2KeywordMap.set(name, scored.map(item => item.keyword));
+                    }
+                }
+            }
+
+            let firstKeywords = new Set();
+            return str.replace(/“(.*?)”|【(.*?)】|〖(.*?)〗/g, (match, quoted, card, skillName) => {
+                let keyword, type;
+                if (quoted !== undefined) {
+                    keyword = quoted;
+                    type = 'quoted';
+                } else if (card !== undefined) {
+                    keyword = card;
+                    type = 'card';
+                } else if (skillName !== undefined) {
+                    keyword = skillName;
+                    type = 'skill';
+                } else return match;
+                let name = lib.translate[keyword];
+                let info = lib.translate[keyword + "_info"];
+                if (!name) {
+                    const matched = window.name2KeywordMap.get(keyword);
+                    if (matched && matched.length) {
+                        if (type != 'card' && lib.skill[skill]) {
+                            const obj = lib.skill[skill];
+                            let found
+                            if (matched.includes(skill)) {
+                                found = skill
+                            } else {
+                                const matchSet = new Set(matched);
+                                const stack = [obj];
+                                while (stack.length > 0) {
+                                    const item = stack.pop();
+                                    if (typeof item === 'string' && matchSet.has(item)) {
+                                        found = item;
+                                        break;
+                                    }
+                                    if (typeof item === 'function') {
+                                        const funcStr = item.toString();
+                                        for (const match of matchSet) {
+                                            const regex = new RegExp(`(^|[^a-zA-Z0-9_])${match}([^a-zA-Z0-9_]|$)`);
+                                            if (regex.test(funcStr)) {
+                                                found = match;
+                                                break;
+                                            }
+                                        }
+                                        if (found) break
+                                    }
+
+                                    if (item && typeof item === 'object') {
+                                        if (Array.isArray(item)) {
+                                            for (let i = item.length - 1; i >= 0; i--) {
+                                                stack.push(item[i]);
+                                            }
+                                        } else {
+                                            for (const key in item) {
+                                                stack.push(item[key]);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            if (found) {
+                                name = keyword;
+                                keyword = found;
+                                info = lib.translate[keyword + "_info"] || lib.translate[keyword];
+                            }
+                        }
+                        if (!name) {
+                            name = keyword;
+                            keyword = matched[0];
+                            info = lib.translate[keyword + "_info"] || lib.translate[keyword];
+                        }
+                    } else if (info) {
+                        name = keyword;
+                    } else return match;
+                }
+
+                if (!info) info = lib.translate[keyword] || name;
+                if (info === name) return "“" + name + "”";
+                const isCard = type === 'card' || !!lib.card[keyword];
+                const isSkill = type === 'skill' || !!lib.skill[keyword];
+                if (isCard && (lib.cardPack.extra.includes(keyword) || lib.cardPack.standard.includes(keyword) || !lib.card[keyword])) return match;
+                if (isSkill && !lib.skill[keyword]) return match;
+                if (isCard && !lib.card[keyword]) return match;
+
+                const prefix = isCard ? '【' : isSkill ? '〖' : ''
+                const suffix = isCard ? '】' : isSkill ? '〗' : ''
+
+                if (!firstKeywords.has(keyword)) {
+                    firstKeywords.add(keyword);
+                    info = info.replace(/“(.*?)”|【(.*?)】|〖(.*?)〗/g, (m, q, c, s) => {
+                        let kw = q ?? c ?? s;
+                        if (!kw) return m;
+
+                        let name = lib.translate[kw];
+                        if (!name) {
+                            const matched = window.name2KeywordMap.get(kw);
+                            if (matched) {
+                                name = kw;
+                                kw = matched[0];
+                            } else return m;
+                        }
+
+                        if (lib.card[kw]) return "【" + name + "】";
+                        if (lib.skill[kw]) return "〖" + name + "〗";
+                        return m;
+                    });
+                    if (isCard) {
+                        const s = get.translation(get.subtype(keyword));
+                        info = `<span style="display: block; text-align: center;">${get.translation(get.type(keyword))}牌${s ? '-' + s : ''}</span>${info}`;
+                    }
+                    return `<span class="keyword-poptip" style="text-decoration:underline;color:#FF6B00" data-keyword='${info}'>${prefix}${name}${suffix}</span>`;
+                } else {
+                    return prefix + name + suffix;
+                }
+            });
+        };
+
+    document.addEventListener(lib.config.touchscreen ? "touchstart" : "mouseover", e => {
+        if (e.target.classList?.contains('keyword-poptip')) {
+            ui.click.poptip(e.target, e.target.getAttribute('data-keyword'));
+        }
+    });
+
+    if (lib.config.extension_GirlsBand_auto_update && navigator.onLine) update(true);
+};
