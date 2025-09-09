@@ -104,7 +104,7 @@
                   "image/sp_mortis.png":  "9778e4c83d05dd15b0806fc4ec92448ad53816d5",
                   "audio/skill/gbjianqiu2.mp3":  "5eab599164fc3009c4b357f1d0695e3d2c0e6372",
                   "image/kon.jpg":  "6e813091b6a2d6c3e0e3da56cb7bc93defefa8d0",
-                  "main/update.js":  "f64f0644abae6fba5e3e7c5b931dd5724efb0780",
+                  "main/update.js":  "5b677a6dd89aa37d1ea766ea33459c5e55ed8dd5",
                   "image/kita.png":  "8ee5e3978474067de79983273b986d2d2a950367",
                   "audio/Hey-day狂騒曲(カプリチオ).mp3":  "af82a843d34b456dab971683f88ec9d71245257c",
                   "main/mainContent.js":  "11422f453f60e29a034fabec1006df058a208834",
@@ -165,4 +165,5 @@
               },
     "version":  "2.1.0",
     "update": "🎮 新增内容：\n• SP三角初华 全新角色登场\n• 乐队模式新增联机功能\n\n🎯 角色调整：\n• 调整宇田川巴【巴锋】技能效果\n• 调整神丰川祥子武将分包\n\n🔧 问题修复：\n• 修复【红日】【尘阳】【绯手】【凡志】技能效果\n• 修复安和昴【声无】技能异常\n• 修复珠手知由【制音】描述问题\n• 修复大和麻弥【善器】效果问题\n• 修复SP丰川祥子【蛉鸣】选项错误\n\n⚡ 系统优化：\n• 优化SP丰川祥子AI表现\n• 加快手机端更新检测速度\n• 提升名词注释精准度\n• 优化自动更新检测机制\n• 规范化扩展代码框架\n\n⚙️ 功能调整：\n• 调整主唱模式选将规则\n• 身份牌添加注释功能\n• 规范化注释提示框接口\n• 标准化合奏机制实现\n\n详细更新内容可在游戏中查看说明。"
+
 }
