@@ -3,7 +3,7 @@ import mainContent from "./main/mainContent.js";
 import preContent from "./main/preContent.js"
 import "./main/mode.js";
 import update from "./main/update.js"
-import info from "./package.js"
+import info from "./main/package.js"
 /** @type { importExtensionConfig } */
 export const type = "extension";
 export default function () {
@@ -13,7 +13,7 @@ export default function () {
         editable: false,
         precontent: preContent,
         content: mainContent,
-        package: info("2.1.0"),
+        package: info("2.1.1"),
         config: {
             bgm: {
                 name: `<font color="#e91e63">场内BGM <small>(下局生效)</small>`,

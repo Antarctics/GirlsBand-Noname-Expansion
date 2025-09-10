@@ -47,7 +47,7 @@ export default async (b) => {
                 console.log(`使用${u || '默认'}镜像获取清单成功`);
                 break;
             } catch {
-                if (u === pList[3]) b && alert('所有镜像均访问失败，请检查网络连接');
+                if (b) alert('清单获取失败，请检查网络连接');
                 throw new Error("清单获取失败，请检查网络连接")
             }
         }

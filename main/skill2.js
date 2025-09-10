@@ -1,12 +1,4 @@
-import { effect } from "../../game/vue.esm-browser.js";
-import {
-    lib,
-    game,
-    ui,
-    get,
-    ai,
-    _status
-} from "../../../noname.js";
+import { lib, game, ui, get, ai, _status } from "../../../noname.js";
 /** @type { importCharacterConfig['skill'] } */
 const skills = {
     // 丸山彩
@@ -1259,6 +1251,11 @@ const skills = {
         filterTarget(card, player, target) {
             return target != player
         },
+        ai2(target) {
+            let player = _status.event.player
+            if (get.attitude(player, target) < 0) return player.countCards("h") >= target.countCards("h")
+            return player.countCards("h") >= target.countCards("h")
+        },
         usable: 3,
         async content(event, trigger, player) {
             let targets = [player, event.targets[0]]
@@ -1266,8 +1263,13 @@ const skills = {
                 .set("ai", (card) => {
                     let player = _status.event.player
                     let source = get.event("source")
+                    let targets = get.event("targets")
                     let att = get.attitude(player, source)
-                    if (player == source) return true
+                    if (player == source) {
+                        if (ui.selected.cards.length >= targets[1].countCards("h")) return false
+                        if (player.countCards("h") >= targets[1].countCards("h")) return true
+                        return false
+                    }
                     else {
                         if (att < 0) {
                             if (ui.selected.cards.length > source.countCards("h")) return false
@@ -1283,8 +1285,9 @@ const skills = {
                     if (cards[0].length >= cards[1].length) {
                         let next = await player.chooseControlList("狂飙", "获得" + get.translation(targets[1]) + "的合奏牌", "弃置X张牌并摸等量张牌（X为你与其合奏牌数之差，且至多为4）", true)
                             .set("ai", () => {
-                                const { bool, list, cards, targets } = _status.event.getParent().ensembleResult
-                                if (cards[1].filter(card => get.value(card) > 4).length) return 0
+                                const { bool, list, cards, targets, player } = _status.event.getParent().ensembleResult
+                                let num = Math.min(player.countCards("he"), Math.min(cards[0].length - cards[1].length, 4))
+                                if (player.getCards("he").filter(card => get.value(card) <= 4).length >= num - 1) return 0
                                 return 1
                             })
                             .forResult()
@@ -1296,7 +1299,7 @@ const skills = {
                             case "选项二":
                                 let num = Math.min(player.countCards("he"), Math.min(cards[0].length - cards[1].length, 4))
                                 if (num) {
-                                    player.chooseToDiscard(true, num, "he")
+                                    player.chooseToDiscard(true, num, "he").set("ai", card => -get.value(card))
                                     player.draw(num)
                                 }
                                 break
@@ -1769,7 +1772,7 @@ const skills = {
                 audio: false,
                 forced: true,
                 trigger: {
-                    player: "phaseDiscardAfter"
+                    player: "phaseJieshuBegin"
                 },
                 mod: {
                     aiOrder(player, card, num) {
@@ -1777,7 +1780,7 @@ const skills = {
                     }
                 },
                 filter(event, player) {
-                    return event.cards && event.cards.some(card => card.name == "ying")
+                    return player.getHistory("lose", evt => evt.getParent(3).name == "phaseDiscard" && evt.cards.some(card => card.name == "ying")).length
                 },
                 async content(event, trigger, player) {
                     await player.discard(player.getCards("h"))
@@ -1801,6 +1804,9 @@ const skills = {
             markcount: "expansion",
             content: "expansion"
         },
+        onremove(player) {
+            player.getStorage("gbshiqi_effect").forEach(tar => tar.unmarkSkill("gbshiqi_effect"))
+        },
         filter(event, player) {
             return event.name != "phase" || game.phaseNumber == 0;
         },
@@ -1823,9 +1829,6 @@ const skills = {
                 intro: {
                     nocount: true,
                     content: "被$标记"
-                },
-                onremove(player) {
-                    player.getStorage("gbshiqi_effect").forEach(tar => tar.unmarkSkill("gbshiqi_effect"))
                 },
                 filter(event, player) {
                     return event.getParent(2).name != "phaseDiscard" && player.getStorage("gbshiqi_effect").includes(event.player)
@@ -1888,15 +1891,7 @@ const skills = {
         },
         ai2(target) {
             let player = _status.event.player
-            if (get.attitude(player, target) > 0) {
-                if (target.countCards("j") && !target.hasSkill("gbzhaying")) return 10
-                if (target.hasSkill("gbshiqi_effect") && target.getStorage("gbshiqi_effect").includes(player)) return 2
-                return 1
-            } else {
-                if (target.countCards("j") && !target.hasSkill("gbzhaying")) return 0
-                if (target.hasSkill("gbshiqi_effect") && target.getStorage("gbshiqi_effect").includes(player)) return 8
-                return 5
-            }
+            return get.effect(player, { name: "guohe" }, target, player)
         },
         async content(event, trigger, player) {
             await player.draw()

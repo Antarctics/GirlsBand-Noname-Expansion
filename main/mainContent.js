@@ -4,24 +4,30 @@ export default function () {
     /**
      * 合奏机制 - 让玩家选择展示手牌或从牌堆展示牌
      * @param {Array|Player} players - 参与玩家
-     * @param {Function} [filter] - 卡牌过滤函数
      * @param {Function} [callback] - 回调函数
+     * @param {Function} [filter] - 卡牌过滤函数
+     * 
+     * @example
+     * // 令targets进行合奏，合奏结束后各摸一张牌
+     * player.chooseToEnsemble(targets，()=>{
+     * let {bool,targets}= _status.event.ensembleResult
+     * if(bool) targets.forEach(target=>target.draw())
+     * })
+     * 
      */
     lib.element.player.chooseToEnsemble = function () {
-        const event = game.createEvent("chooseToEnsemble");
-        event.player = this;
-
+        const next = game.createEvent("chooseToEnsemble");
+        next.player = this;
         for (let arg of arguments) {
             const type = get.itemtype(arg);
             if (type === "players" || type === "player") {
-                event.list = Array.isArray(arg) ? arg.slice() : [arg];
+                next.list = Array.isArray(arg) ? arg : [arg];
             } else if (typeof arg === 'function') {
-                event.filterCard ? event.callback = arg : event.filterCard = arg;
+                next.callback ? next.filterCard = arg : next.callback = arg;
             }
         }
-
-        event.setContent("chooseToEnsemble");
-        return event;
+        next.setContent("chooseToEnsemble");
+        return next;
     }
 
     lib.element.content.chooseToEnsemble = async function () {
@@ -33,44 +39,43 @@ export default function () {
 
         const targets = event.list.filter(target => !event.fixedResult?.[target.playerid]);
         if (targets.length) {
-            const next = await event.player
+            var next = await event.player
                 .chooseCardOL(targets, `${get.translation(event.player)}发起了合奏，请选择展示的牌`)
                 .set("type", "ensemble")
                 .set("source", event.player)
+                .set("targets",targets)
                 .set("filterCard", event.filterCard || (() => true))
                 .set("ai", event.ai || (card => event.player.countCards("h") > 3 && (6 - get.value(card) ? Math.random() < 0.3 : false)))
                 .set("selectCard", [1, Infinity])
                 .forResult();
+        }
+        let idx = 0;
+        for (var i = 0; i < event.list.length; i++) {
+            let target = event.list[i]
+            if (event.fixedResult?.[target.playerid]) {
+                const cards = Array.isArray(event.fixedResult[target.playerid]) ? event.fixedResult[target.playerid] : [event.fixedResult[target.playerid]]
+                game.log(target, "展示了", "#y", cards);
+                results.push([target, cards]);
+                allCards.push(cards);
+                continue;
+            }
 
-            let idx = 0;
-            for (const target of event.list) {
-                if (event.fixedResult?.[target.playerid]) {
-                    const cards = [].concat(event.fixedResult[target.playerid]);
-                    game.log(target, "展示了", "#y", cards);
-                    results.push([target, cards]);
-                    allCards.push(cards);
-                    continue;
-                }
-
-                const result = next[idx++];
-                if (result.bool) {
-                    game.log(target, "从", "#g手牌中", "展示了", "#y", result.cards);
-                    target.popup("手牌");
-                    results.push([target, result.cards]);
-                    allCards.push(result.cards);
-                } else {
-                    const card = get.cards(1);
-                    game.cardsGotoOrdering(card);
-                    game.log(target, "从", "#g牌堆中", "展示了", "#y", card);
-                    target.popup("牌堆");
-                    results.push([target, [card]]);
-                    allCards.push([card]);
-                }
+            const result = next[idx++];
+            if (result.bool) {
+                game.log(target, "从", "#g手牌中", "展示了", "#y", result.cards);
+                target.popup("手牌");
+                results.push([target, result.cards]);
+                allCards.push(result.cards);
+            } else {
+                const card = get.cards(1);
+                game.cardsGotoOrdering(card);
+                game.log(target, "从", "#g牌堆中", "展示了", "#y", card);
+                target.popup("牌堆");
+                results.push([target, card]);
+                allCards.push(card);
             }
         }
-
         event.trigger("EnsembleShow");
-
         game.broadcastAll((player, id, results) => {
             game.pause();
             const dialog = ui.create.dialog(`${get.translation(player)}发起了合奏`, "hidden");
@@ -91,9 +96,8 @@ export default function () {
             }
 
             dialog.open();
-            setTimeout(() => { game.resume(); dialog.close(); }, 3000);
+            setTimeout(() => { game.resume(); dialog.close(); }, 2000);
         }, event.player, event.videoId, results);
-
         event.result = { bool: true, cards: allCards, targets: event.list, list: results, player: event.player };
         if (event.callback) {
             const cbEvent = game.createEvent("ensembleCallback");
@@ -104,12 +108,12 @@ export default function () {
     }
 
     // 特殊名词注释系统
-    if (lib.config.extension_GirlsBand_gb_poptip)
+    if (lib.config.extension_GirlsBand_poptip)
         get.skillInfoTranslation = (skill, player) => {
             let str = player && lib.dynamicTranslate[skill] ? lib.dynamicTranslate[skill](player, skill) : lib.translate[skill + "_info"] || "";
 
             if (typeof str !== "string") {
-                console.warn(`孩子，你${skill}的翻译传的是什么？！`);
+                console.warn(`你${skill}的翻译传的是什么？！`);
                 return "";
             }
 

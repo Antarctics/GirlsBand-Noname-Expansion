@@ -1,11 +1,4 @@
-import {
-    lib,
-    game,
-    ui,
-    get,
-    ai,
-    _status
-} from "../../../noname.js";
+import { lib, game, ui, get, ai, _status } from "../../../noname.js";
 /** @type { importCharacterConfig['skill'] } */
 const skills = {
     // 立希
@@ -773,7 +766,7 @@ const skills = {
                 })
                 .set("ai", (target) => {
                     let player = _status.event.player
-                    if (target.hasSkill("gbshanshen") && get.attitude(player, target) < 0) return 0
+                    if (target.hasSkill("gbxinshen") && get.attitude(player, target) < 0) return 0
                     return get.attitude(player, target) < 0
                 })
                 .forResult()
@@ -1153,7 +1146,7 @@ const skills = {
                 .forResult()
             if (result && result.bool) {
                 for (let target of result.targets) {
-                    let next = await target.chooseControlList("墨影", [`弃置一张牌，然后本回合无法响应${get.translation(player)}使用的牌`, `本回合不能使用或打出与本回合弃置牌花色相同的牌`], true)
+                    let next = await target.chooseControlList("墨影", [`令${get.translation(player)}摸一张牌，然后本回合无法响应其使用的牌`, `令${get.translation(player)}弃置任意张牌，然后本回合不能使用或打出与以此法弃置牌花色相同的牌`], true)
                         .set("ai", () => {
                             let player = _status.event.player
                             if (player.countCards("hes") > 2 && Math.random() < 0.3) return 1
@@ -1163,24 +1156,36 @@ const skills = {
                         .forResult()
                     switch (next.control) {
                         case "选项一":
-                            target.chooseToDiscard("hes", true)
+                            player.draw()
                             target.markAuto("gbmoying_effect", player)
                             target.addTempSkill("gbmoying_effect")
                             game.log(target, "选择了", "#g【墨影】", "的", "#y选项一")
                             break
                         case "选项二":
+                            let next = await player.chooseToDiscard([1, Infinity]).set("ai", (card) => {
+                                let player = _status.event.player
+                                let cards = player.getCards("he", card => get.value(card) <= 4).sort((a, b) => get.value(a) - get.value(b))
+                                let suits = cards.filter(c => !player.getHistory("lose", evt => evt.getParent(2).name == "gbmoying").map(evt => evt.cards).flat().reduce((suit, card) => suit.add(get.suit(card)), []).includes(get.suit(c)))
+                                if (suits.length) {
+                                    if ((player.hasSkill("gbfuxi") && player.countSkill("gbfuxi") < lib.skill.gbfuxi.usable) || (player.hasSkill("gbduoluo") && player.countSkill("gbduoluo") < lib.skill.gbduoluo.usable)) {
+                                        if (suits.some(c => get.color(c) == "black")) return card == suits.filter(c => get.color(c) == "black")[0]
+                                        return suits.slice(0, 2).includes(card)
+                                    }
+                                    return suits[0] == card
+                                } else {
+                                    if ((player.hasSkill("gbfuxi") && player.countSkill("gbfuxi") < lib.skill.gbfuxi.usable) || (player.hasSkill("gbduoluo") && player.countSkill("gbduoluo") < lib.skill.gbduoluo.usable)) {
+                                        if (cards.some(c => get.color(c) == "black")) return card == suits.filter(c => get.color(c) == "black")[0]
+                                        return cards.slice(0, 2).includes(card)
+                                    }
+                                    return cards[0] == card
+                                }
+                            }).forResult()
+                            target.markAuto("gbmoying_discard", next.cards)
                             target.addTempSkill("gbmoying_discard")
                             game.log(target, "选择了", "#g【墨影】", "的", "#y选项二")
                             break
                     }
                 }
-                player.chooseToDiscard("墨影", "你可以弃置两张牌", "he", 2)
-                    .set("ai", (card) => {
-                        let player = _status.event.player
-                        let cards = player.getCards("h", card => get.value(card) <= 4).sort((a, b) => get.value(a) - get.value(b)).slice(0, 2)
-                        if (cards.length == 2) return cards.includes(card)
-                        return false
-                    })
             }
 
         },
@@ -1210,7 +1215,7 @@ const skills = {
                 onremove: true,
                 mod: {
                     cardEnabled2(card, player) {
-                        if (game.getGlobalHistory("everything", evt => evt.type == "discard").map(evt => evt.cards).flat().reduce((suit, card) => suit.add(card.suit), []).includes(get.suit(card))) return false;
+                        if (player.getStorage("gbmoying_discard").includes(get.suit(card))) return false;
                     },
                 },
             }
@@ -1221,7 +1226,7 @@ const skills = {
         trigger: {
             player: "discardAfter"
         },
-        usable: 1,
+        usable: 2,
         filter(event, player) {
             return event.cards.length >= 2 || event.cards.some(card => get.color(card) == "black" && card.original == "h")
         },
@@ -1253,11 +1258,11 @@ const skills = {
             if (player.canUse({
                 name: "sha",
                 nature: "thunder"
-            }, event.targets[0], false, true)) {
+            }, event.targets[0], false, false)) {
                 let next = player.useCard({
                     name: "sha",
                     nature: "thunder"
-                }, event.targets[0])
+                }, event.targets[0], false)
                 player.when({
                     source: "damageEnd"
                 })
@@ -1288,7 +1293,7 @@ const skills = {
         },
         forced: true,
         async content(event, trigger, player) {
-            player.gain(lib.card.ying.getYing(player.getHistory("sourceDamage")?.reduce((num, evt) => num += evt.num, 1)))
+            player.gain(lib.card.ying.getYing(Math.min(player.getHistory("sourceDamage")?.reduce((num, evt) => num += evt.num, 0), 3)))
         },
         group: 'gbzicheng_effect',
         subSkill: {
@@ -1547,7 +1552,7 @@ const skills = {
         },
     },
     // 喵梦
-    gbyoumeng: {
+    gbmiaomeng: {
         audio: false,
         trigger: {
             global: "phaseBefore",
@@ -1563,8 +1568,8 @@ const skills = {
             let result = await player.chooseCardTarget()
                 .set("selectCard", [1, 3])
                 .set("selectTarget", () => ui.selected.cards.length)
-                .set("filterTarget", (card, player, target) => !target.hasExpansions("gbyoumeng_fire"))
-                .set("prompt", "祐梦")
+                .set("filterTarget", (card, player, target) => !target.hasExpansions("gbmiaomeng_fire"))
+                .set("prompt", "喵梦")
                 .set("prompt2", "将至多三张牌置于等量名角色的武将牌上，称为『火』")
                 .set("forced", true)
                 .set("ai1", (card) => {
@@ -1580,7 +1585,7 @@ const skills = {
                 .forResult()
             if (result.bool) {
                 for (let i = 0; i < result.cards.length; i++) {
-                    result.targets[i].addToExpansion(result.cards[i], "giveAuto").gaintag.add("gbyoumeng_fire")
+                    result.targets[i].addToExpansion(result.cards[i], "giveAuto").gaintag.add("gbmiaomeng_fire")
                 }
             }
         },
@@ -1588,7 +1593,7 @@ const skills = {
             threaten: 0.6,
             expose: 0.3
         },
-        group: "gbyoumeng_fire",
+        group: "gbmiaomeng_fire",
         subSkill: {
             fire: {
                 audio: false,
@@ -1596,7 +1601,7 @@ const skills = {
                     global: "phaseBegin"
                 },
                 filter(event, player) {
-                    return event.player.hasExpansions("gbyoumeng_fire")
+                    return event.player.hasExpansions("gbmiaomeng_fire")
                 },
                 forced: true,
                 mark: "auto",
@@ -1608,23 +1613,29 @@ const skills = {
                 },
                 async content(event, trigger, player) {
                     let list = []
-                    if (trigger.player.hasExpansions("gbyoumeng_fire")) list.push("获得『火』并失去一点体力")
-                    if (trigger.player.countCards("he")) list.push(`令${get.translation(player)}获得你一张牌。`)
-                    let result = await trigger.player.chooseControlList("###祐梦###", list, true)
+                    list.push("获得『火』并失去一点体力")
+                    list.push(`令${get.translation(player)}获得『火』并摸一张牌。`)
+                    let result = await trigger.player.chooseControlList("###喵梦###", list, true)
                         .set("ai", (event, player) => {
                             if (get.effect(player, {
                                 name: "losehp"
                             }, player, player) > 0) return 0
-                            if (player.hp + player.num("h", "tao") > 3) return 0
+                            if (_status.event.getParent().player == player) return 1
+                            if (player.hp + player.num("h", "tao") > 3) return player.getExpansions("gbmiaomeng_fire").reduce((num, card) => num + get.value(card), 0) > 6
                             else return 1
                         })
                         .forResult()
                     if (result) {
+                        game.log(trigger.player, "选择了", "#g【喵梦】", "的", "#y" + result.control)
                         if (result.control == "选项一") {
-                            await trigger.player.gain(trigger.player.getExpansions("gbyoumeng_fire"), "log")
+                            await trigger.player.gain(trigger.player.getExpansions("gbmiaomeng_fire"), "log")
                             trigger.player.loseHp()
-                            if (!trigger.player.hasExpansions("gbyoumeng_fire")) trigger.player.unmarkSkill("gbyoumeng_fire")
-                        } else if (trigger.player.countGainableCards(player, "he") > 0) player.gainPlayerCard(trigger.player, "he", true, 1)
+                            if (!trigger.player.hasExpansions("gbmiaomeng_fire")) trigger.player.unmarkSkill("gbmiaomeng_fire")
+                        } else {
+                            await player.gain(trigger.player.getExpansions("gbmiaomeng_fire"), "giveAuto")
+                            if (!trigger.player.hasExpansions("gbmiaomeng_fire")) trigger.player.unmarkSkill("gbmiaomeng_fire")
+                            player.draw()
+                        }
                     }
                 }
             }
@@ -1647,12 +1658,12 @@ const skills = {
         lose: false,
         check(card) {
             var player = _status.event.player;
-            if (ui.selected.cards.length < game.countPlayer(target => (get.attitude(player, target) < 0 && !target.hasExpansions("gbyoumeng_fire")) || (get.attitude(player, target) > 0 && target.hasExpansions("gbyoumeng_fire")))) return 1
+            if (ui.selected.cards.length < game.countPlayer(target => (get.attitude(player, target) < 0 && !target.hasExpansions("gbmiaomeng_fire")) || (get.attitude(player, target) > 0 && target.hasExpansions("gbmiaomeng_fire")))) return 1
             return 0
         },
         ai2(target) {
             var player = _status.event.player;
-            return (get.attitude(player, target) < 0 && !target.hasExpansions("gbyoumeng_fire")) || (get.attitude(player, target) > 0 && target.hasExpansions("gbyoumeng_fire")) || target == player
+            return (get.attitude(player, target) < 0 && !target.hasExpansions("gbmiaomeng_fire")) || (get.attitude(player, target) > 0 && target.hasExpansions("gbmiaomeng_fire")) || target == player
         },
         multitarget: true,
         multiline: true,
@@ -1667,13 +1678,13 @@ const skills = {
                     if (opinion != "black") {
                         for (let target of targets.sortBySeat()) {
                             target.draw()
-                            if (!target.hasExpansions("gbyoumeng_fire")) {
+                            if (!target.hasExpansions("gbmiaomeng_fire")) {
                                 let card = await target.chooseCard("传庭", "选择一张牌置于武将牌上，称为『火』", 1, "he", true)
                                     .set("ai", (card) => {
                                         return 6 - get.value(card)
                                     })
                                     .forResultCards()
-                                if (card.length) target.addToExpansion(card[0]).gaintag.add("gbyoumeng_fire")
+                                if (card.length) target.addToExpansion(card[0]).gaintag.add("gbmiaomeng_fire")
                             }
                         }
                     }
@@ -1683,7 +1694,7 @@ const skills = {
                 })
                 .set("ai", (card) => {
                     let player = _status.event.player
-                    if (player.hasExpansions("gbyoumeng_fire")) return get.color(card) == "red"
+                    if (player.hasExpansions("gbmiaomeng_fire")) return get.color(card) == "red"
                     return get.color(card) == "black"
                 })
         },
@@ -1702,7 +1713,7 @@ const skills = {
             name: "ying"
         },
         filterTarget(card, player, target) {
-            if (ui.selected.targets.length == 1) return target.hasExpansions("gbyoumeng_fire")
+            if (ui.selected.targets.length == 1) return target.hasExpansions("gbmiaomeng_fire")
             return player.canUse({
                 name: "sha"
             }, target, true, false)
@@ -1716,13 +1727,13 @@ const skills = {
         },
         selectTarget() {
             if (ui.selected.cards.length > 0) return 1
-            if (ui.selected.targets.length == 1 && ui.selected.targets[0].hasExpansions("gbyoumeng_fire")) return [1, 2]
+            if (ui.selected.targets.length == 1 && ui.selected.targets[0].hasExpansions("gbmiaomeng_fire")) return [1, 2]
             return 2
         },
         targetprompt() {
             if (ui.selected.targets.length == 1 && ui.selected.cards.length > 0) return "出杀目标"
-            if (ui.selected.targets.length == 1 && ui.selected.targets[0].hasExpansions("gbyoumeng_fire")) return "出杀目标<br>弃『火』"
-            if (ui.selected.targets.length == 1 && !ui.selected.targets[0].hasExpansions("gbyoumeng_fire")) return "出杀目标"
+            if (ui.selected.targets.length == 1 && ui.selected.targets[0].hasExpansions("gbmiaomeng_fire")) return "出杀目标<br>弃『火』"
+            if (ui.selected.targets.length == 1 && !ui.selected.targets[0].hasExpansions("gbmiaomeng_fire")) return "出杀目标"
             return "弃『火』"
         },
         complexTarget: true,
@@ -1753,21 +1764,21 @@ const skills = {
         multiline: true,
         async content(event, trigger, player) {
             if (event.targets.length > 1) {
-                let result = await player.chooseButton(["若叶", "移去一张火", [event.targets[1].getExpansions("gbyoumeng_fire"), "card"]], true)
+                let result = await player.chooseButton(["若叶", "移去一张火", [event.targets[1].getExpansions("gbmiaomeng_fire"), "card"]], true)
                     .set("ai", (button) => get.value(button.link))
                     .forResult()
                 if (result.bool) {
                     await event.targets[1].discard(result.links[0], player, "giveAuto")
-                    if (!event.targets[1].hasExpansions("gbyoumeng_fire")) event.targets[1].unmarkSkill("gbyoumeng_fire")
+                    if (!event.targets[1].hasExpansions("gbmiaomeng_fire")) event.targets[1].unmarkSkill("gbmiaomeng_fire")
                     player.addTempSkill("gbruoye_1")
                 }
             } else if (event.targets.length == 1 && event.cards.length == 0) {
-                let result = await player.chooseButton(["若叶", "移去一张火", [event.targets[0].getExpansions("gbyoumeng_fire"), "card"]], true)
+                let result = await player.chooseButton(["若叶", "移去一张火", [event.targets[0].getExpansions("gbmiaomeng_fire"), "card"]], true)
                     .set("ai", (button) => get.value(button.link))
                     .forResult()
                 if (result.bool) {
                     await event.targets[0].discard(result.links[0], player, "giveAuto")
-                    if (!event.targets[0].hasExpansions("gbyoumeng_fire")) event.targets[0].unmarkSkill("gbyoumeng_fire")
+                    if (!event.targets[0].hasExpansions("gbmiaomeng_fire")) event.targets[0].unmarkSkill("gbmiaomeng_fire")
                     player.addTempSkill("gbruoye_1")
                 }
             } else {
@@ -1795,48 +1806,48 @@ const skills = {
         }
     },
     // 海玲
-    gbshanshen: {
+    gbxinshen: {
         audio: false,
         trigger: {
             global: ["phaseBefore", "phaseBegin"],
             player: "enterGame"
         },
         mark: "auto",
-        marktext: "独",
+        marktext: "信",
         intro: {
             markcount: "expansion",
             content: "expansion"
         },
         charlotte: true,
         filter(event, player) {
-            return (event.name == "phase" && !player.hasExpansions("gbshanshen")) || game.phaseNumber == 0;
+            return (event.name == "phase" && !player.hasExpansions("gbxinshen")) || game.phaseNumber == 0;
         },
-        prompt2: "你可以摸一张牌，然后将一张牌置于武将牌上，称为『独』",
+        prompt2: "你可以摸一张牌，然后将一张牌置于武将牌上，称为『信』",
         async content(event, trigger, player) {
             player.draw()
-            let result = await player.chooseCard("善身", "将一张牌置于武将牌上，称为『独』", "he", true)
+            let result = await player.chooseCard("信身", "将一张牌置于武将牌上，称为『信』", "he", true)
                 .set("ai", card => 6 - get.value(card))
                 .forResult()
             if (result.bool) {
-                player.addToExpansion(result.cards, "giveAuto", "bySelf").gaintag.add("gbshanshen")
+                player.addToExpansion(result.cards, "giveAuto", "bySelf").gaintag.add("gbxinshen")
             }
         },
-        group: "gbshanshen_debate",
+        group: "gbxinshen_debate",
         subSkill: {
             debate: {
                 audio: false,
                 trigger: {
-                    global: "chooseToDebateBegin",
+                    global: ["chooseToDebateBegin", "chooseToEnsembleBegin"],
                     player: "chooseToCompareBegin",
                     target: "chooseToCompareBegin"
                 },
                 charlotte: true,
                 filter(event, player) {
-                    if (event.name == "chooseToDebate") return event.list.includes(player) && player.hasExpansions("gbshanshen")
-                    return player.hasExpansions("gbshanshen")
+                    if (event.name == "chooseToCompare") return player.hasExpansions("gbxinshen")
+                    return event.list.includes(player) && player.hasExpansions("gbxinshen")
                 },
                 async cost(event, trigger, player) {
-                    event.result = await player.chooseButton(["善身", "选择一张『独』作为结果。", [player.getExpansions("gbshanshen"), "card"]], true)
+                    event.result = await player.chooseButton(["信身", "选择一张『信』作为结果。", [player.getExpansions("gbxinshen"), "card"]], true)
                         .set("ai", (button) => get.number(button.link))
                         .forResult()
                     event.result.cost_data = event.result.links
@@ -1844,7 +1855,7 @@ const skills = {
                 async content(event, trigger, player) {
                     if (event.triggername != "chooseToDebateBegin") {
                         if (!trigger.fixedResult) trigger.fixedResult = {}
-                        trigger.fixedResult[player.playerid] = event.cost_data[0]
+                        trigger.fixedResult[player.playerid] = event.triggername == "chooseToEnsembleBegin" ? event.cost_data : event.cost_data[0]
                     } else {
                         if (!trigger.fixedResult) trigger.fixedResult = [];
                         trigger.fixedResult.push([player, event.cost_data[0]]);
@@ -1856,7 +1867,9 @@ const skills = {
     gbyongling: {
         audio: false,
         enable: "phaseUse",
-        usable: 1,
+        filter(event, player) {
+            return !player.hasSkill("gbyongling_used")
+        },
         filterTarget(card, player, target) {
             return player.canCompare(target)
         },
@@ -1873,6 +1886,7 @@ const skills = {
             return 0;
         },
         async content(event, trigger, player) {
+            player.addTempSkill("gbyongling_used")
             let result = await player.chooseToCompare(event.targets[0]).forResult()
             if (result.bool) {
                 let num = 0
@@ -1896,6 +1910,12 @@ const skills = {
             threaten: 0.6,
             expose: 0.15,
             order: 8,
+        },
+        subSkill: {
+            used: {
+                audio: false,
+                onremove: true,
+            }
         }
     },
     gbhaixi: {
@@ -1988,7 +2008,6 @@ const skills = {
         subSkill: {
             ying: {
                 audio: false,
-                forced: true,
                 charlotte: true,
                 trigger: {
                     player: "compare",
@@ -1997,8 +2016,11 @@ const skills = {
                 filter(event, player) {
                     return event.lose_list.some(i => i[0] == player && i[1][0].name == "ying")
                 },
+                async cost(event, trigger, player) {
+                    event.result = await player.chooseToDiscard(get.prompt("gbhaixi"), "弃置" + get.cnNumber(player.countSkill("gbyongling") + 1) + "张牌令〖佣铃〗视为未发动过", player.countSkill("gbyongling") + 1, "he").set("ai", (card) => game.hasPlayer(p => _status.event.player.canCompare(p) && get.value(card) < 4)).forResult()
+                },
                 async content(event, trigger, player) {
-                    delete player.getStat("skill").yongling
+                    player.removeSkill("gbyongling_used")
                 },
                 lastDo: true,
             }
@@ -2195,18 +2217,18 @@ const skills = {
                 return player.maxHp
             },
             aiValue(player, card, num) {
-                if (card == "ying") return num + 4
+                if (card == "ying") return num + 6
             },
             aiUseful(player, card, num) {
-                if (card == "ying") return num + 5
+                if (card == "ying") return num + 6
             }
         },
         trigger: {
             player: "damageBegin4"
         },
         async cost(event, trigger, player) {
-            let result = await player.chooseCard("求存", "弃置一张【影】并恢复一点体力。")
-                .set("prompt2", "或点取消获得一张【影】并获得对你造成伤害的牌")
+            let result = await player.chooseCard("求存")
+                .set("prompt2", "弃置一张【影】并恢复一点体力，或点取消获得一张【影】并获得对你造成伤害的牌")
                 .set("filterCard", (card) => card.name == "ying")
                 .set("ai1", (card) => {
                     if (player.hp <= 2) return 6 - get.value(card)
@@ -2227,7 +2249,7 @@ const skills = {
         async content(event, trigger, player) {
             if (event.cards) {
                 player.discard(event.cards)
-                player.recover()
+                await player.recover()
             } else {
                 player.gain(lib.card.ying.getYing(), "gain2")
                 player.gain(trigger.cards, "gain2")
@@ -4657,14 +4679,24 @@ const skills = {
             source: "damageBegin2"
         },
         derivation: ["gbfuxi", "gbruoye", "gbzicheng"],
-        persevereSkill: true,
+        charlotte: true,
         mod: {
             aiValue(player, card, num) {
                 if (card.name == "ying") return num + 4
             },
             aiUseful(player, card, num) {
                 if (card.name == "ying") return num + 7
-            }
+            },
+            ignoredHandcard(card, player) {
+                if (card.hasGaintag("gbsiwang")) {
+                    return true;
+                }
+            },
+            cardDiscardable(card, player, name) {
+                if (name == "phaseDiscard" && card.hasGaintag("gbsiwang")) {
+                    return false;
+                }
+            },
         },
         filter(event, player) {
             return player.hasCard("ying")
@@ -4677,36 +4709,46 @@ const skills = {
         },
         async content(event, trigger, player) {
             player.discard(event.cards)
-            player.recover()
-            var list = [];
+            await player.recover()
+            var list = [],
+                skill = []
+            list.push("摸两张牌且不计入手牌上限")
             if (!player.hasSkill("gbfuxi")) {
-                list.push("gbfuxi");
+                skill.push("gbfuxi");
             }
             if (!player.hasSkill("gbruoye")) {
-                list.push("gbruoye");
+                skill.push("gbruoye");
             }
             if (!player.hasSkill("gbchenggu")) {
-                list.push("gbzicheng");
+                skill.push("gbzicheng");
             }
-            list.push("cancel2")
-            if (list.length) {
-                let result = await player.chooseControl(list)
-                    .set("prompt", "死亡")
-                    .set("prompt2", "失去一点体力上限并获得下列技能中的一个")
-                    .set("ai", () => {
-                        let player = _status.event.player
-                        let list = get.event("controls")
-                        if (player.isDamaged() && player.maxHp > 2) return list.sort((a, b) => {
-                            return get.skillRank(b, ["in", "out"]) - get.skillRank(a, ["in", "out"])
-                        })[0]
-                        else return "cancel2"
-                    })
-                    .forResult()
-                if (result.control != "cancel2") {
-                    player.loseMaxHp()
-                    player.addSkill(result.control)
+            if (skill.length > 0) {
+                list.push("失去1点体力上限并获得下列技能中的任意一个：〖缚戏〗、〖若叶〗、〖自成〗")
+            }
+            let next = await player.chooseControlList("死亡", list).set("ai", () => {
+                if (player.isDamaged() && player.maxHp > 3) return 1
+                return 0
+            }).forResult()
+            if (next.control != "cancel2") {
+                game.log(player, "选择了", "#g死亡", "的", "#y" + next.control)
+                if (next.control == "选项一") {
+                    player.draw(2).gaintag.add("gbsiwang")
                 } else {
-                    event.finish()
+                    if (skill.length) {
+                        let result = await player.chooseControl(skill)
+                            .set("prompt", "死亡")
+                            .set("prompt2", "失去一点体力上限并获得下列技能中的一个")
+                            .set("ai", () => {
+                                let player = _status.event.player
+                                let list = get.event("controls")
+                                return list.sort((a, b) => {
+                                    return get.skillRank(b, ["in", "out"]) - get.skillRank(a, ["in", "out"])
+                                })[0]
+                            })
+                            .forResult()
+                        player.loseMaxHp()
+                        player.addSkill(result.control)
+                    }
                 }
             }
         },
@@ -7354,7 +7396,7 @@ const skills = {
                     if (target.countCards("j") && !target.hasWuxie()) return "选项二"
                     for (let name of lib.inpile) {
                         if (!player.canUse(name, target, true, true)) continue
-                        if (get.type(name) == "trick" && get.tag(card, "damage")) {
+                        if (get.type(name) == "trick" && get.tag({ name: name }, "damage")) {
                             if (player.hasCard(name, "hs") && get.effect(target, {
                                 name: name
                             }, player, player) > 0) return "选项一"
