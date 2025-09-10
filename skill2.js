@@ -1900,7 +1900,7 @@ const skills = {
         },
         async content(event, trigger, player) {
             await player.draw()
-            await event.targets[0].discardPlayerCard(player, "hej", true)
+            await event.targets[0].discardPlayerCard(player, "hej", true).set("target", player).set("ai", lib.card.guohe.ai.button);
 
         },
         ai: {

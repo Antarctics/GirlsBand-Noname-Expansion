@@ -54,20 +54,23 @@ export default async (b) => {
 
         const updateFiles = [];
         const hex = Array.from({ length: 256 }, (_, i) => i.toString(16).padStart(2, '0'));
-
-        for (const [f, h] of Object.entries(m.files)) {
-            const path = `extension/GirlsBand/${f}`;
-            if (await game.promises.checkFile(path) !== 1) {
-                updateFiles.push(f);
-                continue;
-            }
-            try {
-                const buf = await crypto.subtle.digest('SHA-1', await game.promises.readFile(path));
-                const localHash = Array.from(new Uint8Array(buf), x => hex[x]).join('');
-                if (localHash !== h) updateFiles.push(f);
-            } catch {
-                updateFiles.push(f);
-            }
+        const entries = Object.entries(m.files);
+        for (let i = 0; i < entries.length; i += 5) {
+            const batch = entries.slice(i, i + 5);
+            await Promise.all(batch.map(async ([f, h]) => {
+                const path = `extension/GirlsBand/${f}`;
+                if (await game.promises.checkFile(path) !== 1) {
+                    updateFiles.push(f);
+                    return;
+                }
+                try {
+                    const buf = await crypto.subtle.digest('SHA-1', await game.promises.readFile(path));
+                    const localHash = Array.from(new Uint8Array(buf), x => hex[x]).join('');
+                    if (localHash !== h) updateFiles.push(f);
+                } catch {
+                    updateFiles.push(f);
+                }
+            }));
         }
 
         delete game.importedPack;
@@ -95,7 +98,7 @@ export default async (b) => {
                 await game.promises.createDir(dir);
                 await game.promises.writeFile(data, dir, fullPath.split("/").pop());
             }
-            await game.promises.writeFile(new TextEncoder().encode(JSON.stringify(m, null, 2)), "extension/GirlsBand", "manifest.json");
+            await game.promises.writeFile(JSON.stringify(m, null, 2), "extension/GirlsBand", "manifest.json");
             const clean = async (path, pre = '') => {
                 const [dirs, files] = await game.promises.getFileList(path);
                 let list = files.map(file => pre ? `${pre}/${file}` : file);
