@@ -125,44 +125,21 @@ export default function () {
         }
     };
 
-    // 模式翻译
-    get.modetrans = (config, server) => {
-        const modes = {
-            band: {
-                normal: "标准乐队",
-                impart: "合奏乐队",
-                girls: "少女乐队",
-                soyo: "素世の野望乐队",
-                mortis: "全都不会乐队"
-            },
-            doudizhu: {
-                kaihei: "开黑斗地主",
-                huanle: "欢乐斗地主",
-                binglin: "兵临城下",
-                online: "智斗三国"
-            },
-            versus: {
-                "1v1": "单人对决",
-                "2v2": "欢乐成双",
-                "3v3": "血战到底",
-                "4v4": "四人对决",
-                guandu: "官渡之战"
-            },
-            single: {
-                normal: "新1v1",
-                changban: "血战长坂坡",
-                dianjiang: "点将单挑",
-                wuxianhuoli: "无限火力"
-            },
-            identity: {
-                purple: "三对三对二",
-                zhong: "忠胆英杰",
-                stratagem: "谋攻模式"
+    const oldModetrans = get.modetrans
+    get.modetrans = new Proxy(oldModetrans, {
+        apply: function (target, thisArg, argumentsList) {
+            const [config, server] = argumentsList;
+            if (config && config.mode === "band") {
+                const bandModes = {
+                    normal: "标准乐队",
+                    impart: "合奏乐队",
+                    girls: "少女乐队",
+                    soyo: "素世の野望乐队",
+                    mortis: "全都不会乐队"
+                };
+                return bandModes[config.band_mode] || "未知乐队模式";
             }
-        };
-        if (config.mode in modes && config[`${config.mode}_mode`] in modes[config.mode]) {
-            return modes[config.mode][config[`${config.mode}_mode`]];
+            return target.apply(thisArg, argumentsList);
         }
-        return server ? get.translation(config.mode) + "模式" : get.cnNumber(parseInt(config.number)) + "人" + get.translation(config.mode);
-    };
+    });
 };

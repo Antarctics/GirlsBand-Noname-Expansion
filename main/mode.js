@@ -317,21 +317,41 @@ const bandMode = {
                 game.players[i].setIdentity()
             }
         },
-        checkResult: () => {
+        checkResult: function () {
             var me = game.me._trueMe || game.me;
-            var loser = game.loser_id;
-            if (loser) {
-                if (me.identity == "drummer") game.over(loser.identityShown ? false : true)
-                if (me.identity == "bass") game.over(!loser.identityShown ? false : true)
-                game.over(loser.isFriendOf(me) ? false : true);
+            var mingAlive = false;
+            var anAlive = false;
+
+            for (var player of game.filterPlayer()) {
+                var isMing = player.identity === "drummer" || (player.identityShown && player.identity !== "bass");
+                var isAn = player.identity === "bass" || (!player.identityShown && player.identity !== "drummer");
+                if (isMing) mingAlive = true;
+                if (isAn) anAlive = true;
+            }
+            if (!mingAlive) {
+                var meMing = me.identity === "drummer" || (me.identityShown && me.identity !== "bass");
+                game.over(meMing ? false : true);
+            } else if (!anAlive) {
+                var meAn = me.identity === "bass" || (!me.identityShown && me.identity !== "drummer");
+                game.over(meAn ? false : true);
             }
         },
         checkOnlineResult: function (player) {
-            var loser = game.loser_id;
-            if (loser) {
-                if (player.identity == "drummer") game.over(loser.identityShown ? false : true)
-                if (player.identity == "bass") game.over(!loser.identityShown ? false : true)
-                game.over(loser.isFriendOf(player) ? false : true);
+            var mingAlive = false;
+            var anAlive = false;
+            for (var p of game.filterPlayer()) {
+                var isMing = p.identity === "drummer" || (p.identityShown && p.identity !== "bass");
+                var isAn = p.identity === "bass" || (!p.identityShown && p.identity !== "drummer");
+
+                if (isMing) mingAlive = true;
+                if (isAn) anAlive = true;
+            }
+            if (!mingAlive) {
+                var playerMing = player.identity === "drummer" || (player.identityShown && player.identity !== "bass");
+                game.over(playerMing ? false : true);
+            } else if (!anAlive) {
+                var playerAn = player.identity === "bass" || (!player.identityShown && player.identity !== "drummer");
+                game.over(playerAn ? false : true);
             }
         },
         chooseCharacter: function () {
@@ -1086,7 +1106,7 @@ const bandMode = {
         winConditions: function (player) {
             if (!player.identityShown && player != game.me && player.isAlive()) { return "未知·暗置" }
             let str = `<span style="display: block; text-align: center;">` + get.translation(player.identity) + "·" + (player.identityShown && player.identity != "bass" ? "已明置" : "暗置") + "</span>"
-            str += player.identityShown && player.identity != "bass" ? "·击杀所有暗置身份牌的其他角色（鼓手除外）" : "·击杀所有明置身份牌的其他角色"
+            str += player.identityShown && player.identity != "bass" ? "·击杀所有的暗置身份牌的其他角色（鼓手除外）" : "·击杀所有明置身份牌的其他角色（包含鼓手）"
             let Conditions = {
                 "vocalist": str + "<br>" + "·游戏开始时，明置至多两名其他角色的身份牌" + "<br>" + "·击杀者摸一张牌、增加一点体力上限并回复一点体力",
                 "drummer": str + "<br>" + "·明置身份时摸一张牌",
@@ -1100,43 +1120,71 @@ const bandMode = {
             return Conditions[player.identity]
         },
         rawAttitude: function (from, to) {
-            let aiShown = to.ai.shown
-            if (aiShown < 0.2) return get.realAttitude(from, to)
-            return get.realAttitude(from, to) * aiShown
+            if (from == to) return 10;
+
+            var difficulty = 0;
+            if (to == game.me) {
+                difficulty = 2 - get.difficulty();
+            }
+            if (to.identityShown || from.storage.dongcha == to ||
+                (from.storage.zhibi && from.storage.zhibi.includes(to))) {
+                if (to.identity === "bass") {
+                    return get.realAttitude(from, to) * 1.2 + difficulty * 1.5;
+                }
+                return get.realAttitude(from, to) + difficulty * 1.5;
+            }
+
+            var aishown = to.ai.shown;
+            if (to.identity === "drummer" && !to.identityShown) {
+                var realAttitude = get.realAttitude(from, to);
+                var fromMing = from.identity === "drummer" || (from.identityShown && from.identity !== "bass");
+
+                if (fromMing) {
+                    return -6 * (1 - aishown) + realAttitude * aishown + difficulty * 1.5;
+                } else {
+                    return 6 * (1 - aishown) + realAttitude * aishown + difficulty * 1.5;
+                }
+            }
+            if (to.identity === "bass" && to.identityShown) {
+                return get.realAttitude(from, to) * 1.2 + difficulty * 1.5;
+            }
+            return get.realAttitude(from, to) + difficulty * 1.5;
         },
         realAttitude: function (from, to) {
-            if (from == to) return 10
-            let fromMing = from.identityShown && from.identity != "bass" || from.identity == "drummer",
-                toMing = to.identityShown && to.identity != "bass" || to.identity == "drummer"
-            if (fromMing == toMing) return 6
-            return -6
+            if (from == to) return 10;
+            let fromMing = from.identity === "drummer" || (from.identityShown && from.identity !== "bass");
+            let toMing = to.identity === "drummer" || (to.identityShown && to.identity !== "bass");
+            let fromAn = from.identity === "bass" || (!from.identityShown && from.identity !== "drummer");
+            let toAn = to.identity === "bass" || (!to.identityShown && to.identity !== "drummer");
+            if ((fromMing && toMing) || (fromAn && toAn)) {
+                return 6
+            }
+            else if ((fromMing && toAn) || (fromAn && toMing)) {
+                return -6
+            }
         },
         situation: function (absolute) {
-            var i, j, player;
+            var i, player;
             var ming = 0, an = 0, total = 0;
 
             for (i = 0; i < game.players.length; i++) {
                 player = game.players[i];
-                var php = player.hp;
-                if (player.hasSkill("benghuai") && php > 4) {
-                    php = 4;
-                } else if (php > 6) {
-                    php = 6;
+                var strength = get.condition(player);
+                var threat = get.threaten(player, game.me, true);
+                var power = strength * threat;
+                if (player.identityShown && player.identity !== "bass" || player.identity === "drummer") {
+                    ming += power + 4;
+                    total += power + 4;
                 }
-                j = player.countCards("h") + player.countCards("e") * 1.5 + php * 2;
-
-                if (player.identityShown && player.identity != "bass" || player.identity == "drummer") {
-                    ming += j + 4;
-                    total += j + 4;
-                } else {
-                    an += j + 4;
-                    total += j + 4;
+                else {
+                    an += power + 4;
+                    total += power + 4;
                 }
             }
-
             if (absolute) return ming - an;
             var result = parseInt(10 * Math.abs((ming - an) / total));
             if (ming < an) result = -result;
+
             return result;
         },
         identityList: () => {
@@ -1178,56 +1226,41 @@ const bandMode = {
                     self = true;
                 }
                 let method = includeDie ? "filterPlayer2" : "filterPlayer";
+
                 var targets = game[method](target => {
                     if (func && !func(target)) {
                         return false;
                     }
-                    if (player.identity === "bass") {
-                        return !target.identityShown || target.identity === "bass";
-                    }
-                    if (player.identity === "drummer") {
-                        return target.identityShown
-                    }
-                    if (player.identityShown) {
-                        return target.identityShown && target.identity !== "bass";
-                    } else {
-                        return !target.identityShown
-                    }
+                    if (target === player) return false;
+                    let playerMing = player.identity === "drummer" || (player.identityShown && player.identity !== "bass");
+                    let targetMing = target.identity === "drummer" || (target.identityShown && target.identity !== "bass");
+                    let playerAn = player.identity === "bass" || (!player.identityShown && player.identity !== "drummer");
+                    let targetAn = target.identity === "bass" || (!target.identityShown && target.identity !== "drummer");
+                    return (playerMing && targetMing) || (playerAn && targetAn);
                 });
+
                 if (self) {
                     targets.add(player);
-                } else {
-                    targets.remove(player);
                 }
-                return targets
+                return targets;
             },
+
             getEnemies(func, includeDie) {
                 var player = this;
                 let method = includeDie ? "filterPlayer2" : "filterPlayer";
+
                 var targets = game[method](target => {
                     if (func && !func(target)) {
                         return false;
                     }
-                    if (player.identity === "bass") {
-                        return target.identityShown && target.identity !== "bass";
-                    }
-
-                    if (player.identity === "drummer") {
-                        return !target.identityShown
-                    }
-
-                    if (player.identityShown) {
-                        return !target.identityShown
-                    } else {
-                        return target.identityShown && target.identity !== "bass";
-                    }
+                    if (target === player) return false;
+                    let playerMing = player.identity === "drummer" || (player.identityShown && player.identity !== "bass");
+                    let targetMing = target.identity === "drummer" || (target.identityShown && target.identity !== "bass");
+                    let playerAn = player.identity === "bass" || (!player.identityShown && player.identity !== "drummer");
+                    let targetAn = target.identity === "bass" || (!target.identityShown && target.identity !== "drummer");
+                    return (playerMing && targetAn) || (playerAn && targetMing);
                 });
-                if (self) {
-                    targets.add(player);
-                } else {
-                    targets.remove(player);
-                }
-                return targets
+                return targets;
             },
             dieAfter: function (source) {
                 if (!this.identityShown) {

@@ -4,7 +4,7 @@ export default async (b) => {
     try {
         if (!localStorage.gb_clean) {
             game.importedPack = true
-            let m = JSON.parse(new TextDecoder().decode(await game.promises.readFile("extension/GirlsBand/manifest.json")))
+            let m = JSON.parse(await game.promises.readFile("extension/GirlsBand/manifest.json"))
             const clean = async (path, pre = '') => {
                 const [dirs, files] = await game.promises.getFileList(path);
                 let list = files.map(file => pre ? `${pre}/${file}` : file);
@@ -34,22 +34,27 @@ export default async (b) => {
         if (!b && sessionStorage.gb_check) return;
 
         game.importedPack = true;
-        const pList = ["", "https://gh-proxy.com/", "https://hk.gh-proxy.com/", "https://tvv.tw/"];
+        const pList = ["https://proxy.schariac.one/", "", "https://gh-proxy.com/", "https://hk.gh-proxy.com/", "https://tvv.tw/"];
         let p = pList[lib.config.extension_GirlsBand_update_source] || "";
         let m;
-
+        let success = false;
         for (const u of [p, ...pList.filter(x => x !== p)]) {
             try {
                 const r = await fetch(`${u}https://raw.githubusercontent.com/Antarctics/GirlsBand-Noname-Expansion/refs/heads/main/manifest.json`);
-                if (!r.ok) continue;
-                m = await r.json();
-                p = u;
-                console.log(`使用${u || '默认'}镜像获取清单成功`);
-                break;
-            } catch {
-                if (b) alert('清单获取失败，请检查网络连接');
-                throw new Error("清单获取失败，请检查网络连接")
-            }
+                if (r.ok) {
+                    m = await r.json();
+                    p = u;
+                    console.log(`使用${u || '默认'}镜像获取清单成功`);
+                    success = true;
+                    break;
+                }
+            } catch { }
+        }
+
+        if (!success) {
+            const msg = '清单文件获取失败，请检查网络连接';
+            if (b) alert(msg);
+            throw new Error(msg);
         }
 
         const updateFiles = [];

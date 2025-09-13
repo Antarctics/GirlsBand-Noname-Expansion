@@ -951,21 +951,6 @@ const skills = {
         filter(event, player) {
             return player.countCards("he")
         },
-        chooseCard(player, source) {
-            if (_status.event.getParent().fixedResult && _status.event.getParent().fixedResult[player.playerid]) return _status.event.getParent().fixedResult[player.playerid]
-            const next = player.chooseCard("选择任意张手牌，或点取消展示牌堆顶的一张牌", "h", [1, Infinity])
-            next.set("ai", (card) => {
-                let player = _status.event.player
-                let source = get.event("source")
-                if (get.attitude(player, source) > 0 && player.countCards("h", card => get.value(card) <= 4) > 2) return player.getCards("h", card => get.value(card) <= 4).includes(card)
-                if (player.countCards("h", card => get.value(card) <= 0)) {
-                    return get.value(card) <= 0
-                } else return false
-            })
-            next.set("source", source)
-            next.set("_global_waiting", true)
-            return next;
-        },
         async content(event, trigger, player) {
             let result = await player.chooseCardTarget("极星", true)
                 .set("position", "he")
@@ -1537,8 +1522,11 @@ const skills = {
                         fullskin: true,
                         noEffect: true,
                         wuxieable: false,
+                        cardimage: card.name,
+                        ai: {
+                            value: get.value(card)
+                        }
                     };
-                    lib.card[namex].cardimage = card.name;
                     lib.translate[namex] = lib.translate[card.name] + "·春华";
                     lib.translate[namex + "_info"] = "由【春华】技能创造的无效果【延时锦囊牌】";
                 }
@@ -1727,7 +1715,7 @@ const skills = {
             event.result = await player.chooseButton(["乍影", `选择${event.triggername != "chooseToEnsembleBegin" ? "一" : "任意"}张牌作为${event.triggername == "chooseToDebateBegin" ? "议事" : event.triggername == "chooseToEnsembleBegin" ? "合奏" : "拼点"}结果。`, [player.getCards("j"), "card"]], true, event.triggername != "chooseToEnsembleBegin" ? 1 : [1, Infinity])
                 .set("ai", (button) => {
                     let ai = _status.event.getParent(4).ai
-                    if (ai) return ai((button.link))
+                    if (ai) return ai(button.link)
                     switch (_status.event.getParent(4).name) {
                         case "chooseToEnsemble":
                             if (6 - get.value(button.link)) return Math.random() < 0.3
@@ -1739,6 +1727,7 @@ const skills = {
                             return button.link.number
                     }
                 })
+                .set("source", _status.event.getParent(4).player)
                 .forResult()
             event.result.cost_data = event.result.links
         },

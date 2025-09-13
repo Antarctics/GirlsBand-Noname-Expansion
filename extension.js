@@ -13,7 +13,7 @@ export default function () {
         editable: false,
         precontent: preContent,
         content: mainContent,
-        package: info("2.1.1"),
+        package: info("2.1.2"),
         config: {
             bgm: {
                 name: `<font color="#e91e63">场内BGM <small>(下局生效)</small>`,
@@ -29,10 +29,11 @@ export default function () {
                 name: `<font color="#9c27b0">更新镜像源`,
                 init: "0",
                 item: {
-                    0: "GitHub官方源",
-                    1: "gh-proxy全球镜像",
-                    2: "gh-proxy国内镜像",
-                    3: "tvv.tw镜像源",
+                    0: "扩展官方源",
+                    1: "GitHub官方源",
+                    2: "gh-proxy全球镜像",
+                    3: "gh-proxy国内镜像",
+                    4: "tvv.tw镜像源",
                 }
             },
             auto_update: {

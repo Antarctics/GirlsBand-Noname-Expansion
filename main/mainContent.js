@@ -31,23 +31,23 @@ export default function () {
     }
 
     lib.element.content.chooseToEnsemble = async function () {
-        const event = get.event();
+        const event = _status.event;
         if (!event.list) return event.result = { bool: false };
 
         const results = [], allCards = [];
         event.videoId = lib.status.videoId++;
-
         const targets = event.list.filter(target => !event.fixedResult?.[target.playerid]);
         if (targets.length) {
-            var next = await event.player
+            var next = event.player
                 .chooseCardOL(targets, `${get.translation(event.player)}发起了合奏，请选择展示的牌`)
                 .set("type", "ensemble")
                 .set("source", event.player)
-                .set("targets",targets)
+                .set("targets", event.list)
                 .set("filterCard", event.filterCard || (() => true))
                 .set("ai", event.ai || (card => event.player.countCards("h") > 3 && (6 - get.value(card) ? Math.random() < 0.3 : false)))
                 .set("selectCard", [1, Infinity])
-                .forResult();
+            next._args.remove("glow_result");
+            next = await next.forResult()
         }
         let idx = 0;
         for (var i = 0; i < event.list.length; i++) {

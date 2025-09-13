@@ -1145,7 +1145,7 @@ const skills = {
                 })
                 .forResult()
             if (result && result.bool) {
-                for (let target of result.targets) {
+                for (let target of result.targets.sortBySeat()) {
                     let next = await target.chooseControlList("墨影", [`令${get.translation(player)}摸一张牌，然后本回合无法响应其使用的牌`, `令${get.translation(player)}弃置任意张牌，然后本回合不能使用或打出与以此法弃置牌花色相同的牌`], true)
                         .set("ai", () => {
                             let player = _status.event.player
@@ -2941,7 +2941,7 @@ const skills = {
             source: "damageEnd"
         },
         filter(event, player) {
-            return (event.player === player && event.source.group === player.group) ||
+            return (event.player === player && event.source?.group === player.group) ||
                 (event.source === player && event.player.group === player.group)
         },
         async cost(event, trigger, player) {
@@ -3375,7 +3375,11 @@ const skills = {
                             .forResult()
                         if (next && next.bool) {
                             player.recast(next.cards)
-                            let result = await target.judge().forResult()
+                            let result = await target.judge().set("judge", (card) => {
+                                let num = get.event("cardx").number
+                                if (card.number == num) return 1
+                                return -1
+                            }).set("cardx", next.cards[0]).forResult()
                             if (result.number == next.cards[0].number) target.damage()
                         }
                     }
@@ -3395,8 +3399,10 @@ const skills = {
                 .set("ai", card => {
                     const trigger = _status.event.getTrigger();
                     const player = _status.event.player;
-                    const judging = _status.event.judging;
-                    const result = trigger.judge(card) - trigger.judge(judging);
+                    const judging = _status.event.judging
+                    let newCard = get.copy(judging)
+                    newCard.numer = card.numer
+                    const result = trigger.judge(newCard) - trigger.judge(judging);
                     const attitude = get.attitude(player, trigger.player);
                     let val = get.value(card);
                     if (get.subtype(card) == "equip2") val /= 2;
@@ -4713,17 +4719,17 @@ const skills = {
             var list = [],
                 skill = []
             list.push("摸两张牌且不计入手牌上限")
-            if (!player.hasSkill("gbfuxi")) {
-                skill.push("gbfuxi");
-            }
             if (!player.hasSkill("gbruoye")) {
                 skill.push("gbruoye");
             }
             if (!player.hasSkill("gbchenggu")) {
-                skill.push("gbzicheng");
+                skill.push("gbchenggu");
+            }
+            if (!player.hasSkill("gbzhaying")) {
+                skill.push("gbzhaying");
             }
             if (skill.length > 0) {
-                list.push("失去1点体力上限并获得下列技能中的任意一个：〖缚戏〗、〖若叶〗、〖自成〗")
+                list.push("失去1点体力上限并获得下列技能中的任意一个：〖若叶〗、〖成孤〗、〖乍影〗")
             }
             let next = await player.chooseControlList("死亡", list).set("ai", () => {
                 if (player.isDamaged() && player.maxHp > 3) return 1
@@ -5076,8 +5082,7 @@ const skills = {
         async content(event, trigger, player) {
             let cards = get.cards(3, true)
             if (cards.length > 0) {
-                player.showCards(cards)
-                game.delayx(1)
+                await player.showCards(cards)
                 let result = await player.chooseButton(["绮想", "选择一张置于武将牌上", [cards, "vcard"]], true)
                     .set("ai", function (button, cards) {
                         let player = _status.event.player
@@ -5192,7 +5197,7 @@ const skills = {
                 async content(event, trigger, player) {
                     player.removeSkill("gbyingjian_2")
                     let list = []
-                    if (player.countCards("h")) list.push("选项一")
+                    if (player.countCards("he")) list.push("选项一")
                     if (player.countExpansions("gbqixiang")) list.push("选项二")
                     let result = await player.chooseControl(list, true)
                         .set("choiceList", ["弃置X张牌", "移去所有的『幻』"])
