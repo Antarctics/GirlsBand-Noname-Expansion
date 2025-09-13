@@ -39,16 +39,14 @@ export default async (b) => {
         let m;
         let success = false;
         for (const u of [p, ...pList.filter(x => x !== p)]) {
-            try {
-                const r = await fetch(`${u}https://raw.githubusercontent.com/Antarctics/GirlsBand-Noname-Expansion/refs/heads/main/manifest.json`);
-                if (r.ok) {
-                    m = await r.json();
-                    p = u;
-                    console.log(`使用${u || '默认'}镜像获取清单成功`);
-                    success = true;
-                    break;
-                }
-            } catch { }
+            const r = await fetch(`${u}https://raw.githubusercontent.com/Antarctics/GirlsBand-Noname-Expansion/refs/heads/main/manifest.json`);
+            if (r.ok) {
+                m = await r.json();
+                p = u;
+                console.log(`使用${u || '默认'}镜像获取清单成功`);
+                success = true;
+                break;
+            }
         }
 
         if (!success) {
