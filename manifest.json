@@ -33,9 +33,9 @@
                   "audio/KiLLKiSS.mp3":  "06bdbfa9cf81f91811507cb6ba57a967646ca385",
                   "image/TOGETOGE.png":  "68678f973a312f0e71aad0199a72e0261643107c",
                   "audio/skill/gbbeihua4.mp3":  "38d43a17fe29a3643a0c576a103b452d85fdd0e6",
-                  "main/translate.js":  "5f66de5c8b954f14ccf36f8b669a55467b18a237",
+                  "main/translate.js":  "6e2facbebb7a5bd31b23c6dbf0e7f52a8416121d",
                   "image/2.png":  "c67bc8749c651e592cb12b951d364c0993451eaa",
-                  "main/skill1.js":  "d6b150aff6cd5b8e5cd7c8f4e6510e01688efb91",
+                  "main/skill1.js":  "7e7a7508c1a0e54d727478bf3405a9a70624b805",
                   "image/umiri.png":  "3f25b88af963a031470bc62118217b1eb436d4f4",
                   "main/package.js":  "0fa30dc80afea5b1b157d57b1ed990f8d11e5e05",
                   "image/pareo.png":  "f1d8d7f1d66f7caf6b39a1c425a3f9d7267e4202",
@@ -51,7 +51,7 @@
                   "audio/skill/gbyingxiang1.mp3":  "d12da60062549aaa5da4e4872837b8c7eab12e91",
                   "main/preContent.js":  "576986b3d8b1fb221d5cbf55537b6aee7d138919",
                   "audio/skill/gbduzou1.mp3":  "332fc8ac0c7148c1e4ae3458be7e53f172406bf5",
-                  "main/dynamicTranslate.js":  "60095c03979b60a467e53383bfda2f04e631c618",
+                  "main/dynamicTranslate.js":  "b6f9728880ab14adaa07dff65cfaba16daf9a25f",
                   "audio/GO!GO!MANIAC.mp3":  "96774240af35685d490f5608debbebf061984133",
                   "audio/skill/gbxiwei2.mp3":  "04b5d727e51840ee296c8ca5c05bcfe1a7a9cf0d",
                   "audio/skill/gbchenggu1.mp3":  "83647914c273e60296530fdca5c2ca9429cd4747",
@@ -106,7 +106,7 @@
                   "image/sp_mortis.png":  "82398c9d1e0e7a85aee623b61a260d2e163af1e3",
                   "audio/skill/gbjianqiu2.mp3":  "5eab599164fc3009c4b357f1d0695e3d2c0e6372",
                   "image/kon.jpg":  "6e813091b6a2d6c3e0e3da56cb7bc93defefa8d0",
-                  "main/update.js":  "f2524a04d3832f6bfb4357100d4714046b03427a",
+                  "main/update.js":  "6309fa88a408f88944a65feee71bd948c27e8011",
                   "image/kita.png":  "8ee5e3978474067de79983273b986d2d2a950367",
                   "audio/Hey-day狂騒曲(カプリチオ).mp3":  "af82a843d34b456dab971683f88ec9d71245257c",
                   "main/mainContent.js":  "05381527cb37034ccacc1e85a614c6fa62d43ed6",
@@ -138,7 +138,7 @@
                   "image/1.png":  "eae68323cd5bf0748d1a8a385956a3dacec1f2bf",
                   "audio/skill/gbxianzhong1.mp3":  "a7c2f2551756fd85a6946bc0127a76a4b5eef550",
                   "image/takki.jpg":  "407c73195d128688010f47e3af66057b8b29bba6",
-                  "main/character.js":  "8d5f5c99336d88bb5fc1de8ec6e4afb73368802b",
+                  "main/character.js":  "c3400e9ac8c49af3a5217a09a6c6698578b3f262",
                   "audio/skill/gbyingxiang2.mp3":  "e04d95b9e31709e8b823a6d7c1a211067ea709cc",
                   "image/tomo.png":  "be729dc73517ae6b09b732139118ce8feb589f56",
                   "image/band.jpg":  "63ae2a2b8edb7c93d07776cdae516d8f1db2d081",
@@ -164,5 +164,5 @@
                   "audio/skill/gbmizi2.mp3":  "65c5bd168ba84518d4afb37917aaafd40d622896"
               },
     "version":  "2.1.3",
-    "update":  "更新了什么我也忘了（）\n有bug请加群反馈"
+    "update":  "更新了什么我也忘了（）\n反正更新就ok\n有bug请加群反馈"
 }

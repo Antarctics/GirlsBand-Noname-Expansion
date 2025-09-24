@@ -1,7 +1,7 @@
 import { lib, game, ui, get, ai, _status } from "../../../noname.js";
 const dynamicTranslates = {
     gbchunying(player) {
-        if (!player.storage.gbchunying) return `转换技，出牌阶段限一次，你可以展示一名其他角色的一张手牌，然后你令其使用此牌：<span class="bluetext">阳：与你拼点：若你赢，你获得所有拼点牌；若你没赢，此技能视为未使用过；</span>阴：与你“议事”，若结果为：红色，你获得“议事”的牌；黑色，你摸一张牌且本回合手牌上限+1。`
+        if (!player.storage.gbchunying) return `转换技，出牌阶段限一次，你可以展示一名其他角色的一张手牌，然后你令其使用此牌：<span class="bluetext">阳：与你拼点：若你赢，你获得所有拼点牌；若你没赢，此技能视为未使用过；</span>阴：与你“议事”，若结果为：红色，你获得“议事”的牌；黑色，你摸两张牌；无结果：此技能视为未使用过。`
         return `转换技，出牌阶段限一次，你可以展示一名其他角色的一张手牌，然后你令其使用此牌：阳：与你拼点：若你赢，你获得拼点的牌；若你没赢，此技能视为未使用过；<span class="bluetext">阴：与你“议事”，若结果为：红色，你获得“议事”的牌；黑色，你摸两张牌；无结果：此技能视为未使用过。</span>`
     },
     gbdubai(player) {

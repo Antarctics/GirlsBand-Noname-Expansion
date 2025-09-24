@@ -238,7 +238,7 @@ const characters = {
         sex: "female",
         group: "gbmygo",
         hp: 4,
-        skills: ["gbzhuyi2", "gbzhuyin"],
+        skills: ["gbzhuyi", "gbzhuyin"],
         names: "千早|爱音",
         img: "extension/GirlsBand/image/sp_ano.png",
     },

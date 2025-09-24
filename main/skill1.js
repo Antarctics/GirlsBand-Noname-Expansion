@@ -12,8 +12,8 @@ const skills = {
             return player.countCards("h") > 0 && (event.card.name == "sha" || get.type(event.card, "trick") && get.tag(event.card, "damage"))
         },
         logTarget: "targets",
+        multitarget: true,
         async cost(event, trigger, player) {
-            console.log(get.info(trigger.card))
             event.result = await player.chooseCard("###立希###", "展示一张手牌令此牌伤害+1", 1, "h")
                 .set("ai", (card) => {
                     let player = _status.event.player,
@@ -4422,113 +4422,72 @@ const skills = {
                 .set("targetx", trigger.list)
                 .set("filterTarget", (card, player, target) => get.event("targetx").includes(target) && target != player)
                 .set("ai", (target) => {
-                    if (!target.countCards("h")) return true
                     return Math.random()
                 })
                 .forResult()
         },
         async content(event, trigger, player) {
-            player.when({
-                global: "chooseToDebateEnd"
-            })
-                .then(() => {
-                    const {
-                        bool,
-                        opinion,
-                        red,
-                        black,
-                        other,
-                        targets
-                    } = trigger.result;
-                    if (red && red.some(tar => tar[0] == player) && red.some(tar => tar[0] == targetx)) event.goto(1)
-                    else if (black && black.some(tar => tar[0] == player) && black.some(tar => tar[0] == targetx)) event.goto(1)
-                    else if (other && other.some(tar => tar[0] == player) && other.some(tar => tar[0] == targetx)) event.goto(1)
-                    else event.goto(3)
-                })
-                .then(() => {
-                    player.chooseControl(["弃牌", "翻面", "cancel2"])
-                        .set("prompt", "暗素")
-                        .set("prompt2", `令${get.translation(targetx)}...`)
-                        .set("ai", () => {
-                            let player = _status.event.player
-                            if (get.attitude(player, targetx) > 0) {
-                                if (trigger.result.opinion == "red") {
-                                    if (targetx.isTurnedOver()) return "弃牌"
-                                    return "翻面"
-                                } else if (targetx.isTurnedOver()) return "翻面"
-                                return "弃牌"
-                            }
-                            if (get.attitude(player, targetx) < 0) {
-                                if (trigger.result.opinion == "red") {
-                                    if (targetx.isTurnedOver()) return "翻面"
-                                    return "弃牌"
-                                } else if (targetx.isTurnedOver()) return "弃牌"
-                                return "翻面"
-                            }
-                        })
-                })
-                .then(() => {
-                    if (result.control == "cancel2") {
-                        event.finish()
-                        return
-                    }
-                    if (result.control == "弃牌") player.discardPlayerCard(targetx, "he", 2, true)
-                    else if (result.control == "翻面") targetx.turnOver()
-                    player.logSkill("gbansu", targetx)
-                    event.finish()
-                })
-                .then(() => {
-                    player.chooseBool("暗素", "是否摸两张牌并翻面").set("ai", () => {
-                        let player = _status.event.player
-                        if (trigger.result.opinion == "black") {
-                            if (player.isTurnedOver()) return false
-                            return true
-                        }
-                        if (player.isTurnedOver()) return true
-                        return false
-                    })
-                })
-                .then(() => {
-                    if (result.bool) {
-                        player.draw(2)
-                        player.turnOver()
-                    }
-                    player.logSkill("gbansu")
-                    event.finish()
-                })
-                .vars({
-                    targetx: event.targets[0]
-                })
-                .assign({
-                    ai: {
-                        expose: 0.15,
-                    }
-                })
+            let list = [],
+                target = event.targets[0]
+            if (target.countCards("he")) list.push("选项一")
+            list.push("选项二")
+            list.push("背水！")
+            let result = await target.chooseControl(list).set("prompt", "暗素").set("choiceList", ["弃置两张牌", "失去一点体力", "背水！翻面并执行上述所有选项"]).forResult()
+            game.log(target, "选择了", "#g【暗素】", "的", "#y" + result.control)
+            switch (result.control) {
+                case "选项一":
+                    await target.chooseToDiscard("he", true, 2)
+                    break
+                case "选项二":
+                    target.loseHp()
+                    break
+                case "背水！":
+                    target.turnOver()
+                    await target.chooseToDiscard("he", true, 2)
+                    target.loseHp()
+                    break
+            }
             player.when({
                 global: "chooseToDebateAfter"
             })
                 .then(() => {
-                    const {
-                        bool,
-                        opinion,
-                        targets
-                    } = trigger.result;
-                    if (opinion == "red") {
-                        player.logSkill("gbansu", targetx)
-                        if (targetx.isTurnedOver()) {
-                            targetx.draw(2)
-                        }
-                        targetx.turnOver(false)
-                        targetx.link(false)
+                    if (player.countCards("h") > target.countCards("h")) {
+                        player.draw(3)
+                        target.draw()
+                        player.chooseCard("暗素", "是否交给" + get.translation(target) + "一张牌", "he").set("ai", card => {
+                            let player = _status.event.player
+                            let taregt = _status.event.target
+                            if (get.attitude(player, target) > 0) return get.value(card)
+                            return false
+                        })
+                            .set("target", target)
                     }
-                    if (opinion == "black") {
-                        player.logSkill("gbansu")
-                        player.turnOver(false)
-                        player.link(false)
+                }).then(() => {
+                    if (result && result.bool) {
+                        player.give(result.cards, target)
+                    }
+                    if (player.hp > target.hp) {
+                        player.draw()
+                        target.draw()
+                    }
+                    if (target.isTurnedOver()) {
+                        player.chooseCard("暗素", "是否交给" + get.translation(target) + "一张牌", "he").set("ai", card => {
+                            let player = _status.event.player
+                            let taregt = _status.event.target
+                            if (get.attitude(player, target) > 0) return get.value(card)
+                            return false
+                        })
+                            .set("target", target)
+                    }
+                })
+                .then(() => {
+                    if (result && result.bool) {
+                        player.give(result.cards, target)
+                        target.turnOver(false)
                     }
                 })
                 .vars({
-                    targetx: event.targets[0]
+                    target: event.targets[0]
                 })
         }
     },
@@ -4581,7 +4540,7 @@ const skills = {
                     player: "phaseEnd",
                 },
                 filter(event, player) {
-                    return player.getHistory("skipped") && player.getHistory("skipped").includes("phaseDraw") && player.getHistory("skipped").includes("phaseUse") && player.countCards("he") >= player.getHistory("skipped").length
+                    return player.countCards("he") >= player.getHistory("skipped").length - 1
                 },
                 async cost(event, trigger, player) {
                     event.result = await player.chooseCard("主音", "弃置" + get.cnNumber(player.getHistory("skipped").length - 1) + "张牌获得一个额外的出牌阶段", player.getHistory("skipped").length - 1)
@@ -4600,98 +4559,6 @@ const skills = {
                 }
             }
         }
-    },
-    gbzhuyi2: {
-        inherit: "gbzhuyi",
-        audio: "gbzhuyi",
-        async cost(event, trigger, player) {
-            event.result = await player
-                .chooseButton([
-                    get.prompt("gbzhuyi"),
-                    [
-                        [
-                            ["judge", "跳过判定阶段，然后与一名其他角色进行拼点"],
-                            ["draw", "跳过摸牌阶段，然后与一名其他角色进行议事"],
-                            ["other", "跳过出牌阶段与弃牌阶段，然后令X名角色进行议事（X为你本回合你跳过的阶段数）"],
-                        ],
-                        "textbutton",
-                    ],
-                ])
-                .set("ai", function (button) {
-                    let player = _status.event.player
-                    var num = 0;
-                    if (ui.selected.buttons.some(i => i.link == "judge")) num += 1;
-                    if (ui.selected.buttons.some(i => i.link == "draw")) num += 1;
-                    if (ui.selected.buttons.some(i => i.link == "other")) num += 2;
-                    if (Math.random() < 0.05) return false;
-                    num += player.skipList.length;
-                    const priority = {
-                        judge: () => {
-                            if (num + 1 <= game.countPlayer()) {
-                                if (player.countCards("he") < 4) return 0
-                                return 8
-                            }
-                            return 0
-                        },
-                        other: () => {
-                            if (num + 2 <= game.countPlayer() && game.hasPlayer(c => get.attitude(player, c) < 0)) return 9
-                            return 0
-                        },
-                        draw: () => {
-                            if (num + 1 <= game.countPlayer() && game.hasPlayer(c => get.attitude(player, c) < 0)) return 10
-                            return 0
-                        },
-                    };
-                    return priority[button.link]() || 0;
-                })
-                .set("selectButton", [1, 3])
-                .forResult()
-            event.result.cost_data = event.result.links
-        },
-        async content(event, trigger, player) {
-            let links = event.cost_data
-            if (links.includes("judge")) {
-                player.skip("phaseJudge")
-                player.popup("逐翼①")
-                game.log(player, "选择了", "#g【逐翼】", "的", "#y选项一")
-                let result = await player.chooseTarget("逐翼", "请选择一名拼点目标", lib.filter.notMe, true)
-                    .set("ai", (target) => {
-                        let player = _status.event.player
-                        if (get.attitude(player, target) < 0) return 10
-                        else return 1
-                    })
-                    .forResult()
-                if (result && player.canCompare(result.targets[0])) await player.chooseToCompare(result.targets[0])
-            }
-            if (links.includes("draw")) {
-                player.skip("phaseDraw")
-                player.popup("逐翼②")
-                game.log(player, "选择了", "#g【逐翼】", "的", "#y选项二")
-                let result = await player.chooseTarget("逐翼", "请选择一名议事目标", lib.filter.notMe, true)
-                    .set("ai", (target) => {
-                        let player = _status.event.player
-                        if (get.attitude(player, target) < 0) return 10
-                        else return 1
-                    })
-                    .forResult()
-                if (result) await player.chooseToDebate([result.targets[0], player])
-            }
-            if (links.includes("other")) {
-                player.skip("phaseUse")
-                player.skip("phaseDiscard")
-                player.popup("逐翼③")
-                game.log(player, "选择了", "#g【逐翼】", "的", "#y选项三")
-                let result = await player.chooseTarget("逐翼", "请选择X名议事目标", Math.min(player.skipList.length, game.countPlayer()), true)
-                    .set("ai", (target) => {
-                        let player = _status.event.player
-                        if (target == player) return 10
-                        if (get.attitude(player, target) < 0) return 5
-                        else return 1
-                    })
-                    .forResult()
-                if (result) await player.chooseToDebate(result.targets)
-            }
-        },
     },
     // spmortis
     gbsiwang: {
