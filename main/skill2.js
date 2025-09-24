@@ -1632,7 +1632,7 @@ const skills = {
                                 target.markAuto("gblingming_effect", cards)
                             }
                         } else {
-                            let cards = [...red, ...black, ...others].filter(i => i[0] != player).map(i => i[1])
+                            let cards = [...red, ...black, ...others].filter(i => i[0] != player).map(i => i[1]).flat()
                             if (cards.length > 0) {
                                 game.broadcastAll((card) => {
                                     lib.skill.gbchunhua.cards(card)
@@ -1805,6 +1805,8 @@ const skills = {
         async content(event, trigger, player) {
             let target = event.targets[0]
             player.markAuto("gbshiqi_effect", target)
+            player.unmarkSkill("gbshiqi_effect")
+            target.markAuto("gbshiqi_effect", player)
             target.markSkill("gbshiqi_effect")
         },
         group: ["gbshiqi_gain", "gbshiqi_effect"],
@@ -1813,7 +1815,7 @@ const skills = {
                 audio: false,
                 forced: true,
                 trigger: {
-                    player: "discardAfter"
+                    global: "discardAfter"
                 },
                 intro: {
                     nocount: true,
@@ -1880,12 +1882,27 @@ const skills = {
         },
         ai2(target) {
             let player = _status.event.player
-            return get.effect(player, { name: "guohe" }, target, player)
+            if (game.hasPlayer(target => get.effect(player, { name: "guohe" }, target, player) > 0)) return get.effect(player, { name: "guohe" }, target, player)
+            return -1 / get.effect(player, { name: "guohe" }, target, player)
         },
         async content(event, trigger, player) {
             await player.draw()
-            await event.targets[0].discardPlayerCard(player, "hej", true).set("target", player).set("ai", lib.card.guohe.ai.button);
-
+            let evt = event.targets[0].useCard({ name: "guohe" }, player)
+            event.targets[0].when("useCardAfter")
+                .filter((event, player) => {
+                    return event.card == evt.card
+                })
+                .then(() => {
+                    for (let target of targets) {
+                        if (!target.hasHistory("lose", evt => evt.getParent(4).card == trigger.card)) {
+                            target.chooseToDiscard(true)
+                            target.draw()
+                        }
+                    }
+                })
+                .vars({
+                    targets: player.getStorage("gbshiqi_effect")
+                })
         },
         ai: {
             order(skill, player) {
@@ -1913,7 +1930,6 @@ const skills = {
                 filterCard: { name: "ying" },
                 async content(event, trigger, player) {
                     await player.recast(event.cards)
-                    await player.chooseUseTarget({ name: "huogong" }, true).forResult()
                     let result = await player.chooseButton(["背丘", [player.getExpansions("gbbeihua"), "card"]], true)
                         .set("ai", (button) => {
                             let val = get.value(button.link)
@@ -1924,6 +1940,7 @@ const skills = {
                     if (result.bool) {
                         await player.gain(result.links[0], "bySelf", "giveAuto", "log")
                     }
+                    await player.chooseUseTarget({ name: "huogong" }, true).forResult()
                 },
                 ai: {
                     order: 10,
@@ -1944,13 +1961,11 @@ const skills = {
             player: "phaseEnd"
         },
         filter(event, player) {
-            return player.countCards("h") > player.maxHp
+            return player.countCards("h") > player.hp
         },
         async content(event, trigger, player) {
-            let num = player.countCards("h") - player.maxHp
-            let target = player.getStorage("gbshiqi_effect")[0]
-            await player.chooseToDiscard(true, num, "h").forResult()
-            await player.drawTo(target.countCards("h"))
+            await player.gain(player.getExpansions("gbshiqi"), "giveAuto")
+            await player.recover()
             player.awakenSkill(event.name)
             player.addSkill("gbbeihua")
             player.addSkill("gbchenggu")

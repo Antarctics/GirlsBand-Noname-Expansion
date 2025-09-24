@@ -237,7 +237,7 @@ const characters = {
     gb_sp_qianzaoaiyin: {
         sex: "female",
         group: "gbmygo",
-        hp: 3,
+        hp: 4,
         skills: ["gbzhuyi2", "gbzhuyin"],
         names: "千早|爱音",
         img: "extension/GirlsBand/image/sp_ano.png",
@@ -495,10 +495,10 @@ const characters = {
 const characterSubstitutes = {
 };
 const characterTitles = {
-    gb_zhuiminglixi: "乐团柱石",
+    gb_zhuiminglixi: "拈花一笑",
     gb_changqisushi: "幽而复明",
     gb_yaoyuenai: "夏目漱石",
-    gb_qianzaoaiyin: "圣音爱人",
+    gb_qianzaoaiyin: "虎步羽丘",
     gb_gaosongdeng: "迷途之子",
     gb_fengchuanxiangzi: "颂乐人偶",
     gb_ruoyemu: "勿畏死亡",

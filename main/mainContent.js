@@ -108,7 +108,7 @@ export default function () {
     }
 
     // 特殊名词注释系统
-    if (lib.config.extension_GirlsBand_poptip)
+    if (lib.config.extension_GirlsBand_poptip) {
         get.skillInfoTranslation = (skill, player) => {
             let str = player && lib.dynamicTranslate[skill] ? lib.dynamicTranslate[skill](player, skill) : lib.translate[skill + "_info"] || "";
 
@@ -275,12 +275,56 @@ export default function () {
                 }
             });
         };
-
-    document.addEventListener(lib.config.touchscreen ? "touchstart" : "mouseover", e => {
-        if (e.target.classList?.contains('keyword-poptip')) {
-            ui.click.poptip(e.target, e.target.getAttribute('data-keyword'));
+        get.prompt2 = function (skill, target, player) {
+            var str = get.prompt(skill, target, player);
+            return "###" + str + "###" + get.skillInfoTranslation(skill, player);
+        };
+        ui.click.skill = (skill) => {
+            var info = get.info(skill);
+            var event = _status.event;
+            event.backup(skill);
+            if (info.filterCard && info.discard != false && info.lose != false && !info.viewAs) {
+                var cards = event.player.getCards(event.position);
+                for (var i = 0; i < cards.length; i++) {
+                    if (!lib.filter.cardDiscardable(cards[i], event.player)) {
+                        cards[i].uncheck("useSkill");
+                    }
+                }
+            }
+            if (typeof event.skillDialog == "object") {
+                event.skillDialog.close();
+            }
+            if (event.isMine()) {
+                event.skillDialog = true;
+            }
+            game.uncheck();
+            game.check();
+            if (event.skillDialog === true) {
+                var str = get.translation(skill);
+                if (info.prompt) {
+                    var str2;
+                    if (typeof info.prompt == "function") {
+                        str2 = info.prompt(event);
+                    } else {
+                        str2 = info.prompt;
+                    }
+                    event.skillDialog = ui.create.dialog(str, '<div><div style="width:100%;text-align:center">' + str2 + "</div></div>");
+                    if (info.longprompt) {
+                        event.skillDialog.forcebutton = true;
+                        ui.update();
+                    }
+                } else if (info.promptfunc) {
+                    event.skillDialog = ui.create.dialog(str, '<div><div style="width:100%">' + info.promptfunc(event, event.player) + "</div></div>");
+                } else {
+                    event.skillDialog = ui.create.dialog(str, '<div><div style="width:100%">' + get.skillInfoTranslation(skill, event.player) + "</div></div>");
+                }
+            }
         }
-    });
-
+        document.addEventListener(lib.config.touchscreen ? "touchstart" : "mouseover", e => {
+            if (e.target.classList?.contains('keyword-poptip')) {
+                ui.click.poptip(e.target, e.target.getAttribute('data-keyword'));
+            }
+        });
+    }
     if (lib.config.extension_GirlsBand_auto_update && navigator.onLine) update(false);
 };
