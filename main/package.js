@@ -20,6 +20,7 @@ export default function (version) {
         forumURL: "",
         version: version,
         character: {
+            connect: true,
             character: { ...characters },
             characterIntro: {
                 ...characterIntros

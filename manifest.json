@@ -37,7 +37,7 @@
                   "image/2.png":  "c67bc8749c651e592cb12b951d364c0993451eaa",
                   "main/skill1.js":  "de8cdb89c4ab6732eef9f44f554ff1c16f5d9eb9",
                   "image/umiri.png":  "3f25b88af963a031470bc62118217b1eb436d4f4",
-                  "main/package.js":  "0fa30dc80afea5b1b157d57b1ed990f8d11e5e05",
+                  "main/package.js":  "4f6f4f834b7bde705bfbd069eab68739c1331ac3",
                   "image/pareo.png":  "f1d8d7f1d66f7caf6b39a1c425a3f9d7267e4202",
                   "image/4.png":  "3dcae2483eb030b1cb3a00c3590a30846531c140",
                   "audio/春日影.mp3":  "3a9b50ec7bd657bc8f9b4bfb8a781d7e7c5136f9",
@@ -164,5 +164,5 @@
                   "audio/skill/gbmizi2.mp3":  "65c5bd168ba84518d4afb37917aaafd40d622896"
               },
     "version":  "2.1.3",
-    "update":  "修复BUG\n若有BUG请加群反馈"
+    "update":  "修复联机模式下无本扩展武将的bug\n若有BUG请加群反馈"
 }
