@@ -9,7 +9,7 @@ const skills = {
         },
         usable: 5,
         filter(event, player) {
-            return player.countCards("h") > 0 && (event.card.name == "sha" || get.type(event.card, "trick") && get.tag(event.card, "damage"))
+            return event.isFirstTarget && player.countCards("h") > 0 && (event.card.name == "sha" || get.type(event.card, "trick") && get.tag(event.card, "damage"))
         },
         logTarget: "targets",
         multitarget: true,
