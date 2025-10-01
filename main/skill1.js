@@ -4617,11 +4617,13 @@ const skills = {
             if (skill.length > 0) {
                 choiceList.push("失去1点体力上限并依次获得以下一项技能：〖若叶〗、〖成孤〗、〖乍影〗")
                 list.push("选项二")
-                choiceList.push("背水！执行上述所有选项，然后摸两张牌")
-                list.push("背水！")
             }
+            choiceList.push("背水！执行上述所有选项，然后摸两张牌")
+            list.push("背水！")
             list.push("cancel2")
-            let next = await player.chooseControl("死亡", list).set("ai", () => {
+            let next = await player.chooseControl(list)
+            .set("prompt","死亡")
+            .set("ai", () => {
                 if (player.isDamaged() && player.maxHp > 3) return 1
                 return 0
             })
@@ -4633,19 +4635,8 @@ const skills = {
                 }
                 if (next.control == "选项二" || next.control == "背水！") {
                     if (skill.length) {
-                        let result = await player.chooseControl(skill)
-                            .set("prompt", "死亡")
-                            .set("prompt2", "失去一点体力上限并获得下列技能中的一个")
-                            .set("ai", () => {
-                                let player = _status.event.player
-                                let list = get.event("controls")
-                                return list.sort((a, b) => {
-                                    return get.skillRank(b, ["in", "out"]) - get.skillRank(a, ["in", "out"])
-                                })[0]
-                            })
-                            .forResult()
                         player.loseMaxHp()
-                        player.addSkill(result.control)
+                        player.addSkill(skill[0])
                     }
                 }
             }

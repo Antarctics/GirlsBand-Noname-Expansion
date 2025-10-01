@@ -17,7 +17,7 @@
                   "audio/skill/gbjianqiu1.mp3":  "d1db21bb16f266d2c09e90b20ad126920c24ad1f",
                   "image/3.png":  "6a4fab32a1fce5a1dd9b4c60205d7132fc4902f3",
                   "audio/skill/gbqilu2.mp3":  "da4fea17c10de87c63d3114d89c8e94fa156b909",
-                  "main/mode.js":  "caa65a0e2b459684bb236aefd85364ab18b6de7c",
+                  "main/mode.js":  "4748c01e005fb7868a12cc59a99450bc7ca09934",
                   "audio/skill/gbqilu1.mp3":  "c73f7850e554aa9b34c8c9afc461a1189e0e5022",
                   "image/chuchu.png":  "5356429be8af14bd338a9d232736989036ed92e7",
                   "image/diehard.jpg":  "d61650028272f162069377605b098c184cd5d554",
@@ -35,7 +35,7 @@
                   "audio/skill/gbbeihua4.mp3":  "38d43a17fe29a3643a0c576a103b452d85fdd0e6",
                   "main/translate.js":  "6e2facbebb7a5bd31b23c6dbf0e7f52a8416121d",
                   "image/2.png":  "c67bc8749c651e592cb12b951d364c0993451eaa",
-                  "main/skill1.js":  "de8cdb89c4ab6732eef9f44f554ff1c16f5d9eb9",
+                  "main/skill1.js":  "2047ef780127739b7344fb0cbe1cdf9d801f55e6",
                   "image/umiri.png":  "3f25b88af963a031470bc62118217b1eb436d4f4",
                   "main/package.js":  "4f6f4f834b7bde705bfbd069eab68739c1331ac3",
                   "image/pareo.png":  "f1d8d7f1d66f7caf6b39a1c425a3f9d7267e4202",
@@ -122,7 +122,7 @@
                   "audio/skill/gblvefei2.mp3":  "37c287f10d5b52629e760488459b22a805fb286a",
                   "image/band.png":  "8b56aeb0a54dc84a5649fac1d318748688ca0e34",
                   "image/sakiko.png":  "f8640c7073a041ee48a51ff10d0bde11e9b112de",
-                  "extension.js":  "81e456f39a4912e618391a0a489e8b730e4f2a90",
+                  "extension.js":  "04a107749a7d2d859af5876599dc90df80963ab1",
                   "image/ran.png":  "d2b048c78410618e7ab0ac3cd102148c62d8fd1e",
                   "image/rui.png":  "6c825dabb7fa4232ed90e833ac84d44b6b05ebc0",
                   "image/momoka.png":  "25b47d65490c8a10f819187d98aab46ce86da6de",
@@ -163,6 +163,6 @@
                   "image/nyamu.png":  "f9f7acb996e18fbc25c29bb17abb5ed98d261466",
                   "audio/skill/gbmizi2.mp3":  "65c5bd168ba84518d4afb37917aaafd40d622896"
               },
-    "version":  "2.1.3",
-    "update":  "修复联机模式下无本扩展武将的bug\n若有BUG请加群反馈"
+    "version":  "2.1.4",
+    "update":  "修复SPMortis【死亡】效果与描述不符的问题\n修复联机模式下【乐队】无法禁用角色的问题\n若有BUG请加群反馈"
 }

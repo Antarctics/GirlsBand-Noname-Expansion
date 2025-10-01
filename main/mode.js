@@ -894,7 +894,7 @@ const bandMode = {
                         }
                     }
                 }, list4);
-                for (i in lib.character) {
+                for (i in libCharacter) {
                     if (list4.includes(i)) continue;
                     if (lib.filter.characterDisabled(i, libCharacter)) continue;
                     event.list.push(i);
