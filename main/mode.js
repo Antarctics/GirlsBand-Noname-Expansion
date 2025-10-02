@@ -19,6 +19,23 @@ const bandMode = {
                 game.showIdentityCards([player])
             }
         },
+        _gbvocalist: {
+            forced: true,
+            trigger: {
+                global: "phaseBefore",
+            },
+            firstDo: true,
+            filter(event, player) {
+                return game.phaseNumber == 0 && player.identity == "vocalist"
+            },
+            async content(event, trigger, player) {
+                var result = await player.chooseTarget("主唱", "请明置至少两名其他角色的身份牌", true, [1, 2], lib.filter.notMe).set("ai", (target) => Math.random()).forResult()
+                if (result) {
+                    let targets = result.targets.sortBySeat()
+                    game.showIdentityCards(targets)
+                }
+            }
+        },
         _gbShowIdentity: {
             trigger: {
                 global: "showIdentityCards"
@@ -29,7 +46,7 @@ const bandMode = {
             },
             async content(event, trigger, player) {
                 switch (player.identity) {
-                    case "drummer":
+                    case "durmmer":
                         player.draw(1)
                         break
                     case "guitar":
@@ -37,11 +54,11 @@ const bandMode = {
                             .then(() => { player.chooseCard("h", 1, "吉他", "你可以重铸一张手牌") })
                             .then(() => { if (result && result.bool) { player.recast(result.cards) } })
                         break
-                    case "bass":
-                        player.draw(1)
-                        break
                     case "keys":
                         game.zhu.draw(1)
+                        player.draw(1)
+                        break
+                    case "bass":
                         player.draw(1)
                         break
                     case "guitar2":
@@ -145,12 +162,6 @@ const bandMode = {
             game.replaceHandcards(game.players.slice(0));
         }
         "step 4"
-        var result = game.zhu.chooseTarget("主唱", "请明置至少两名其他角色的身份牌", true, [1, 2], lib.filter.notMe).set("ai", (target) => Math.random())
-        "step 5"
-        if (result && result.bool) {
-            let targets = result.targets.sortBySeat()
-            game.showIdentityCards(targets)
-        }
         game.phaseLoop(event.beginner)
     },
     game: {
@@ -268,20 +279,6 @@ const bandMode = {
                             target.setIdentity(target.identity);
                             target.identityShown = true;
                             target.ai.shown = 1
-                            if (identity == "bass") {
-                                setTimeout(() => {
-                                    card.style.animation = "shake 0.5s ease-in-out";
-                                    setTimeout(() => {
-                                        card.style.animation = "";
-                                        card.classList.add("infohidden");
-                                        card.style.transition = "all ease-in 0.3s";
-                                        ui.refresh(card);
-                                        card.style.transform = "perspective(600px) rotateY(180deg) translateX(0)";
-                                    }, 500);
-                                }, (targets.length - index + 1) * 500);
-                            } else {
-
-                            }
                             game.log(target, "展示了", "#g身份牌")
                             completedCount++;
                             if (completedCount === targets.length) {
@@ -295,63 +292,42 @@ const bandMode = {
                 });
                 dialog.open();
                 game.pause()
-                get.event().trigger("showIdentityCards").targets = targets
             }, targets, game.createIdentityCard)
-        },
-        tryResult() {
-            var loser
-            for (var i of game.filterPlayer2()) {
-                if (!i.getFriends().length && !i.isAlive()) {
-                    loser = i
-                }
-            }
-            if (loser) {
-                game.broadcastAll(function (id) {
-                    game.loser_id = id
-                }, loser)
-                game.checkResult()
-            }
+            get.event().trigger("showIdentityCards").targets = targets
         },
         showIdentity() {
+            if (game.phaseNumber == 0 && !started) return;
             for (var i = 0; i < game.players.length; i++) {
-                game.players[i].setIdentity()
+                game.players[i].node.identity.classList.remove("guessing");
+                game.players[i].identityShown = true;
+                game.players[i].ai.shown = 1;
+                game.players[i].setIdentity(game.players[i].identity);
             }
         },
         checkResult: function () {
             var me = game.me._trueMe || game.me;
-            var mingAlive = false;
-            var anAlive = false;
-
-            for (var player of game.filterPlayer()) {
-                var isMing = player.identity === "drummer" || (player.identityShown && player.identity !== "bass");
-                var isAn = player.identity === "bass" || (!player.identityShown && player.identity !== "drummer");
-                if (isMing) mingAlive = true;
-                if (isAn) anAlive = true;
-            }
+            var mingAlive = game.hasPlayer(player => player.identity == "drummer" || (player.identityShown && player.identity != "bass"))
+            var anAlive = game.hasPlayer(player => player.identity == "bass" || (!player.identityShown && player.identity != "drummer"))
             if (!mingAlive) {
                 var meMing = me.identity === "drummer" || (me.identityShown && me.identity !== "bass");
                 game.over(meMing ? false : true);
-            } else if (!anAlive) {
-                var meAn = me.identity === "bass" || (!me.identityShown && me.identity !== "drummer");
+            }
+            if (!anAlive) {
+                var meAn = me.identity == "bass" || (!me.identityShown && me.identity !== "drummer");
                 game.over(meAn ? false : true);
             }
         },
         checkOnlineResult: function (player) {
-            var mingAlive = false;
-            var anAlive = false;
-            for (var p of game.filterPlayer()) {
-                var isMing = p.identity === "drummer" || (p.identityShown && p.identity !== "bass");
-                var isAn = p.identity === "bass" || (!p.identityShown && p.identity !== "drummer");
-
-                if (isMing) mingAlive = true;
-                if (isAn) anAlive = true;
-            }
+            var me = game.me._trueMe || game.me;
+            var mingAlive = game.hasPlayer(player => player.identity == "drummer" || (player.identityShown && player.identity != "bass"))
+            var anAlive = game.hasPlayer(player => player.identity == "bass" || (!player.identityShown && player.identity != "drummer"))
             if (!mingAlive) {
-                var playerMing = player.identity === "drummer" || (player.identityShown && player.identity !== "bass");
-                game.over(playerMing ? false : true);
-            } else if (!anAlive) {
-                var playerAn = player.identity === "bass" || (!player.identityShown && player.identity !== "drummer");
-                game.over(playerAn ? false : true);
+                var meMing = me.identity === "drummer" || (me.identityShown && me.identity !== "bass");
+                game.over(meMing ? false : true);
+            }
+            if (!anAlive) {
+                var meAn = me.identity == "bass" || (!me.identityShown && me.identity !== "drummer");
+                game.over(meAn ? false : true);
             }
         },
         chooseCharacter: function () {
@@ -394,6 +370,33 @@ const bandMode = {
                 }
                 if (typeof lib.config.test_game == "string" && player == game.me.next) {
                     if (lib.config.test_game != "_") player.init(lib.config.test_game);
+                }
+                if (lib.selectGroup.includes(player.group) && !player.isUnseen(0)) {
+                    player._groupChosen = "kami";
+                    var list = lib.group.slice(0);
+                    list.remove("shen");
+                    player.group = (function () {
+                        if (game.zhu && game.zhu.group) {
+                            if (["re_zhangjiao", "liubei", "re_liubei", "caocao", "re_caocao", "sunquan", "re_sunquan", "zhangjiao", "sp_zhangjiao", "caopi", "re_caopi", "liuchen", "caorui", "sunliang", "sunxiu", "sunce", "re_sunben", "ol_liushan", "re_liushan", "key_akane", "dongzhuo", "re_dongzhuo", "ol_dongzhuo", "jin_simashi", "caomao"].includes(game.zhu.name)) {
+                                return game.zhu.group;
+                            }
+                            if (game.zhu.name == "yl_yuanshu") {
+                                if (player.identity == "drummer") {
+                                    list.remove("qun");
+                                } else {
+                                    return "qun";
+                                }
+                            }
+                            if (["sunhao", "xin_yuanshao", "re_yuanshao", "re_sunce", "ol_yuanshao", "yuanshu", "jin_simazhao", "liubian"].includes(game.zhu.name)) {
+                                if (player.identity != "drummer") {
+                                    list.remove(game.zhu.group);
+                                } else {
+                                    return game.zhu.group;
+                                }
+                            }
+                        }
+                        return list.randomGet()
+                    })()
                 }
                 player.node.name.dataset.nature = get.groupnature(player.group);
             };
@@ -755,7 +758,7 @@ const bandMode = {
                 if (get.is.double(name)) {
                     game.me._groupChosen = "double";
                     game.me.chooseControl(get.is.double(name, true)).set("prompt", "请选择你的势力");
-                } else if ((lib.character[name].group == "shen" || lib.character[name].group == "western") && !lib.character[name].hasHiddenSkill && get.config("choose_group")) {
+                } else if ((lib.character[name].group == "shen" || lib.character[name].group == "western")) {
                     game.me._groupChosen = "kami";
                     var list = lib.group.slice(0);
                     list.remove("shen");
@@ -945,7 +948,8 @@ const bandMode = {
                     result.links[1],
                 );
                 if (lib.selectGroup.includes(game.zhu.group) && !game.zhu.isUnseen(0)) {
-                    var list = lib.group
+                    var list = lib.group.slice()
+                    list.remove("shen")
                     game.zhu.chooseButton(["请选择你的势力", [list, "vcard"]], true).set("ai", function () {
                         return Math.random();
                     });
@@ -953,7 +957,7 @@ const bandMode = {
                     event.goto(3);
                 }
                 "step 2";
-                var name = result.links[0][2].slice(6);
+                var name = result.links[0][2]
                 game.zhu.changeGroup(name);
                 "step 3";
                 var list = [];
@@ -997,13 +1001,15 @@ const bandMode = {
                 }
                 event.result2 = result;
                 if (shen.length) {
+                    var list = lib.group.slice()
+                    list.remove("shen")
                     for (var i = 0; i < shen.length; i++) {
                         shen[i] = [shen[i], ["请选择你的势力", [list, "vcard"]], 1, true];
                     }
                     game.me
                         .chooseButtonOL(shen, function (player, result) {
                             if (player == game.me) {
-                                player.changeGroup(result.links[0][2].slice(6), false, false);
+                                player.changeGroup(result.links[0][2], false, false);
                             }
                         })
                         .set("switchToAuto", function () {
@@ -1024,10 +1030,12 @@ const bandMode = {
                 }
                 for (var i in result) {
                     if (result[i] && result[i].links) {
-                        result[i] = result[i].links[0][2].slice(6);
+                        result[i] = result[i].links[0][2]
                     } else if (result[i] == "ai") {
                         result[i] = (function () {
                             var player = lib.playerOL[i];
+                            var list = lib.group.slice()
+                            list.remove("shen")
                             if (game.zhu && game.zhu.group) {
                                 if (["re_zhangjiao", "liubei", "re_liubei", "caocao", "re_caocao", "sunquan", "re_sunquan", "zhangjiao", "sp_zhangjiao", "caopi", "re_caopi", "liuchen", "caorui", "sunliang", "sunxiu", "sunce", "re_sunben", "ol_liushan", "re_liushan", "key_akane", "dongzhuo", "re_dongzhuo", "ol_dongzhuo", "jin_simashi", "caomao"].includes(game.zhu.name)) {
                                     return game.zhu.group;
@@ -1128,7 +1136,7 @@ const bandMode = {
             }
             if (to.identityShown || from.storage.dongcha == to ||
                 (from.storage.zhibi && from.storage.zhibi.includes(to))) {
-                if (to.identity === "bass") {
+                if (to.identity == "bass") {
                     return get.realAttitude(from, to) * 1.2 + difficulty * 1.5;
                 }
                 return get.realAttitude(from, to) + difficulty * 1.5;
@@ -1145,7 +1153,7 @@ const bandMode = {
                     return 6 * (1 - aishown) + realAttitude * aishown + difficulty * 1.5;
                 }
             }
-            if (to.identity === "bass" && to.identityShown) {
+            if (to.identity == "bass" && to.identityShown) {
                 return get.realAttitude(from, to) * 1.2 + difficulty * 1.5;
             }
             return get.realAttitude(from, to) + difficulty * 1.5;
@@ -1154,8 +1162,8 @@ const bandMode = {
             if (from == to) return 10;
             let fromMing = from.identity === "drummer" || (from.identityShown && from.identity !== "bass");
             let toMing = to.identity === "drummer" || (to.identityShown && to.identity !== "bass");
-            let fromAn = from.identity === "bass" || (!from.identityShown && from.identity !== "drummer");
-            let toAn = to.identity === "bass" || (!to.identityShown && to.identity !== "drummer");
+            let fromAn = from.identity == "bass" || (!from.identityShown && from.identity !== "drummer");
+            let toAn = to.identity == "bass" || (!to.identityShown && to.identity !== "drummer");
             if ((fromMing && toMing) || (fromAn && toAn)) {
                 return 6
             }
@@ -1172,7 +1180,7 @@ const bandMode = {
                 var strength = get.condition(player);
                 var threat = get.threaten(player, game.me, true);
                 var power = strength * threat;
-                if (player.identityShown && player.identity !== "bass" || player.identity === "drummer") {
+                if (player.identityShown && player.identity != "bass" || player.identity == "drummer") {
                     ming += power + 4;
                     total += power + 4;
                 }
@@ -1234,8 +1242,8 @@ const bandMode = {
                     if (target === player) return false;
                     let playerMing = player.identity === "drummer" || (player.identityShown && player.identity !== "bass");
                     let targetMing = target.identity === "drummer" || (target.identityShown && target.identity !== "bass");
-                    let playerAn = player.identity === "bass" || (!player.identityShown && player.identity !== "drummer");
-                    let targetAn = target.identity === "bass" || (!target.identityShown && target.identity !== "drummer");
+                    let playerAn = player.identity == "bass" || (!player.identityShown && player.identity !== "drummer");
+                    let targetAn = target.identity == "bass" || (!target.identityShown && target.identity !== "drummer");
                     return (playerMing && targetMing) || (playerAn && targetAn);
                 });
 
@@ -1256,8 +1264,8 @@ const bandMode = {
                     if (target === player) return false;
                     let playerMing = player.identity === "drummer" || (player.identityShown && player.identity !== "bass");
                     let targetMing = target.identity === "drummer" || (target.identityShown && target.identity !== "bass");
-                    let playerAn = player.identity === "bass" || (!player.identityShown && player.identity !== "drummer");
-                    let targetAn = target.identity === "bass" || (!target.identityShown && target.identity !== "drummer");
+                    let playerAn = player.identity == "bass" || (!player.identityShown && player.identity !== "drummer");
+                    let targetAn = target.identity == "bass" || (!target.identityShown && target.identity !== "drummer");
                     return (playerMing && targetAn) || (playerAn && targetMing);
                 });
                 return targets;
@@ -1275,7 +1283,7 @@ const bandMode = {
                         this.identity
                     );
                 }
-                game.tryResult()
+                game.checkResult()
             },
             logAi: function (targets, card) {
                 if (this.ai.shown == 1 || this.isMad()) return;
