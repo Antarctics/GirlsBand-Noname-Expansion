@@ -1523,9 +1523,6 @@ const skills = {
                         noEffect: true,
                         wuxieable: false,
                         cardimage: card.name,
-                        ai: {
-                            value: get.value(card)
-                        }
                     };
                     lib.translate[namex] = lib.translate[card.name] + "·春华";
                     lib.translate[namex + "_info"] = "由【春华】技能创造的无效果【延时锦囊牌】";
