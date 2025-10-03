@@ -8,7 +8,7 @@ const bandMode = {
     skill: {
         _gbdiehard: {
             trigger: {
-                player: "phaseBegin"
+                global: "phaseEnd"
             },
             forced: true,
             charlotte: true,
@@ -318,16 +318,13 @@ const bandMode = {
             }
         },
         checkOnlineResult: function (player) {
-            var me = game.me._trueMe || game.me;
             var mingAlive = game.hasPlayer(player => player.identity == "drummer" || (player.identityShown && player.identity != "bass"))
             var anAlive = game.hasPlayer(player => player.identity == "bass" || (!player.identityShown && player.identity != "drummer"))
             if (!mingAlive) {
-                var meMing = me.identity === "drummer" || (me.identityShown && me.identity !== "bass");
-                game.over(meMing ? false : true);
+                return player.identity == "bass" || (!player.identityShown && player.identity !== "drummer")
             }
             if (!anAlive) {
-                var meAn = me.identity == "bass" || (!me.identityShown && me.identity !== "drummer");
-                game.over(meAn ? false : true);
+                return player.identity === "drummer" || (player.identityShown && player.identity !== "bass");
             }
         },
         chooseCharacter: function () {
@@ -626,14 +623,14 @@ const bandMode = {
                 event.list.randomSort();
                 _status.characterlist = list4.slice(0).randomSort();
                 list3.randomSort();
-                var num = 3;
+                var num = 5;
                 if (game.zhu != game.me) {
-                    event.ai(game.zhu, event.list, getZhuList());
+                    event.ai(game.zhu, event.list, getZhuList().randomGets(3));
                     event.list.remove(get.sourceCharacter(game.zhu.name1));
                     event.list.remove(get.sourceCharacter(game.zhu.name2));
                     list = event.list.slice(0, num);
                 } else {
-                    list = getZhuList().concat(list3.slice(0, 5));
+                    list = getZhuList().randomGets(3).concat(list3.slice(0, 3));
                 }
                 delete event.swapnochoose;
                 var dialog;
@@ -675,7 +672,7 @@ const bandMode = {
                         } else {
                             getZhuList().sort(lib.sort.character);
                             list3.randomSort();
-                            list = getZhuList().concat(list3.slice(0, 5));
+                            list = getZhuList().randomGets(3).concat(list3.slice(0, 3));
                         }
                         var buttons = ui.create.div(".buttons");
                         var node = _status.event.dialog.buttons[0].parentNode;
@@ -913,7 +910,7 @@ const bandMode = {
                 var getZhuList = function () {
                     return list2.filter(char => char in lib.characterPack['GirlsBand']).sort(lib.sort.character);
                 };
-                list = getZhuList().concat(list3.randomGets(5));
+                list = getZhuList().randomGets(3).concat(list3.randomGets(3));
                 var next = game.zhu.chooseButton(true);
                 next.set("createDialog", ["选择角色（主唱）", [list, "characterx"]]);
                 next.set("ai", function (button) {
@@ -966,7 +963,7 @@ const bandMode = {
                     if (game.players[i] != game.zhu) {
                         let str = "选择角色";
                         str += "（" + get.translation(game.players[i].identity) + "）";
-                        list.push([game.players[i], [str, [event.list.randomRemove(Math.min(num, 3)), "characterx"]], 1, true]);
+                        list.push([game.players[i], [str, [event.list.randomRemove(Math.min(num, 5)), "characterx"]], 1, true]);
                     }
                 }
                 game.me.chooseButtonOL(list, function (player, result) {
@@ -1123,7 +1120,7 @@ const bandMode = {
                 "keys": str + "<br>" + "·明置身份牌时，与主唱各摸一张牌" + "<br>" + "·击杀者摸三张牌",
                 "guitar2": str + "<br>" + "·明置身份牌时，可弃置两张手牌与主唱进行议事，若结果为红色，执行以下效果：" + "<br>" + "   - 与主唱交换身份牌" + "<br>" + "   - 获得武将牌上的主公技" + "<br>" + "   - 第一轮回合结束时，可以明置一名其他角色的身份牌" + "<br>" + "·击杀者摸三张牌",
                 "guitar3": str + "<br>" + "·回合结束时，若已明置身份牌，可令一名其他角色摸一张牌" + "<br>" + "·击杀者摸三张牌",
-                "diehard": str + "<br>" + "·回合开始时，若场上仅有一名明置身份牌的角色，明置自身的身份牌" + "<br>" + "·击杀者摸三张牌",
+                "diehard": str + "<br>" + "·任意角色回合结束时，若场上仅有一名明置身份牌的角色，明置自身的身份牌" + "<br>" + "·击杀者摸三张牌",
             }
             return Conditions[player.identity]
         },
@@ -1198,7 +1195,7 @@ const bandMode = {
         identityList: () => {
             switch (_status.mode) {
                 case "normal":
-                    return ["vocalist", "diehard", "bass", "guitar", "guitar"]
+                    return ["vocalist", "diehard", "bass", "bass", "guitar"]
                 case "impart":
                     return ["vocalist", "drummer", "diehard", "bass", "guitar", "guitar", "guitar", "guitar"]
                 case "girls":

@@ -198,9 +198,9 @@ const skills = {
                     event.result = await player.chooseTarget("五音③", "选择一名其他角色成为此牌目标")
                         .set("ai", target => {
                             let player = _status.event.player
-                            return get.effect(target, trigger.card, player, player)
+                            return get.effect(target, _status.event.getTrigger().card, player, player)
                         })
-                        .set("filterTarget", (card, player, target) => player.canUse(trigger.card, target) && !trigger.targets.includes(target))
+                        .set("filterTarget", (card, player, target) => player.canUse(_status.event.getTrigger().card, target) && !_status.event.getTrigger().targets.includes(target))
                         .forResult()
                 },
                 async content(event, trigger, player) {
@@ -427,10 +427,10 @@ const skills = {
                         return
                     }
                     let result = await player.chooseTarget("魅影①", "请选择" + get.translation(trigger.card) + "的额外目标", [1, Infinity])
-                        .set("filterTarget", (card, player, target) => player.inRange(target) && !trigger.targets.includes(target))
+                        .set("filterTarget", (card, player, target) => player.inRange(target) && !_status.event.getTrigger().targets.includes(target))
                         .set("ai", target => {
                             let player = _status.event.player
-                            return get.effect(target, trigger.card, player, player) > 0
+                            return get.effect(target, !_status.event.getTrigger().card, player, player) > 0
                         })
                         .forResult()
                     if (result && result.bool) {
@@ -473,6 +473,8 @@ const skills = {
                     player: 'useCard'
                 },
                 name: '魅影④',
+                forced: true,
+                locked: false,
                 logTarget: 'targets',
                 filter(event, player) {
                     return event.card.name == 'sha' && event.card.isCard && event.cards.length == 1
@@ -1324,7 +1326,7 @@ const skills = {
             target.when("dyingBegin")
                 .then(() => {
                     sourcex.logSkill("gbzhongquan")
-                    sourcex.hp = 8
+                    sourcex.hp = 6
                     sourcex.update()
                 })
                 .vars({ sourcex: player })
@@ -1380,9 +1382,10 @@ const skills = {
                         const { bool, list, cards, targets, player } = _status.event.ensembleResult
                         let source = list.filter(item => item[0] == player).flatMap(item => item[1]).flat()
                         let target = list.filter(item => item[0] != player).flatMap(item => item[1]).flat()
+                        let num = Math.min(targets.length, 5)
                         if (!source.some(card => target.some(c => c.name == card.name))) {
-                            let next = await player.chooseTarget("彩颜", "令一名角色摸" + get.cnNumber(targets.length) + "张牌").set("ai", (target) => get.attitude(get.event("player"), target)).forResult()
-                            if (next) next.targets[0].draw(targets.length)
+                            let next = await player.chooseTarget("彩颜", "令一名角色摸" + get.cnNumber(num) + "张牌").set("ai", (target) => get.attitude(get.event("player"), target)).forResult()
+                            if (next && next.bool) next.targets[0].draw(num)
                         }
                     })
             }
@@ -1583,18 +1586,9 @@ const skills = {
                 case "拼点":
                     let next = await player.chooseToCompare(trigger.player).forResult()
                     if (next && next.bool) {
-                        let next2 = await player.chooseBool("是否将" + get.translation(next.player) + "交给" + get.translation(trigger.player) + "并摸一张牌").set("ai", () => {
-                            let player = _status.event.player
-                            let target = _status.currentPhase
-                            if (get.attitude(player, target) > 0) return true
-                            return false
-                        }).forResult()
-                        if (next2 && next2.bool) {
-                            player.give(next.player, trigger.player, "giveAuto")
-                            player.draw()
-                            trigger.player.addTempSkill("gblingming_effect")
-                            trigger.player.markAuto("gblingming_effect", next.player)
-                        }
+                        player.give(next.player, trigger.player, "giveAuto")
+                        trigger.player.addTempSkill("gblingming_effect")
+                        trigger.player.markAuto("gblingming_effect", next.player)
                     } else {
                         game.broadcastAll((card) => {
                             lib.skill.gbchunhua.cards(card)
@@ -1616,18 +1610,9 @@ const skills = {
                         let target = targets.filter(i => i != player)[0]
                         if (bool && opinion == "red") {
                             let cards = [...red, ...black, ...others].filter(i => i[0] == player).map(i => i[1])
-                            let next = await player.chooseBool("是否将" + get.translation(cards) + "交给" + get.translation(target) + "并摸一张牌").set("ai", () => {
-                                let player = _status.event.player
-                                let target = _status.currentPhase
-                                if (get.attitude(player, target) > 0) return true
-                                return false
-                            }).forResult()
-                            if (next && next.bool) {
-                                player.give(cards, target)
-                                player.draw()
-                                target.addTempSkill("gblingming_effect")
-                                target.markAuto("gblingming_effect", cards)
-                            }
+                            player.give(cards, target)
+                            target.addTempSkill("gblingming_effect")
+                            target.markAuto("gblingming_effect", cards)
                         } else {
                             let cards = [...red, ...black, ...others].filter(i => i[0] != player).map(i => i[1]).flat()
                             if (cards.length > 0) {
@@ -1653,18 +1638,9 @@ const skills = {
                             let player = _status.event.player
                             let target = targets[1]
                             if (cards[0].length == cards[1].length) {
-                                let next = await player.chooseBool("是否将" + get.translation(cards[0]) + "交给" + get.translation(target) + "并摸一张牌").set("ai", () => {
-                                    let player = _status.event.player
-                                    let target = _status.currentPhase
-                                    if (get.attitude(player, target) > 0) return true
-                                    return false
-                                }).forResult()
-                                if (next && next.bool) {
-                                    player.give(cards[0], target)
-                                    player.draw()
-                                    target.addTempSkill("gblingming_effect")
-                                    target.markAuto("gblingming_effect", cards[0])
-                                }
+                                player.give(cards[0], target)
+                                target.addTempSkill("gblingming_effect")
+                                target.markAuto("gblingming_effect", cards[0])
                             } else {
                                 game.broadcastAll((card) => {
                                     lib.skill.gbchunhua.cards(card)
