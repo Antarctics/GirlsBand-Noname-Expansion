@@ -4622,11 +4622,11 @@ const skills = {
             list.push("背水！")
             list.push("cancel2")
             let next = await player.chooseControl(list)
-            .set("prompt","死亡")
-            .set("ai", () => {
-                if (player.isDamaged() && player.maxHp > 3) return 1
-                return 0
-            })
+                .set("prompt", "死亡")
+                .set("ai", () => {
+                    if (player.isDamaged() && player.maxHp > 3) return 1
+                    return 0
+                })
                 .set("choiceList", choiceList).forResult()
             if (next.control != "cancel2") {
                 game.log(player, "选择了", "#g死亡", "的", "#y" + next.control)
@@ -6672,9 +6672,20 @@ const skills = {
         trigger: {
             player: "gainAfter"
         },
+        mod: {
+            ignoredHandcard(card, player, result) {
+                if (!(player.hasSkill("gbhuadao") && _status.currentPhase == player && game.hasPlayer(p => p != player && p.group == player.group)) && card.hasGaintag("gbbomu_tag")) return true
+            },
+            cardEnabled2(card, player, result) {
+                if (!(player.hasSkill("gbhuadao") && _status.currentPhase == player && game.hasPlayer(p => p != player && p.group == player.group)) && card.hasGaintag("gbbomu_tag")) return false
+            },
+            cardDiscardable(card, player) {
+                if (!(player.hasSkill("gbhuadao") && _status.currentPhase == player && game.hasPlayer(p => p != player && p.group == player.group)) && card.hasGaintag("gbbomu_tag")) return false
+            },
+        },
         charlotte: true,
         filter(event, player) {
-            return event.getParent(2).name != "gbbomu_effect"
+            return event.getParent(2).name != "gbbomu"
         },
         async content(event, trigger, player) {
             let result = await player.chooseCard("薄暮", "请选择至少一张手牌，使其增加「暮」标记", [1, Infinity], "h", true)
@@ -6687,8 +6698,7 @@ const skills = {
                             if (!player.countSkill("gbkongtan")) return player.getUseValue(card) <= 0 || !player.hasValueTarget(card)
                             if (player.getStorage("gbkongtan_temp").includes("选项一")) return player.getUseValue(card) <= 0 || !player.hasValueTarget(card)
                             else {
-                                let zhu = player.isZhu2() && player.hasSkill("gbhuadao") && game.hasPlayer(p => p != player && p.group == player.group),
-                                    num = Math.min(player.countMark("gbkongtan_show") + (zhu ? 1 : 0) + player.countCards("h", card => get.color(card) == "red"), 6),
+                                let num = Math.min(player.countMark("gbkongtan_show") + player.countCards("h", card => get.color(card) == "red"), 5),
                                     red = player.getCards("h", card => get.color(card) == "red").sort((a, b) => get.value(a) - get.value(b)),
                                     cards = get.cards(num, true)
                                 for (let i of red) {
@@ -6722,24 +6732,8 @@ const skills = {
                 player.addGaintag(result.cards, "gbbomu_tag")
             }
         },
-        group: "gbbomu_effect",
         ai: {
             combo: "gbkongtan",
-        },
-        subSkill: {
-            effect: {
-                mod: {
-                    ignoredHandcard(card, player, result) {
-                        if (card.hasGaintag("gbbomu_tag")) return true
-                    },
-                    cardEnabled2(card, player, result) {
-                        if (card.hasGaintag("gbbomu_tag")) return false
-                    },
-                    cardDiscardable(card, player) {
-                        if (card.hasGaintag("gbbomu_tag")) return false
-                    },
-                }
-            }
         },
     },
     gbkongtan: {
@@ -6751,12 +6745,11 @@ const skills = {
         },
         async content(event, trigger, player) {
             let cards = player.getCards("h", card => card.hasGaintag("gbbomu_tag"))
-            let zhu = player.isZhu2() && player.hasSkill("gbhuadao") && game.hasPlayer(p => p != player && p.group == player.group)
             var bool = true
             await player.showCards(cards)
             player.addMark("gbkongtan_show", cards.length)
             player.addTempSkill("gbkongtan_show")
-            let num = Math.min(player.countMark("gbkongtan_show") + (zhu ? 1 : 0), 6)
+            let num = Math.min(player.countMark("gbkongtan_show"), 5)
             while (bool) {
                 let card = await player.chooseCard("空谭", "选择一张「暮」牌", true, "h")
                     .set("filterCard", card => card.hasGaintag("gbbomu_tag"))
@@ -6786,8 +6779,7 @@ const skills = {
             let target = await player.chooseTarget("空谭", "选择一名角色", true)
                 .set("ai", (target) => {
                     let player = _status.event.player,
-                        zhu = player.isZhu2() && player.hasSkill("gbhuadao") && game.hasPlayer(p => p != player && p.group == player.group),
-                        num = Math.min(player.countMark("gbkongtan_show") + (zhu ? 1 : 0), 6),
+                        num = Math.min(player.countMark("gbkongtan_show"), 5),
                         cards = get.cards(num, true),
                         red = cards.reduce((num, c) => num += c.isKnownBy(player) ? (get.color(c) == "red" ? 1 : 0) : Math.round(Math.random() - 0.2), 0) > (cards.length / 2)
                     if (!player.getStorage("gbkongtan_temp").includes("选项二") || !player.getStorage("gbkongtan_temp").includes("选项三")) return get.attitude(player, target)
@@ -6802,8 +6794,7 @@ const skills = {
                     .set("ai", () => {
                         let player = _status.event.player,
                             source = _status.event.source,
-                            zhu = player.isZhu2() && player.hasSkill("gbhuadao") && game.hasPlayer(p => p != player && p.group == player.group),
-                            num = Math.min(source.countMark("gbkongtan_show") + (zhu ? 1 : 0), 6),
+                            num = Math.min(source.countMark("gbkongtan_show"), 5),
                             cards = get.cards(num, true),
                             red = cards.reduce((num, c) => num += c.isKnownBy(player) ? (get.color(c) == "red" ? 1 : 0) : Math.round(Math.random() - 0.2), 0) > (cards.length / 2)
                         if (get.attitude(player, source) > 0) {
@@ -6873,8 +6864,7 @@ const skills = {
             combo: "gbbomu",
             result: {
                 player(player, target, card) {
-                    let zhu = player.isZhu2() && player.hasSkill("gbhuadao") && game.hasPlayer(p => p != player && p.group == player.group),
-                        num1 = Math.min(player.countMark("gbkongtan_show") + (zhu ? 1 : 0) + player.countCards("h", card => card.hasGaintag("gbbomu_tag")), 6),
+                    let num1 = Math.min(player.countMark("gbkongtan_show") + player.countCards("h", card => card.hasGaintag("gbbomu_tag")), 5),
                         num2 = player.countCards("h", card => !card.hasGaintag("gbbomu_tag")),
                         red = [...player.getCards("h", card => card.hasGaintag("gbbomu_tag") && get.color(card) == "red"), ...get.cards(num1, true)].slice(0, num1).reduce((num, c) => num += c.isKnownBy(player) ? (get.color(c) == "red" ? 1 : 0) : Math.round(Math.random()), 0) > (num1 / 2)
                     if (player.getUseValue(card) > 0 && player.hasValueTarget(card)) return 0
@@ -6888,11 +6878,27 @@ const skills = {
     gbhuadao: {
         audio: false,
         zhuSkill: true,
+        trigger: {
+            player: ["useCard", "respond", "discard"]
+        },
+        mod: {
+            aiOrder(player, card, num) {
+                if (card.hasGaintag("gbbomu_tag")) return num - 6
+            }
+        },
+        filter(event, player) {
+            return event.cards && event.cards.some(card => card.hasGaintag("gbbomu_tag"))
+        },
+        async content(event, trigger, player) {
+            let cards = player.getCards("h"),
+                cardx = trigger.cards.filter(c => c.hasGaintag("gbbomu_tag"))
+            await player.showCards(cards)
+            await player.discard(cards.filter(card => cardx.some(c => c.name == card.name)))
+        },
         ai: {
             combo: "gbkongtan"
         }
     },
-
     gbchenyang: {
         audio: false,
         forced: true,
@@ -6940,18 +6946,21 @@ const skills = {
                     }
                 },
                 async content(event, trigger, player) {
-                    let num = player.countCards("h") - 6
+                    let num = player.countCards("h") - 5
                     if (num > 0) player.chooseToDiscard(num, true)
-                    else player.drawTo(6)
+                    else player.drawTo(5)
                 },
                 mod: {
-                    cardEnabled2(card, player, result) {
+                    cardRespondable(card, player, result) {
                         if (card.hasGaintag("gbchenyang_tag")) return false
                     },
-                    cardDiscardable(card, player) {
-                        if (card.hasGaintag("gbchenyang_tag")) return false
+                    cardEnabled2(card, player, result) {
+                        if (_status.event.name == "chooseToRespond" && card.hasGaintag("gbchenyang_tag")) return false
+                    },
+                    aiOrder(player, card, num) {
+                        if (card.hasGaintag("gbchenyang_tag")) return num + 6
                     }
-                }
+                },
             }
         },
     },
@@ -6964,26 +6973,9 @@ const skills = {
             return event.player != player && player.countCards("h") > 0;
         },
         async cost(event, trigger, player) {
-            event.result = await player.chooseCard("心钟", "请选择任意张手牌", [1, Infinity], "h")
+            event.result = await player.chooseCard("心钟", "请选择一张手牌", 1, "h")
                 .set("ai", (card) => {
-                    let player = _status.event.player
-                    let target = _status.currentPhase
-                    if (get.attitude(player, target) < 0) {
-                        if (player.countCards("h", card => card.hasGaintag("gbchenyang_tag"))) {
-                            if (player.countCards("h", card => card.hasGaintag("gbchenyang_tag"))) {
-                                let cards = player.getCards("h", card => card.hasGaintag("gbchenyang_tag") && ["shan", "wuxie", "tao", "jiu"].includes(card.name)).sort((a, b) => get.value(a) - get.value(b)).slice(0, 6)
-                                return cards.includes(card)
-                            }
-                        } else {
-                            if (ui.selected.cards.length > 0) return false
-                            if (["shan", "wuxie", "sha", "tao", "jiu"].includes(card.name)) return false
-                            return 6 - get.value(card)
-                        }
-                    } else {
-                        if (ui.selected.cards.length > 0) return false
-                        if (target.countCards("h") >= 5) return get.value(card)
-                        return false
-                    }
+                    return Math.random()
                 })
                 .forResult();
         },
@@ -6991,7 +6983,7 @@ const skills = {
             await player.lose(event.cards, ui.cardPile).set("insert_card", true)
             game.log(player, "将", get.cnNumber(event.cards.length), "张牌置于了", "#y牌堆顶")
             let target = trigger.player
-            let result = await target.chooseControlList("心钟", [`令${get.translation(player)}于本回合内获得〖寸目〗，然后其将所有的「尘」牌交给你，以此法获得的牌不能使用、打出或弃置，直到本轮结束`, `你于本回合内获得〖寸目〗，然后交给${get.translation(player)}一张锦囊牌或两张非锦囊牌。`], true)
+            let result = await target.chooseControlList("心钟", [`令${get.translation(player)}展示牌堆顶上的一张牌，若为红色，其弃置此牌，视为堆你使用【推心置腹】；若为黑色，你展示手牌并弃置其中一种颜色的所有牌，然后其展示手牌并将对应颜色的所有牌交给你`, `你于本回合内获得〖寸目〗，然后交给${get.translation(player)}一张锦囊牌或两张非锦囊牌。`], true)
                 .set("ai", () => {
                     let player = _status.event.player
                     let source = _status.event.source
@@ -7010,11 +7002,20 @@ const skills = {
                 .forResult()
             switch (result.control) {
                 case "选项一":
-                    let cards = player.getCards("h", card => card.hasGaintag("gbchenyang_tag"))
-                    player.addTempSkill("nzry_cunmu")
-                    if (cards) {
-                        player.give(cards, target, "giveAuto").gaintag.add("gbchenyang_tag")
-                        target.addSkill("gbxinzhong_temp")
+                    let cards = get.cards(1, true)
+                    await player.showCards(cards)
+                    if (get.color(cards[0]) == "red") {
+                        player.useCard({ name: "tuixinzhifu" }, target)
+                    } else {
+                        await target.showCards(target.getCards("h"))
+                        let list = []
+                        if (target.getCards("h").some(card => get.color(card) == "red")) list.push("红色")
+                        if (target.getCards("h").some(card => get.color(card) == "black")) list.push("黑色")
+                        if (list.length) {
+                            let result = await target.chooseControl(list, true).prompt("弃置一种颜色的所有手牌").forResult()
+                            await player.showCards(player.getCards("h"))
+                            player.give(player.getCards("h").filter(card => get.color(card) == (result.control == "红色" ? "red" : "black")), target, "giveAuto")
+                        }
                     }
                     break
                 case "选项二":
@@ -7308,9 +7309,8 @@ const skills = {
             switch (event.cost_data) {
                 case "选项一":
                     let next = await player.chooseCard("巴锋", `对${get.translation(trigger.player)}使用一张【杀】或伤害类锦囊牌`, "hs", true)
-                        .set("target", trigger.player)
                         .set("filterCard", card => {
-                            if (card.name == "sha" || get.tag(card, "damage") && get.type(card) == "trick") return player.canUse(card, target, true, true)
+                            if (card.name == "sha" || get.tag(card, "damage") && get.type(card) == "trick") return player.canUse(card, _status.currentPhase, true, true)
                         })
                         .set("ai", (card) => {
                             let player = _status.event.player
@@ -7330,23 +7330,25 @@ const skills = {
                         })
                     break
                 case "选项二":
-                    player.draw()
-                    let result = await player.chooseCard("巴锋", `请选择一张「绯」牌`, true)
-                        .set("filterCard", card => card.hasGaintag("gbfeishou_tag"))
-                        .set("ai", (card) => {
-                            let player = _status.event.player
-                            let target = _status.currentPhase
-                            let att = get.sgn(get.attitude(player, target))
-                            if (target.countCards("j") && !target.hasWuxie()) {
-                                var judge = get.judge(target.getCards("j")[0])
-                                return player.getCards("h", card => card.hasGaintag("gbfeishou_tag")).sort((a, b) => (judge(b) - judge(a)) * att)[0] == card
-                            } else {
-                                return player.getCards("h", card => card.hasGaintag("gbfeishou_tag")).sort((a, b) => (get.value(b, target) - get.value(a, target)) * att)[0] == card
-                            }
-                        })
-                        .forResult()
-                    await player.lose(result.cards, ui.cardPile).set("insert_card", true)
-                    game.log(player, "将", get.cnNumber(result.cards.length), "张牌置于了", "#y牌堆顶")
+                    await player.draw()
+                    if (player.countCards("h", card => card.hasGaintag("gbfeishou_tag"))) {
+                        let result = await player.chooseCard("巴锋", `请选择一张「绯」牌`, true)
+                            .set("filterCard", card => card.hasGaintag("gbfeishou_tag"))
+                            .set("ai", (card) => {
+                                let player = _status.event.player
+                                let target = _status.currentPhase
+                                let att = get.sgn(get.attitude(player, target))
+                                if (target.countCards("j") && !target.hasWuxie()) {
+                                    var judge = get.judge(target.getCards("j")[0])
+                                    return player.getCards("h", card => card.hasGaintag("gbfeishou_tag")).sort((a, b) => (judge(b) - judge(a)) * att)[0] == card
+                                } else {
+                                    return player.getCards("h", card => card.hasGaintag("gbfeishou_tag")).sort((a, b) => (get.value(b, target) - get.value(a, target)) * att)[0] == card
+                                }
+                            })
+                            .forResult()
+                        await player.lose(result.cards, ui.cardPile).set("insert_card", true)
+                        game.log(player, "将", get.cnNumber(result.cards.length), "张牌置于了", "#y牌堆顶")
+                    }
                     target.addTempSkill("mashu")
                     break
             }

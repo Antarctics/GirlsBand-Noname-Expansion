@@ -1466,9 +1466,9 @@ const skills = {
                                 target.draw(list.filter(item => item[0] == target)[0][1].length)
                             }
                         } else {
-                            await player.gain(cards, "giveAuto")
+                            await player.gain(cards.flat(), "giveAuto")
                             for (let target of targets) {
-                                if (!target.getHistory("lose").some(evt => evt.getParent(2) == event)) target.loseHp()
+                                if (!target.getHistory("lose").some(evt => evt.getParent(2) == _status.event)) target.loseHp()
                             }
                         }
                     })
@@ -1561,7 +1561,7 @@ const skills = {
         async content(event, trigger, player) {
             let list = []
             if (player.canCompare(trigger.player)) list.push("拼点")
-            list.push("议事")
+            if (trigger.player.countCards("h")) list.push("议事")
             list.push("合奏")
             let result = await player.chooseControl(list, true).set("ai", () => {
                 let player = _status.event.player
