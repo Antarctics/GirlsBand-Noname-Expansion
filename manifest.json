@@ -35,7 +35,7 @@
                   "audio/skill/gbbeihua4.mp3":  "38d43a17fe29a3643a0c576a103b452d85fdd0e6",
                   "main/translate.js":  "84e0269399a76183665330861d41bb964a39903b",
                   "image/2.png":  "c67bc8749c651e592cb12b951d364c0993451eaa",
-                  "main/skill1.js":  "4d0314dc350bb02a451fff40e8a5cdedaa91a92a",
+                  "main/skill1.js":  "ab064edc81934cfb418559065c1188314c1bdb3c",
                   "image/umiri.png":  "3f25b88af963a031470bc62118217b1eb436d4f4",
                   "main/package.js":  "f57004a5d0dae6c2ada55867dc64c83b4c862c5e",
                   "image/pareo.png":  "f1d8d7f1d66f7caf6b39a1c425a3f9d7267e4202",
@@ -164,5 +164,5 @@
                   "audio/skill/gbmizi2.mp3":  "65c5bd168ba84518d4afb37917aaafd40d622896"
               },
     "version":  "2.1.7",
-    "update":  "- 调整美竹兰\n- 调整青叶摩卡\n- 修复BUG\n若有BUG请加群反馈"
+    "update":  "- 调整美竹兰\n- 调整青叶摩卡\n- 修复青叶摩卡技能报错\n- 修复BUG\n若有BUG请加群反馈"
 }

@@ -7012,7 +7012,7 @@ const skills = {
                         if (target.getCards("h").some(card => get.color(card) == "red")) list.push("红色")
                         if (target.getCards("h").some(card => get.color(card) == "black")) list.push("黑色")
                         if (list.length) {
-                            let result = await target.chooseControl(list, true).prompt("弃置一种颜色的所有手牌").forResult()
+                            let result = await target.chooseControl(list, true).set("prompt", "弃置一种颜色的所有手牌").forResult()
                             await player.showCards(player.getCards("h"))
                             player.give(player.getCards("h").filter(card => get.color(card) == (result.control == "红色" ? "red" : "black")), target, "giveAuto")
                         }
