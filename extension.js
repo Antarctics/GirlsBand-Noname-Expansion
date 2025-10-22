@@ -13,7 +13,7 @@ export default function () {
         editable: false,
         precontent: preContent,
         content: mainContent,
-        package: info("2.1.7"),
+        package: info("2.1.8"),
         config: {
             bgm: {
                 name: `<font color="#e91e63">场内BGM <small>(下局生效)</small>`,

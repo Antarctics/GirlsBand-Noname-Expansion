@@ -1824,17 +1824,17 @@ const skills = {
                 },
                 mod: {
                     aiOrder(player, card, num) {
-                        if (get.itemtype(card) == "card" && card.hasGaintag("gbshiqi")) {
+                        if (get.itemtype(card) == "card" && card.gaintag?.includes("gbshiqi")) {
                             return num - 2
                         }
                     },
                     ignoredHandcard(card, player) {
-                        if (card.hasGaintag("gbshiqi")) {
+                        if (card.gaintag?.includes("gbshiqi")) {
                             return true;
                         }
                     },
                     cardDiscardable(card, player, name) {
-                        if (name == "phaseDiscard" && card.hasGaintag("gbshiqi")) {
+                        if (name == "phaseDiscard" && card.gaintag?.includes("gbshiqi")) {
                             return false;
                         }
                     },

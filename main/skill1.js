@@ -4571,19 +4571,19 @@ const skills = {
         mod: {
             aiValue(player, card, num) {
                 if (card.name == "ying") return num + 4
-                if (card.hasGaintag("gbsiwang")) return num + 1
+                if (card.gaintag?.includes("gbsiwang")) return num + 1
             },
             aiUseful(player, card, num) {
                 if (card.name == "ying") return num + 7
-                if (card.hasGaintag("gbsiwang")) return num - 1
+                if (card.gaintag?.includes("gbsiwang")) return num - 1
             },
             ignoredHandcard(card, player) {
-                if (card.hasGaintag("gbsiwang")) {
+                if (card.gaintag?.includes("gbsiwang")) {
                     return true;
                 }
             },
             cardDiscardable(card, player, name) {
-                if (name == "phaseDiscard" && card.hasGaintag("gbsiwang")) {
+                if (name == "phaseDiscard" && card.gaintag?.includes("gbsiwang")) {
                     return false;
                 }
             },
@@ -6674,13 +6674,13 @@ const skills = {
         },
         mod: {
             ignoredHandcard(card, player, result) {
-                if (!(player.hasSkill("gbhuadao") && _status.currentPhase == player && game.hasPlayer(p => p != player && p.group == player.group)) && card.hasGaintag("gbbomu_tag")) return true
+                if (!(player.hasSkill("gbhuadao") && _status.currentPhase == player && game.hasPlayer(p => p != player && p.group == player.group)) && card.gaintag?.includes("gbbomu_tag")) return true
             },
             cardEnabled2(card, player, result) {
-                if (!(player.hasSkill("gbhuadao") && _status.currentPhase == player && game.hasPlayer(p => p != player && p.group == player.group)) && card.hasGaintag("gbbomu_tag")) return false
+                if (!(player.hasSkill("gbhuadao") && _status.currentPhase == player && game.hasPlayer(p => p != player && p.group == player.group)) && card.gaintag?.includes("gbbomu_tag")) return false
             },
             cardDiscardable(card, player) {
-                if (!(player.hasSkill("gbhuadao") && _status.currentPhase == player && game.hasPlayer(p => p != player && p.group == player.group)) && card.hasGaintag("gbbomu_tag")) return false
+                if (!(player.hasSkill("gbhuadao") && _status.currentPhase == player && game.hasPlayer(p => p != player && p.group == player.group)) && card.gaintag?.includes("gbbomu_tag")) return false
             },
         },
         charlotte: true,
@@ -6689,7 +6689,7 @@ const skills = {
         },
         async content(event, trigger, player) {
             let result = await player.chooseCard("薄暮", "请选择至少一张手牌，使其增加「暮」标记", [1, Infinity], "h", true)
-                .set("filterCard", card => !card.hasGaintag("gbbomu_tag"))
+                .set("filterCard", card => !card.gaintag?.includes("gbbomu_tag"))
                 .set("ai", card => {
                     let player = _status.event.player,
                         dis = player.needsToDiscard(0, (i, player) => !player.canIgnoreHandcard(i))
@@ -6713,7 +6713,7 @@ const skills = {
                                 }
                             }
                         }
-                        return player.getCards("h", card => !card.hasGaintag("gbbomu_tag")).sort((a, b) => {
+                        return player.getCards("h", card => !card.gaintag?.includes("gbbomu_tag")).sort((a, b) => {
                             const valA = ["tao", "shan", "jiu", "wuxie"].includes(a.name) ?
                                 get.value(a) + 1 :
                                 get.value(a) - (!player.hasValueTarget(a) ? 4 : 0);
@@ -6741,10 +6741,10 @@ const skills = {
         enable: "phaseUse",
         usable: 3,
         filter(event, player) {
-            return player.countCards("h", card => card.hasGaintag("gbbomu_tag"))
+            return player.countCards("h", card => card.gaintag?.includes("gbbomu_tag"))
         },
         async content(event, trigger, player) {
-            let cards = player.getCards("h", card => card.hasGaintag("gbbomu_tag"))
+            let cards = player.getCards("h", card => card.gaintag?.includes("gbbomu_tag"))
             var bool = true
             await player.showCards(cards)
             player.addMark("gbkongtan_show", cards.length)
@@ -6752,7 +6752,7 @@ const skills = {
             let num = Math.min(player.countMark("gbkongtan_show"), 5)
             while (bool) {
                 let card = await player.chooseCard("空谭", "选择一张「暮」牌", true, "h")
-                    .set("filterCard", card => card.hasGaintag("gbbomu_tag"))
+                    .set("filterCard", card => card.gaintag?.includes("gbbomu_tag"))
                     .forResult()
                 if (card && card.bool) {
                     let result = await player.chooseControl("牌堆顶", "牌堆底", "cancel2")
@@ -6773,7 +6773,7 @@ const skills = {
                         .set("insert_card", result.control == "牌堆顶" ? true : false)
                     card.cards.forEach(card => card.addKnower("everyone"))
                     game.log(player, "将", card.cards, "置于了", "#y" + result.control)
-                    if (!player.countCards("h", card => card.hasGaintag("gbbomu_tag"))) bool = false
+                    if (!player.countCards("h", card => card.gaintag?.includes("gbbomu_tag"))) bool = false
                 }
             }
             let target = await player.chooseTarget("空谭", "选择一名角色", true)
@@ -6864,9 +6864,9 @@ const skills = {
             combo: "gbbomu",
             result: {
                 player(player, target, card) {
-                    let num1 = Math.min(player.countMark("gbkongtan_show") + player.countCards("h", card => card.hasGaintag("gbbomu_tag")), 5),
-                        num2 = player.countCards("h", card => !card.hasGaintag("gbbomu_tag")),
-                        red = [...player.getCards("h", card => card.hasGaintag("gbbomu_tag") && get.color(card) == "red"), ...get.cards(num1, true)].slice(0, num1).reduce((num, c) => num += c.isKnownBy(player) ? (get.color(c) == "red" ? 1 : 0) : Math.round(Math.random()), 0) > (num1 / 2)
+                    let num1 = Math.min(player.countMark("gbkongtan_show") + player.countCards("h", card => card.gaintag?.includes("gbbomu_tag")), 5),
+                        num2 = player.countCards("h", card => !card.gaintag?.includes("gbbomu_tag")),
+                        red = [...player.getCards("h", card => card.gaintag?.includes("gbbomu_tag") && get.color(card) == "red"), ...get.cards(num1, true)].slice(0, num1).reduce((num, c) => num += c.isKnownBy(player) ? (get.color(c) == "red" ? 1 : 0) : Math.round(Math.random()), 0) > (num1 / 2)
                     if (player.getUseValue(card) > 0 && player.hasValueTarget(card)) return 0
                     if (num1 < num2) return 0
                     if (player.getStorage("gbkongtan_temp").includes("选项二") && player.getStorage("gbkongtan_temp").includes("选项三") && !red) return 0
@@ -6883,15 +6883,15 @@ const skills = {
         },
         mod: {
             aiOrder(player, card, num) {
-                if (card.hasGaintag("gbbomu_tag")) return num - 6
+                if (card.gaintag?.includes("gbbomu_tag")) return num - 6
             }
         },
         filter(event, player) {
-            return event.cards && event.cards.some(card => card.hasGaintag("gbbomu_tag"))
+            return event.cards && event.cards.some(card => card.gaintag?.includes("gbbomu_tag"))
         },
         async content(event, trigger, player) {
             let cards = player.getCards("h"),
-                cardx = trigger.cards.filter(c => c.hasGaintag("gbbomu_tag"))
+                cardx = trigger.cards.filter(c => c.gaintag?.includes("gbbomu_tag"))
             await player.showCards(cards)
             await player.discard(cards.filter(card => cardx.some(c => c.name == card.name)))
         },
@@ -6911,7 +6911,7 @@ const skills = {
         },
         async content(event, trigger, player) {
             let result = await player.chooseCard("尘阳", "请选择至少一张手牌，使其增加「尘」标记", [1, Infinity], "h", true)
-                .set("filterCard", card => !card.hasGaintag("gbchenyang_tag"))
+                .set("filterCard", card => !card.gaintag?.includes("gbchenyang_tag"))
                 .set("ai", card => {
                     let player = _status.event.player,
                         dis = player.needsToDiscard(0, (i, player) => !player.canIgnoreHandcard(i))
@@ -6942,7 +6942,7 @@ const skills = {
                 },
                 filter(event, player) {
                     for (var i in event.gaintag_map) {
-                        if (event.gaintag_map[i].includes("gbchenyang_tag") && !player.countCards("h", card => card.hasGaintag("gbchenyang_tag"))) return true
+                        if (event.gaintag_map[i].includes("gbchenyang_tag") && !player.countCards("h", card => card.gaintag?.includes("gbchenyang_tag"))) return true
                     }
                 },
                 async content(event, trigger, player) {
@@ -6952,13 +6952,13 @@ const skills = {
                 },
                 mod: {
                     cardRespondable(card, player, result) {
-                        if (card.hasGaintag("gbchenyang_tag")) return false
+                        if (card.gaintag?.includes("gbchenyang_tag")) return false
                     },
                     cardEnabled2(card, player, result) {
-                        if (_status.event.name == "chooseToRespond" && card.hasGaintag("gbchenyang_tag")) return false
+                        if (_status.event.name == "chooseToRespond" && card.gaintag?.includes("gbchenyang_tag")) return false
                     },
                     aiOrder(player, card, num) {
-                        if (card.hasGaintag("gbchenyang_tag")) return num + 6
+                        if (card.gaintag?.includes("gbchenyang_tag")) return num + 6
                     }
                 },
             }
@@ -6989,7 +6989,7 @@ const skills = {
                     let source = _status.event.source
                     if (get.attitude(player, source) < 0) {
                         let num = source.countCards("h") - 6
-                        if (source.getCards("h", card => card.isKnownBy(player)).some(card => card.hasGaintag("gbchenyang_tag"))) return 1
+                        if (source.getCards("h", card => card.isKnownBy(player)).some(card => card.gaintag?.includes("gbchenyang_tag"))) return 1
                         if (num > 0 && get.cards(num, true).some(card => card.isKnownBy(player) && (["shan", "tao", "jiu", "wuxie"].includes(card.name)) || get.value(card) >= 6)) return 0
                         if (Math.random() > 0.6) return 1
                         return 0
@@ -7039,14 +7039,14 @@ const skills = {
                 },
                 mod: {
                     cardEnabled2(card, player, result) {
-                        if (card.hasGaintag("gbchenyang_tag")) return false
+                        if (card.gaintag?.includes("gbchenyang_tag")) return false
                     },
                     cardDiscardable(card, player) {
-                        if (card.hasGaintag("gbchenyang_tag")) return false
+                        if (card.gaintag?.includes("gbchenyang_tag")) return false
                     }
                 },
                 async content(event, trigger, player) {
-                    let cards = player.getCards("h", card => card.hasGaintag("gbchenyang_tag"))
+                    let cards = player.getCards("h", card => card.gaintag?.includes("gbchenyang_tag"))
                     if (cards.length) player.removeGaintag("gbchenyang_tag", cards)
                     player.removeSkill(event.name)
                 }
@@ -7066,12 +7066,12 @@ const skills = {
         },
         async content(event, trigger, player) {
             let result = await player.chooseCard("红日", "请选择至少一张手牌，使其增加「日」标记", [1, Infinity], "h", true)
-                .set("filterCard", card => !card.hasGaintag("gbhongri_tag"))
+                .set("filterCard", card => !card.gaintag?.includes("gbhongri_tag"))
                 .set("ai", card => {
                     let player = _status.event.player
                     if (!["sha", "shan"].includes(card.name)) return true
-                    if ([...ui.cardPile.childNodes].some(card => card.name == "wanjian")) return card != player.getCards("h", card => !card.hasGaintag("gbhongri_tag") && card.name == "shan")[0]
-                    if ([...ui.cardPile.childNodes].some(card => card.name == "juedou" || card.name == "nanman")) return card != player.getCards("h", card => !card.hasGaintag("gbhongri_tag") && card.name == "sha")[0]
+                    if ([...ui.cardPile.childNodes].some(card => card.name == "wanjian")) return card != player.getCards("h", card => !card.gaintag?.includes("gbhongri_tag") && card.name == "shan")[0]
+                    if ([...ui.cardPile.childNodes].some(card => card.name == "juedou" || card.name == "nanman")) return card != player.getCards("h", card => !card.gaintag?.includes("gbhongri_tag") && card.name == "sha")[0]
                 })
                 .forResult()
             if (result && result.bool) {
@@ -7110,10 +7110,10 @@ const skills = {
                 },
                 mod: {
                     cardRespondable(card, player, result) {
-                        if (card.hasGaintag("gbhongri_tag")) return false
+                        if (card.gaintag?.includes("gbhongri_tag")) return false
                     },
                     cardEnabled2(card, player, result) {
-                        if (_status.event.name == "chooseToRespond" && card.hasGaintag("gbhongri_tag")) return false
+                        if (_status.event.name == "chooseToRespond" && card.gaintag?.includes("gbhongri_tag")) return false
                     }
                 },
             }
@@ -7127,14 +7127,14 @@ const skills = {
             global: "phaseUseBegin"
         },
         filter(event, player) {
-            return event.player != player && player.inRange(event.player) && player.countCards("h", card => card.hasGaintag("gbhongri_tag"))
+            return event.player != player && player.inRange(event.player) && player.countCards("h", card => card.gaintag?.includes("gbhongri_tag"))
         },
         async cost(event, trigger, player) {
             event.result = await player.chooseCard("圆阵", "请选择任意张「日」牌", [1, Infinity], true)
                 .set("ai", (card) => {
                     let player = _status.event.player
                     let target = _status.currentPhase
-                    let cards = player.getCards("h", card => card.hasGaintag("gbhongri_tag"))
+                    let cards = player.getCards("h", card => card.gaintag?.includes("gbhongri_tag"))
                     if (get.attitude(player, target) < 0 && target.mayHaveSha()) {
                         if (player.hasShan() || player.hp > 3 || get.effect(player, {
                             name: "sha"
@@ -7145,7 +7145,7 @@ const skills = {
                         return cards.sort((a, b) => get.value(a) - get.value(b)).slice(0, game.countPlayer(p => get.attitude(player, p) > 0)).includes(card)
                     }
                 })
-                .set("filterCard", card => card.hasGaintag("gbhongri_tag"))
+                .set("filterCard", card => card.gaintag?.includes("gbhongri_tag"))
                 .forResult()
         },
         async content(event, trigger, player) {
@@ -7218,12 +7218,12 @@ const skills = {
         },
         async content(event, trigger, player) {
             let result = await player.chooseCard("绯手", "请选择至少一张手牌，使其增加「绯」标记", [1, Infinity], "h", true)
-                .set("filterCard", card => !card.hasGaintag("gbfeishou_tag"))
+                .set("filterCard", card => !card.gaintag?.includes("gbfeishou_tag"))
                 .set("ai", card => {
                     let player = _status.event.player
                     if (!["sha", "shan"].includes(card.name)) return true
-                    if ([...ui.cardPile.childNodes].some(card => card.name == "wanjian")) return card != player.getCards("h", card => !card.hasGaintag("gbhongri_tag") && card.name == "shan")[0]
-                    if ([...ui.cardPile.childNodes].some(card => card.name == "juedou" || card.name == "nanman")) return card != player.getCards("h", card => !card.hasGaintag("gbhongri_tag") && card.name == "sha")[0]
+                    if ([...ui.cardPile.childNodes].some(card => card.name == "wanjian")) return card != player.getCards("h", card => !card.gaintag?.includes("gbhongri_tag") && card.name == "shan")[0]
+                    if ([...ui.cardPile.childNodes].some(card => card.name == "juedou" || card.name == "nanman")) return card != player.getCards("h", card => !card.gaintag?.includes("gbhongri_tag") && card.name == "sha")[0]
                 })
                 .forResult()
             if (result && result.bool) {
@@ -7255,10 +7255,10 @@ const skills = {
                 },
                 mod: {
                     cardRespondable(card, player, result) {
-                        if (card.hasGaintag("gbfeishou_tag")) return false
+                        if (card.gaintag?.includes("gbfeishou_tag")) return false
                     },
                     cardEnabled2(card, player, result) {
-                        if (_status.event.name == "chooseToRespond" && card.hasGaintag("gbfeishou_tag")) return false
+                        if (_status.event.name == "chooseToRespond" && card.gaintag?.includes("gbfeishou_tag")) return false
                     }
                 }
             }
@@ -7331,18 +7331,18 @@ const skills = {
                     break
                 case "选项二":
                     await player.draw()
-                    if (player.countCards("h", card => card.hasGaintag("gbfeishou_tag"))) {
+                    if (player.countCards("h", card => card.gaintag?.includes("gbfeishou_tag"))) {
                         let result = await player.chooseCard("巴锋", `请选择一张「绯」牌`, true)
-                            .set("filterCard", card => card.hasGaintag("gbfeishou_tag"))
+                            .set("filterCard", card => card.gaintag?.includes("gbfeishou_tag"))
                             .set("ai", (card) => {
                                 let player = _status.event.player
                                 let target = _status.currentPhase
                                 let att = get.sgn(get.attitude(player, target))
                                 if (target.countCards("j") && !target.hasWuxie()) {
                                     var judge = get.judge(target.getCards("j")[0])
-                                    return player.getCards("h", card => card.hasGaintag("gbfeishou_tag")).sort((a, b) => (judge(b) - judge(a)) * att)[0] == card
+                                    return player.getCards("h", card => card.gaintag?.includes("gbfeishou_tag")).sort((a, b) => (judge(b) - judge(a)) * att)[0] == card
                                 } else {
-                                    return player.getCards("h", card => card.hasGaintag("gbfeishou_tag")).sort((a, b) => (get.value(b, target) - get.value(a, target)) * att)[0] == card
+                                    return player.getCards("h", card => card.gaintag?.includes("gbfeishou_tag")).sort((a, b) => (get.value(b, target) - get.value(a, target)) * att)[0] == card
                                 }
                             })
                             .forResult()
@@ -7367,12 +7367,12 @@ const skills = {
         },
         async content(event, trigger, player) {
             let result = await player.chooseCard("绯手", "请选择至少一张手牌，使其增加「志」标记", [1, Infinity], "h", true)
-                .set("filterCard", card => !card.hasGaintag("gbfanzhi_tag"))
+                .set("filterCard", card => !card.gaintag?.includes("gbfanzhi_tag"))
                 .set("ai", card => {
                     let player = _status.event.player
                     if (!["sha", "shan"].includes(card.name)) return true
-                    if ([...ui.cardPile.childNodes].some(card => card.name == "wanjian")) return card != player.getCards("h", card => !card.hasGaintag("gbhongri_tag") && card.name == "shan")[0]
-                    if ([...ui.cardPile.childNodes].some(card => card.name == "juedou" || card.name == "nanman")) return card != player.getCards("h", card => !card.hasGaintag("gbhongri_tag") && card.name == "sha")[0]
+                    if ([...ui.cardPile.childNodes].some(card => card.name == "wanjian")) return card != player.getCards("h", card => !card.gaintag?.includes("gbhongri_tag") && card.name == "shan")[0]
+                    if ([...ui.cardPile.childNodes].some(card => card.name == "juedou" || card.name == "nanman")) return card != player.getCards("h", card => !card.gaintag?.includes("gbhongri_tag") && card.name == "sha")[0]
                 })
                 .forResult()
             if (result && result.bool) {
@@ -7403,10 +7403,10 @@ const skills = {
                 },
                 mod: {
                     cardRespondable(card, player, result) {
-                        if (card.hasGaintag("gbfanzhi_tag")) return false
+                        if (card.gaintag?.includes("gbfanzhi_tag")) return false
                     },
                     cardEnabled2(card, player, result) {
-                        if (_status.event.name == "chooseToRespond" && card.hasGaintag("gbfanzhi_tag")) return false
+                        if (_status.event.name == "chooseToRespond" && card.gaintag?.includes("gbfanzhi_tag")) return false
                     }
                 }
             }
@@ -7430,16 +7430,16 @@ const skills = {
             },
         },
         filter(event, player) {
-            return player.countCards("h", card => card.hasGaintag("gbfanzhi_tag"))
+            return player.countCards("h", card => card.gaintag?.includes("gbfanzhi_tag"))
         },
         async cost(event, trigger, player) {
             event.result = await player.chooseCard("茨菇", "请选择任意张「志」牌", [1, Infinity], true)
                 .set("ai", (card) => {
                     let player = _status.event.player
                     if (ui.selected.cards.length >= 4) return false
-                    if (card.hasGaintag("gbfanzhi_tag")) return true
+                    if (card.gaintag?.includes("gbfanzhi_tag")) return true
                 })
-                .set("filterCard", card => card.hasGaintag("gbfanzhi_tag"))
+                .set("filterCard", card => card.gaintag?.includes("gbfanzhi_tag"))
                 .forResult()
         },
         async content(event, trigger, player) {
