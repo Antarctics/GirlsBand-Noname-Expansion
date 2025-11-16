@@ -554,6 +554,11 @@ const characterTitles = {
     gb_ruyuanlingwangna: "PAREO",
     gb_zhushouzhiyou: "Chuchu",
     gb_sp_fengchuanxiangzi: "春日乍影",
+    gb_xuanjuanxin: "普天同心",
+    gb_aozemeixiao: "福柯小熊",
+    gb_laitianxun: "梦幻泡影",
+    gb_songyuanhuayin: "迷宫水母",
+    gb_beizeyumei: "未来可乐",
 };
 const characterIntros = {
     zhuiminglixi: "椎名立希，所属动漫《BanG Dream! It's MyGO!!!!!》中的人物。MyGO!!!!!的鼓手，同时也负责作曲，在拿到灯的歌词以后，创作出切合她世界观的歌曲。花咲川女子学园高中一年级学生，是喜欢一人独处的独狼。",
@@ -607,6 +612,11 @@ const characterIntros = {
     zuotengyimu: "佐藤益木，所属动漫《BanG Dream!》中的人物。Live House “Galaxy”老板的女儿，出于对鼓手父亲的憧憬而开始了乐队活动。虽然性格坚定可靠，但沉醉于演奏时会即兴制造非常喧闹的声音，十分可怕而被称为“狂犬”。与LAYER一直以来是同事关系。爱好似乎是漫画与制作蛋糕。",
     ruyuanlingwangna: "鳰原令王那，所属动漫《BanG Dream!》中的人物。发挥自己学习过电子琴的经验，改变爱好成为了键盘手。由CHU²发掘并邀请加入乐队，所以对她十分感激与仰慕，称她为“CHU²大人”或者“主人”。非常讲究“可爱”。喜欢的乐队是Pastel*Palettes。",
     zhushouzhiyou: "珠手知由，所属动漫《BanG Dream!》中的人物。RAS的主导人，国际学校10回生（换算成日本高中制度是高中一年级。手游为11回生，即高中二年级，后升为12回生，即高中三年级）的归国子女。年仅14岁，因成绩优秀而跳级。使用DTM（Desktop Music，电脑音乐）作曲的小个子音乐制作人。梦想是用自己最强的音乐改变世界。职业意识很强，非常自信。虽然态度傲慢却不失礼节。最喜欢的食物是牛肉干。",
+    xuanjuanxin: "弦卷心，所属动漫《BanG Dream!》中的人物。Hello, Happy World!乐队的主唱，拥有压倒性歌唱实力的天才少女。性格开朗乐观，总是充满活力，希望能够用音乐给全世界带来笑容。",
+    aozemeixiao: "奥泽美咲，所属动漫《BanG Dream!》中的人物。Hello, Happy World!乐队的DJ。擅长操作各类电子设备制作音乐，性格冷静沉着，是乐队的技术担当。昵称 “米歇尔”，曾以熊布偶装形象打工，后成为乐队的吉祥物般存在。",
+    laitianxun: "濑田薰，所属动漫《BanG Dream!》中的人物。Hello, Happy World!乐队的吉他手。拥有出色的音乐天赋，性格温柔体贴，始终细心关心着乐队的其他成员。",
+    songyuanhuayin: "松原花音，所属动漫《BanG Dream!》中的人物。Hello, Happy World!乐队的鼓手。性格内向害羞，但演奏技术十分出色，在专注打鼓的过程中能找到属于自己的自信和勇气。",
+    beizeyumei: "北泽育美，所属动漫《BanG Dream!》中的人物。Hello, Happy World!乐队的贝斯手。活力四射的运动型少女，还是当地垒球队的队长和王牌选手，用稳健有力的贝斯演奏为乐队奠定节奏基础。",
 };
 const characterReplaces = {
     gb_changqisushi: ["gb_sp_changqisushi", "gb_changqisushi"],
@@ -629,7 +639,8 @@ const characterSort = {
     gb_roselia: ["gb_couyouxina", "gb_jinjinglisha", "gb_bingchuanshaye", "gb_yutianchuanyazi", "gb_baijinlinzi"],
     gb_afterglow: ["gb_meizhulan", "gb_qingyemoka", "gb_shangyuanfeimali", "gb_yutianchuanba", "gb_yuzedong"],
     gb_pastel: ["gb_wanshancai", "gb_bailuqiansheng", "gb_bingchuanrina", "gb_dahemami", "gb_ruogongyifu"],
-    gb_ras: ["gb_hezouruiyi", "gb_zhaoriliuhua", "gb_zuotengyimu", "gb_ruyuanlingwangna", "gb_zhushouzhiyou"]
+    gb_ras: ["gb_hezouruiyi", "gb_zhaoriliuhua", "gb_zuotengyimu", "gb_ruyuanlingwangna", "gb_zhushouzhiyou"],
+    gb_hhw: ["gb_xuanjuanxin", "gb_aozemeixiao", "gb_laitianxun", "gb_songyuanhuayin", "gb_beizeyumei"],
 };
 export { characterSubstitutes, characterTitles, characterIntros, characterReplaces, characterSort };
 export default characters;

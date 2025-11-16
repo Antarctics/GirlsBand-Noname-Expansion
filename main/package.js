@@ -1,5 +1,6 @@
 import skills1 from "./skill1.js";
 import skills2 from "./skill2.js";
+import skills3 from "./skill3.js";
 import translates, { pinyins } from "./translate.js";
 import dynamicTranslates from "./dynamicTranslate.js";
 import characters, { characterSubstitutes, characterTitles, characterIntros, characterReplaces, characterSort } from "./character.js"
@@ -49,6 +50,7 @@ export default function (version) {
             skill: {
                 ...skills1,
                 ...skills2,
+                ...skills3,
             },
             translate: {
                 ...translates
