@@ -34,18 +34,22 @@ export default async (b) => {
         if (!b && sessionStorage.gb_check) return;
 
         game.importedPack = true;
-        const pList = ["https://proxy.aestarin.com/", "", "https://gh-proxy.com/", "https://hk.gh-proxy.com/", "https://tvv.tw/"];
+        const pList = ["https://proxy.scharaci.com/", "", "https://gh-proxy.com/", "https://hk.gh-proxy.com/", "https://tvv.tw/"];
         let p = pList[lib.config.extension_GirlsBand_update_source] || "";
         let m;
         let success = false;
         for (const u of [p, ...pList.filter(x => x !== p)]) {
-            const r = await fetch(`${u}https://raw.githubusercontent.com/Antarctics/GirlsBand-Noname-Expansion/refs/heads/main/manifest.json`);
-            if (r.ok) {
-                m = await r.json();
-                p = u;
-                console.log(`使用${u || '默认'}镜像获取清单成功`);
-                success = true;
-                break;
+            try {
+                const r = await fetch(`${u}https://raw.githubusercontent.com/Antarctics/GirlsBand-Noname-Expansion/refs/heads/main/manifest.json`);
+                if (r.ok) {
+                    m = await r.json();
+                    p = u;
+                    console.log(`使用${u || '默认'}镜像获取清单成功`);
+                    success = true;
+                    break;
+                }
+            } catch (e) {
+                console.warn(`镜像 ${u} 请求异常:`, e);
             }
         }
 
