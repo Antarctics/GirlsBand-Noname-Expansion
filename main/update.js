@@ -34,7 +34,7 @@ export default async (b) => {
         if (!b && sessionStorage.gb_check) return;
 
         game.importedPack = true;
-        const pList = ["https://proxy.scharaci.com/", "", "https://gh-proxy.com/", "https://hk.gh-proxy.com/", "https://tvv.tw/"];
+        const pList = ["https://proxy.aestarin.com/", "", "https://gh-proxy.com/", "https://hk.gh-proxy.com/", "https://tvv.tw/"];
         let p = pList[lib.config.extension_GirlsBand_update_source] || "";
         let m;
         let success = false;
