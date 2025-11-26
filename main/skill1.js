@@ -1041,20 +1041,20 @@ const skills = {
                 },
                 filter(event, player) {
                     var list = [];
-                    let num = player.storage["gbheming_effect"]
+                    let num = player.getStorage("gbheming_effect", 0)
                     for (var name of lib.inpile) {
                         if (num > 4) {
                             if (get.type(name) == "basic" || name == "huogong") list.push(name)
                         } else if (num == 4 && ["sha", "shan", "jiu", "huogong"].includes(name)) list.push(name)
                         else if (num == 3 && ["jiu", "huogong"].includes(name)) list.push(name)
                     }
-                    return player.countCards("hs", card => card.name == "ying") && player.storage.gbheming_effect > 2 && list.some(name => event.filterCard({
+                    return player.countCards("hs", card => card.name == "ying") && player.getStorage("gbheming_effect", 0) > 2 && list.some(name => _status.event.filterCard({
                         name: name
                     }, player, event))
                 },
                 hiddenCard(player, name) {
                     var list = [];
-                    let num = player.storage["gbheming_effect"]
+                    let num = player.getStorage("gbheming_effect", 0)
                     for (var name of lib.inpile) {
                         if (num > 4 && get.type(name) == "basic" || name == "huogong") list.push(name)
                         else if (num == 4 && ["sha", "shan", "jiu", "huogong"].includes(name)) list.push(name)
@@ -1066,7 +1066,7 @@ const skills = {
                 chooseButton: {
                     dialog(event, player) {
                         var list = [];
-                        let num = player.storage["gbheming_effect"]
+                        let num = player.getStorage("gbheming_effect", 0)
                         for (var name of lib.inpile) {
                             if (num > 4 && get.type(name) == "basic" || name == "huogong") list.push(name)
                             else if (num == 4 && ["sha", "shan", "jiu", "huogong"].includes(name)) list.push(name)
@@ -1111,7 +1111,7 @@ const skills = {
                     respondTao: true,
                     skillTagFilter(player, tag, arg) {
                         if (!player.countCards("h", "ying")) return false;
-                        let num = player.storage["gbheming_effect"]
+                        let num = player.getStorage("gbheming_effect", 0)
                         switch (tag) {
                             case "save":
                                 return num > 2

@@ -1612,7 +1612,7 @@ const skills = {
                         let player = _status.event.player
                         let target = targets.filter(i => i != player)[0]
                         if (opinion != "black") {
-                            let cards = [...red, ...black, ...others].filter(i => i[0] == player).map(i => i[1])
+                            let cards = [...red, ...black, ...others].filter(i => i[0] == player).map(i => i[1]).flat()
                             if (cards.length) player.give(cards, target)
                             target.addTempSkill("gblingming_effect")
                             target.markAuto("gblingming_effect", cards)
@@ -1948,5 +1948,554 @@ const skills = {
             player.removeSkill("gbshiqi")
         },
     },
+    gbxuanjuan: {
+        audio: false,
+        trigger: {
+            global: "phaseBefore",
+            player: "enterGame",
+        },
+        forced: true,
+        filter(event, player) {
+            return event.name != "phase" || game.phaseNumber == 0;
+        },
+        async content(event, trigger, player) {
+            let num = 0;
+            for (let i = 1; i <= 5; i++) {
+                if (player.hasEnabledSlot(i)) {
+                    player.disableEquip(i);
+                    num++;
+                }
+            }
+            if (num > 0) player.draw(num)
+        },
+        mod: {
+            globalFrom(from, to, distance) {
+                if (_status.currentPhase == from) return 1
+            }
+        }
+    },
+    gbzhuxin: {
+        audio: false,
+        trigger: {
+            player: "loseAfter"
+        },
+        filter(event, player) {
+            return event.cards.some(card => get.suit(card) == "heart");
+        },
+        forced: true,
+        async content(event, trigger, player) {
+            let list = ["选项一", "选项二", "选项三"];
+            let used = player.getStorage("gbzhuxin_used");
+            list.removeArray(used);
+            if (!player.canMoveCard()) list.remove("选项三")
+            if (list.length == 0) {
+                return;
+            }
+            let result = await player.chooseTarget("逐心", "选择一名角色", true).forResult()
+            if (result.bool) {
+                let target = result.targets[0];
+                let choice = await target.chooseControl(list)
+                    .set("prompt", "逐心")
+                    .set("choiceList", [
+                        "弃置一张牌。若此牌花色为♥，" + get.translation(player) + "获得此牌并令你摸一张牌",
+                        "展示一张牌，若此牌花色为♥，令" + get.translation(player) + "获得你一张牌",
+                        "令" + get.translation(player) + "移动场上的一张牌，若此牌花色为♥，此技能视为未使用过"
+                    ])
+                    .set("ai", () => {
+                        let player = _status.event.player
+                        let source = _status.event.getParent().player
+                        return _status.event.controls.randomGet();
+                    })
+                    .forResult();
+
+                if (choice.control) {
+                    player.markAuto("gbzhuxin_used", choice.control)
+                    player.addTempSkill("gbzhuxin_used")
+                    if (choice.control == "选项一") {
+                        let discard = await target.chooseToDiscard("he", true).forResult()
+                        if (discard.bool && discard.cards.length && get.suit(discard.cards[0]) == "heart") {
+                            player.gain(discard.cards, "giveAuto")
+                            target.draw()
+                        }
+                    } else if (choice.control == "选项二") {
+                        let show = await target.chooseCard("请展示一张牌", "he", true).forResult();
+                        if (show.bool) {
+                            target.showCards(show.cards);
+                            if (get.suit(show.cards[0]) == "heart") {
+                                player.gainPlayerCard(target, "he", true)
+                            }
+                        }
+                    } else if (choice.control == "选项三") {
+                        let moveCard = await player.moveCard().forResult();
+                        if (moveCard.bool) {
+                            let card = moveCard.card
+                            if (get.suit(card) == "heart") {
+                                player.removeSkill("gbzhuxin_used")
+                                game.log(player, "的", "#g【逐心】", "已重置");
+                            }
+
+                        }
+                    }
+                }
+            }
+        },
+        subSkill: {
+            used: {
+                onremove: true,
+            }
+        }
+    },
+    gbtongxin: {
+        audio: false,
+        zhuSkill: true,
+        trigger: {
+            player: "phaseBegin"
+        },
+        filter(event, player) {
+            return player.hasDisabledSlot() && game.hasPlayer(p => p != player && p.group == player.group)
+        },
+        async content(event, trigger, player) {
+            let count = game.countPlayer(p => p.group == player.group && p != player);
+            if (count > 0) {
+                await player.chooseToEnable(count)
+            }
+        }
+    },
+    gbfuxin: {
+        audio: false,
+        trigger: {
+            player: "loseAfter"
+        },
+        filter(event, player) {
+            if (_status.currentPhase == player) return false;
+            return event.cards.some(card => get.suit(card) == "heart" && card.original != "x")
+        },
+        forced: true,
+        async content(event, trigger, player) {
+            let current = _status.currentPhase
+            var result = await player.chooseCard("he", true, "抚心：重铸一张牌").forResult();
+            await player.recast(result.cards)
+            if (current) {
+                var result = await current.chooseCard("he", true, "抚心：重铸一张牌").forResult();
+                await current.recast(result.cards)
+            }
+        },
+        group: "gbfuxin_show",
+        subSkill: {
+            show: {
+                audio: false,
+                direct: true,
+                trigger: {
+                    player: ["gameDrawAfter", "gainAfter"]
+                },
+                async content(event, trigger, player) {
+                    let cards = player.getCards("h")
+                    player.addShownCards(cards, "visible_gbfuxin")
+                }
+            }
+        }
+    },
+    gbxiongyi: {
+        audio: false,
+        mark: true,
+        marktext: "翼",
+        intro: {
+            content: "expansion",
+            markcount: "expansion"
+        },
+        trigger: {
+            player: "loseEnd",
+        },
+        filter(event, player) {
+            return event.getParent(2).name != "gbxiongyi" && event.cards.some(card => card.original != "x")
+        },
+        forced: true,
+        async content(event, trigger, player) {
+            let cards = trigger.cards.filter(card => card.original != "x")
+            await player.addToExpansion(cards, "giveAuto").gaintag.add("gbxiongyi")
+        },
+        group: ["gbxiongyi_end"],
+        subSkill: {
+            end: {
+                audio: false,
+                charlotte: true,
+                trigger: {
+                    global: "phaseEnd"
+                },
+                async cost(event, trigger, player) {
+                    event.result = await player.chooseCard("he", "熊翼：重铸一张牌").forResult();
+                },
+                async content(event, trigger, player) {
+                    await player.recast(event.cards)
+                    let target = trigger.player;
+                    let cards = player.getExpansions("gbxiongyi");
+                    if (cards.length && cards.some(card => player.canUse(card, target, false, false))) {
+                        let result = await player.chooseCardButton(cards, "熊翼：对" + get.translation(target) + "使用一张『翼』", true)
+                            .set("filterButton", button => {
+                                let player = _status.event.player
+                                let target = _status.currentPhase
+                                return player.canUse(button.link, target, false, false)
+                            })
+                            .forResult();
+                        if (result.bool) {
+                            let card = result.links[0]
+                            await player.useCard(card, target, false)
+                        }
+                    }
+                }
+            }
+        }
+    },
+    gbmeilv: {
+        audio: false,
+        trigger: {
+            player: "addToExpansionAfter"
+        },
+        filter(event, player) {
+            return player.countExpansions("gbxiongyi") >= 4
+        },
+        forced: true,
+        async content(event, trigger, player) {
+            let cards = player.getExpansions("gbxiongyi");
+            player.showCards(cards, "美律");
+            player.discard(cards);
+            let suits = cards.map(card => get.suit(card));
+            let numbers = cards.map(card => get.number(card));
+
+            let uniqueSuits = new Set(suits);
+            let uniqueNumbers = new Set(numbers);
+            let bool = false
+            if (uniqueSuits.size >= 4) {
+                player.gainMaxHp(1);
+                await player.draw();
+                bool = true
+            }
+            if (uniqueNumbers.size >= 4) {
+                let result = await player.choosePlayerCard(player, "hej", "美律：重铸自身区域内的一张牌", true).forResult();
+                if (result) player.recast(result.links)
+                bool = true
+            }
+            if (uniqueSuits.size == 1 || uniqueNumbers.size == 1) {
+                let num = player.maxHp - player.countCards("h");
+                if (num > 0) {
+                    player.draw(num);
+                } else if (diff < 0) {
+                    player.chooseToDiscard(-diff, "h", true)
+                }
+                bool = true
+            }
+            if (!bool) {
+                player.loseMaxHp(1);
+                player.draw(2);
+            }
+        }
+    },
+    gbmenghuan: {
+        audio: false,
+        trigger: {
+            target: "useCardToTarget",
+            player: ["useCard", "respond"]
+        },
+        filter(event, player) {
+            if (event.name == "useCard" || event.name == "respond") {
+                return _status.currentPhase != player;
+            }
+            return true;
+        },
+        forced: true,
+        charlotte: true,
+        async content(event, trigger, player) {
+            player.turnOver();
+            let result = await player.chooseCard("梦幻：重铸一张牌", "he", true).forResult();
+            if (result.bool && result.cards.length) {
+                let card = result.cards[0];
+                player.recast(card)
+                if (get.suit(card) == "heart") {
+                    player.draw(2);
+                }
+            }
+        }
+    },
+    gbxundan: {
+        audio: false,
+        forced: true,
+        trigger: {
+            player: "useCard"
+        },
+        mod: {
+            cardUsable(card, player, num) {
+                if (!player.isTurnedOver() && lib.card[card.name]?.type != "basic") return Infinity
+            },
+            cardname(card, player, name) {
+                if (player.isTurnedOver() && lib.card[card.name]?.type == "equip") return "tuixinzhifu"
+                if (!player.isTurnedOver() && lib.card[card.name]?.type != "basic") return "jiu"
+            },
+        },
+        filter(event, player) {
+            return event.card && event.card.name == "jiu" && event.modSkill?.cardname == "gbxundan"
+        },
+        async content(event, trigger, player) {
+            player.getStat().card.jiu--
+        },
+        group: "gbxundan_effect",
+        subSkill: {
+            effect: {
+                audio: false,
+                forced: true,
+                trigger: {
+                    player: "turnOverBegin"
+                },
+                async content(event, trigger, player) {
+                    await player.gainPlayerCard(player, "he", true)
+                    player.addTempSkill("gbxundan_range");
+                },
+            },
+            range: {
+                audio: false,
+                forced: true,
+                trigger: {
+                    player: "useCard1",
+                },
+                async content(event, trigger, player) {
+                    player.removeSkill(event.name)
+                },
+                mod: {
+                    targetInRange(card, player, target) {
+                        return true
+                    }
+                }
+            }
+        }
+    },
+    gbmitu: {
+        audio: false,
+        trigger: {
+            player: "useCardToPlayer",
+            target: "useCardToTarget"
+        },
+        forced: true,
+        filter(event, player) {
+            if (event.name == "useCardToPlayer" && !event.isFirstTarget) return false;
+            return event.player != event.target && (event.card.name == "sha" || get.type(event.card) == "trick")
+        },
+        async content(event, trigger, player) {
+            let result = await player.chooseCard("迷途：重铸一张牌", "he", true).forResult();
+            if (result.bool) {
+                player.recast(result.cards)
+                let list = []
+                if (game.hasPlayer(current => {
+                    return current != player && !trigger.targets.includes(current) && trigger.player.canUse(trigger.card, current, false, false)
+                })) {
+                    list.push("选项一")
+                }
+                list.push("选项二")
+                let choice = await player.chooseControl(list)
+                    .set("choiceList", [`从${get.translation(trigger.player)}的上家或下家开始，令其与${get.translation(trigger.target)}之间的所有角色均成为此牌目标`, "摸一张牌，本回合你和其他角色互相计算距离时均+1"])
+                    .set("source", trigger.player)
+                    .set("target", trigger.target)
+                    .set("card", trigger.card)
+                    .set("ai", () => {
+                        let evt = _status.event
+                        let card = evt.card
+                        let target = evt.target
+                        let source = evt.source
+                        let player = evt.player
+                        let pre = 0
+                        let next = 0
+                        let current = source;
+                        while (current != target) {
+                            current = current.previous;
+                            if (current != target && source.canUse(card, current, false, false)) {
+                                pre += get.effect(current, card, source, player);
+                            }
+                            if (current == source) break;
+                        }
+                        current = source;
+                        while (current != target) {
+                            current = current.next;
+                            if (current != target && source.canUse(card, current, false, false)) {
+                                next += get.effect(current, card, source, player);
+                            }
+                            if (current == source) break;
+                        }
+                        if (pre > 1 || next > 1) return "选项一"
+                        return "选项二"
+                    })
+                    .forResult()
+                game.log(player, "选择了", "#g【迷途】", "的", "#y" + choice.control);
+                if (choice.control == "选项一") {
+                    let next = await player.chooseControl("上家", "下家")
+                        .set("prompt", `迷途：选择起始角色`)
+                        .set("source", trigger.player)
+                        .set("target", trigger.target)
+                        .set("card", trigger.card)
+                        .set("ai", () => {
+                            let evt = _status.event
+                            let card = evt.card
+                            let target = evt.target
+                            let source = evt.source
+                            let player = evt.player
+                            let pre = 0
+                            let next = 0
+                            let current = source;
+                            while (current != target) {
+                                current = current.previous;
+                                if (current != target && source.canUse(card, current, false, false)) {
+                                    pre += get.effect(current, card, source, player);
+                                }
+                                if (current == source) break;
+                            }
+                            current = source;
+                            while (current != target) {
+                                current = current.next;
+                                if (current != target && source.canUse(card, current, false, false)) {
+                                    next += get.effect(current, card, source, player);
+                                }
+                                if (current == source) break;
+                            }
+                            if (pre > next) return "上家"
+                            return "下家"
+                        })
+                        .forResult();
+                    var targetNext = trigger.player
+                    while (targetNext != trigger.target) {
+                        targetNext = next.control == "上家" ? targetNext.previous : targetNext.next
+                        trigger.getParent().targets.add(targetNext)
+                    }
+                } else {
+                    player.draw();
+                    player.addTempSkill("gbmitu_dist");
+                }
+            }
+        },
+        subSkill: {
+            dist: {
+                mod: {
+                    globalFrom: (from, to, num) => num + 1,
+                    globalTo: (from, to, num) => num + 1,
+                }
+            }
+        }
+    },
+    gbxinglu: {
+        audio: false,
+        trigger: {
+            target: "useCardToTarget"
+        },
+        filter(event, player) {
+            return get.suit(event.card) == "heart";
+        },
+        charlotte: true,
+        mod: {
+            cardUsable(card, player, num) {
+                if (get.suit(card) == "heart") return Infinity;
+            },
+            ignoredHandcard(card, player) {
+                if (get.suit(card) == "heart") return true;
+            },
+            targetInRange(card, player, target) {
+                if (get.suit(card) == "heart") return true;
+            }
+        },
+        derivation: "hongyan",
+        group: "hongyan",
+        check(event, player) {
+            if (get.attitude(player, _status.currentPhase) > 0) return true
+            return Math.random() < 0.5
+        },
+        async content(event, trigger, player) {
+            let current = _status.currentPhase;
+            if (current) {
+                current.draw();
+                current.addTempSkill("gbxinglu_buff");
+            }
+        },
+        subSkill: {
+            buff: {
+                mod: {
+                    cardUsable(card, player, num) {
+                        if (card.name == "sha") return num + 1;
+                    }
+                }
+            }
+        }
+    },
+    gbbenxi: {
+        audio: false,
+        trigger: {
+            player: "useCard"
+        },
+        charlotte: true,
+        logTarget: "targets",
+        async cost(event, trigger, player) {
+            event.result = await player.chooseTarget("奔戏", "选择一名角色")
+                .set("filterTarget", (c, p, t) => get.distance(p, t) <= 1 && t.countCards("he"))
+                .set("ai", target => {
+                    let player = _status.event.player
+                    if (target == player) return player.countCards("he", card => get.value(card) <= 5) / 2
+                    if (get.attitude(player, target) < 0) return target.countCards("he", card => get.value(card) > 4)
+                    return 1
+                })
+                .forResult();
+        },
+        async content(event, trigger, player) {
+            let target = event.targets[0];
+            let cardResult = await player.choosePlayerCard(target, "he", true).forResult();
+            if (cardResult.bool) {
+                let card = cardResult.cards[0];
+                target.showCards(card);
+                if (get.suit(card) == "heart") {
+                    player.gain(card, "giveAuto");
+                } else {
+                    target.discard(card);
+                    target.addMark("gbbenxi_draw", 1, false);
+                    target.addTempSkill("gbbenxi_draw");
+                }
+
+            }
+        },
+        subSkill: {
+            draw: {
+                forced: true,
+                onremove(player, skill) {
+                    player.draw(player.countMark(skill))
+                    player.removeStorage(skill)
+                }
+            }
+        }
+    },
+    gbjinhuan: {
+        audio: false,
+        trigger: {
+            player: "useCard"
+        },
+        forced: true,
+        firstDo: true,
+        mod: {
+            ignoredHandcard(card, player) {
+                if (get.suit(card) == "heart") return true;
+            },
+        },
+        async content(event, trigger, player) {
+            if (_status.currentPhase == player) {
+                player.addMark("gbjinhuan_dist")
+                player.addTempSkill("gbjinhuan_dist")
+            }
+            if (get.suit(trigger.card) == "heart") {
+                trigger.directHit.addArray(game.players);
+                game.log(trigger.cards, "不可被响应");
+            }
+        },
+        subSkill: {
+            dist: {
+                onremove: true,
+                mod: {
+                    globalFrom(from, to, num) {
+                        return num - from.countMark("gbjinhuan_dist")
+                    }
+                }
+            }
+        }
+    }
 }
 export default skills;

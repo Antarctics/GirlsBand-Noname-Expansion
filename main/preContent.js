@@ -27,7 +27,8 @@ export default function () {
         { id: "gbras", name: "幕", fullname: "RAISE A SUILEN", color: "#33cccc", image: "ext:GirlsBand/image/ras.jpg" },
         { id: "gbband", name: "束", fullname: "結束バンド", color: "#ff2291", image: "ext:GirlsBand/image/band.png" },
         { id: "gbTOGETOGE", name: "刺", fullname: "无刺有刺", color: "#D90E2C", image: "ext:GirlsBand/image/TOGETOGE.png" },
-        { id: "gbkon", name: "轻", fullname: "轻音少女", color: "#e71419", image: "ext:GirlsBand/image/kon.jpg" }
+        { id: "gbkon", name: "轻", fullname: "轻音少女", color: "#e71419", image: "ext:GirlsBand/image/kon.jpg" },
+        { id: "gbhhw", name: "笑", fullname: "Hello, Happy World!", color: "#FFDD00", image: "ext:GirlsBand/image/hhw.jpg" }
     ];
 
     groups.forEach(group => {
