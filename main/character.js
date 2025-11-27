@@ -512,7 +512,7 @@ const characters = {
     gb_laitianxun: {
         sex: "female",
         group: "gbhhw",
-        hp: 4,
+        hp: 5,
         skills: ["gbmenghuan", "gbxundan"],
         names: "濑田|薰",
         img: "extension/GirlsBand/image/kaoru.png",

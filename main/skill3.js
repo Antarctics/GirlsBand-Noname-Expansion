@@ -420,9 +420,7 @@ const skills = {
                 },
                 async content(event, trigger, player) {
                     player.removeSkill("gbmeiying_1")
-                    if (!game.hasPlayer(p => player.canUse({
-                        name: "sha"
-                    }, p, true) && !trigger.targets.includes(p))) {
+                    if (!game.hasPlayer(p => player.canUse({ name: "sha" }, p, true) && !trigger.targets.includes(p))) {
                         event.finish()
                         return
                     }
@@ -430,7 +428,7 @@ const skills = {
                         .set("filterTarget", (card, player, target) => player.inRange(target) && !_status.event.getTrigger().targets.includes(target))
                         .set("ai", target => {
                             let player = _status.event.player
-                            return get.effect(target, !_status.event.getTrigger().card, player, player) > 0
+                            return get.effect(target, _status.event.getTrigger().card, player, player) > 0
                         })
                         .forResult()
                     if (result && result.bool) {
@@ -1970,7 +1968,7 @@ const skills = {
         },
         mod: {
             globalFrom(from, to, distance) {
-                if (_status.currentPhase == from) return 1
+                if (_status.currentPhase == from) return -Infinity
             }
         }
     },
@@ -2107,12 +2105,20 @@ const skills = {
             player: "loseEnd",
         },
         filter(event, player) {
-            return event.getParent(2).name != "gbxiongyi" && event.cards.some(card => card.original != "x")
+            return event.getParent(2).name != "gbxiongyi"
         },
         forced: true,
         async content(event, trigger, player) {
-            let cards = trigger.cards.filter(card => card.original != "x")
-            await player.addToExpansion(cards, "giveAuto").gaintag.add("gbxiongyi")
+            let cards = trigger.cards
+            let next = player.addToExpansion(cards, "giveAuto")
+            next.gaintag.add("gbxiongyi")
+            await next
+            if (player.countExpansions("gbxiongyi") >= 4) {
+                let cards = player.getExpansions("gbxiongyi")
+                await player.discard(cards)
+                await player.showCards(cards)
+
+            }
         },
         group: ["gbxiongyi_end"],
         subSkill: {
@@ -2149,16 +2155,14 @@ const skills = {
     gbmeilv: {
         audio: false,
         trigger: {
-            player: "addToExpansionAfter"
+            player: "showCardsAfter"
         },
         filter(event, player) {
-            return player.countExpansions("gbxiongyi") >= 4
+            return event.cards.some(card => card.gaintag?.includes("gbxiongyi"))
         },
         forced: true,
         async content(event, trigger, player) {
-            let cards = player.getExpansions("gbxiongyi");
-            player.showCards(cards, "美律");
-            player.discard(cards);
+            let cards = trigger.cards.filter(card => card.gaintag?.includes("gbxiongyi"))
             let suits = cards.map(card => get.suit(card));
             let numbers = cards.map(card => get.number(card));
 
@@ -2224,48 +2228,18 @@ const skills = {
         },
         mod: {
             cardUsable(card, player, num) {
-                if (!player.isTurnedOver() && lib.card[card.name]?.type != "basic") return Infinity
+                if (lib.card[card.name]?.type == "basic") return Infinity
             },
             cardname(card, player, name) {
-                if (player.isTurnedOver() && lib.card[card.name]?.type == "equip") return "tuixinzhifu"
                 if (!player.isTurnedOver() && lib.card[card.name]?.type != "basic") return "jiu"
             },
         },
         filter(event, player) {
-            return event.card && event.card.name == "jiu" && event.modSkill?.cardname == "gbxundan"
+            if (player.isTurnedOver() && get.type(event.card) == "equip") return true
         },
         async content(event, trigger, player) {
-            player.getStat().card.jiu--
+            await player.chooseUseTarget({ name: "tuixinzhifu" }).forResult()
         },
-        group: "gbxundan_effect",
-        subSkill: {
-            effect: {
-                audio: false,
-                forced: true,
-                trigger: {
-                    player: "turnOverBegin"
-                },
-                async content(event, trigger, player) {
-                    await player.gainPlayerCard(player, "he", true)
-                    player.addTempSkill("gbxundan_range");
-                },
-            },
-            range: {
-                audio: false,
-                forced: true,
-                trigger: {
-                    player: "useCard1",
-                },
-                async content(event, trigger, player) {
-                    player.removeSkill(event.name)
-                },
-                mod: {
-                    targetInRange(card, player, target) {
-                        return true
-                    }
-                }
-            }
-        }
     },
     gbmitu: {
         audio: false,
@@ -2390,15 +2364,10 @@ const skills = {
             cardUsable(card, player, num) {
                 if (get.suit(card) == "heart") return Infinity;
             },
-            ignoredHandcard(card, player) {
-                if (get.suit(card) == "heart") return true;
-            },
             targetInRange(card, player, target) {
                 if (get.suit(card) == "heart") return true;
             }
         },
-        derivation: "hongyan",
-        group: "hongyan",
         check(event, player) {
             if (get.attitude(player, _status.currentPhase) > 0) return true
             return Math.random() < 0.5
@@ -2444,10 +2413,10 @@ const skills = {
             if (cardResult.bool) {
                 let card = cardResult.cards[0];
                 target.showCards(card);
+                target.discard(card);
                 if (get.suit(card) == "heart") {
-                    player.gain(card, "giveAuto");
+                    player.draw()
                 } else {
-                    target.discard(card);
                     target.addMark("gbbenxi_draw", 1, false);
                     target.addTempSkill("gbbenxi_draw");
                 }
@@ -2475,6 +2444,9 @@ const skills = {
             ignoredHandcard(card, player) {
                 if (get.suit(card) == "heart") return true;
             },
+            cardUsable(card, player, num) {
+                if (get.suit(card) == "heart") return Infinity;
+            }
         },
         async content(event, trigger, player) {
             if (_status.currentPhase == player) {
@@ -2482,6 +2454,8 @@ const skills = {
                 player.addTempSkill("gbjinhuan_dist")
             }
             if (get.suit(trigger.card) == "heart") {
+                trigger.addCount = false;
+                player.getStat().card[trigger.card.name]--
                 trigger.directHit.addArray(game.players);
                 game.log(trigger.cards, "不可被响应");
             }
