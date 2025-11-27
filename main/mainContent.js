@@ -109,6 +109,51 @@ export default function () {
 
     // 特殊名词注释系统
     if (lib.config.extension_GirlsBand_poptip) {
+        if (!window.name2KeywordMap || window.name2KeywordMap._lastUpdateLength !== Object.keys(lib.translate).length) {
+            window.name2KeywordMap = new Map();
+            window.name2KeywordMap._lastUpdateLength = Object.keys(lib.translate).length;
+            const tempMap = new Map();
+
+            for (const key in lib.translate) {
+                if (key.endsWith('_info')) continue;
+                const name = lib.translate[key];
+                if (name) {
+                    if (!tempMap.has(name)) tempMap.set(name, []);
+                    tempMap.get(name).push(key);
+                }
+            }
+
+            for (const [name, keywords] of tempMap.entries()) {
+                if (!name) continue;
+                if (keywords.length === 1) {
+                    window.name2KeywordMap.set(name, keywords);
+                } else {
+                    const namePinyin = get.pinyin(name, false).join('');
+                    const scored = [];
+
+                    for (const keyword of keywords) {
+                        let maxScore = 0;
+                        for (const part of keyword.split('_')) {
+                            let bestMatch = 0;
+                            for (let start = 0; start <= part.length - namePinyin.length; start++) {
+                                let match = 0;
+                                for (let i = 0; i < namePinyin.length; i++) {
+                                    if (part[start + i] === namePinyin[i]) match++;
+                                    else break;
+                                }
+                                if (match > bestMatch) bestMatch = match;
+                            }
+                            const score = bestMatch / keyword.length;
+                            if (score > maxScore) maxScore = score;
+                        }
+                        scored.push({ keyword, score: maxScore });
+                    }
+
+                    scored.sort((a, b) => b.score - a.score);
+                    window.name2KeywordMap.set(name, scored.map(item => item.keyword));
+                }
+            }
+        }
         get.skillInfoTranslation = (skill, player) => {
             let str = player && lib.dynamicTranslate[skill] ? lib.dynamicTranslate[skill](player, skill) : lib.translate[skill + "_info"] || "";
 
@@ -116,52 +161,6 @@ export default function () {
                 console.warn(`你${skill}的翻译传的是什么？！`);
                 return "";
             }
-
-            if (!window.name2KeywordMap || window.name2KeywordMap._lastUpdateLength !== Object.keys(lib.translate).length) {
-                window.name2KeywordMap = new Map();
-                window.name2KeywordMap._lastUpdateLength = Object.keys(lib.translate).length;
-                const tempMap = new Map();
-
-                for (const key in lib.translate) {
-                    if (key.endsWith('_info')) continue;
-                    const name = lib.translate[key];
-                    if (!name) continue;
-                    if (!tempMap.has(name)) tempMap.set(name, []);
-                    tempMap.get(name).push(key);
-                }
-
-                for (const [name, keywords] of tempMap.entries()) {
-                    if (!name) continue;
-                    if (keywords.length === 1) {
-                        window.name2KeywordMap.set(name, keywords);
-                    } else {
-                        const namePinyin = get.pinyin(name, false).join('');
-                        const scored = [];
-
-                        for (const keyword of keywords) {
-                            let maxScore = 0;
-                            for (const part of keyword.split('_')) {
-                                let bestMatch = 0;
-                                for (let start = 0; start <= part.length - namePinyin.length; start++) {
-                                    let match = 0;
-                                    for (let i = 0; i < namePinyin.length; i++) {
-                                        if (part[start + i] === namePinyin[i]) match++;
-                                        else break;
-                                    }
-                                    if (match > bestMatch) bestMatch = match;
-                                }
-                                const score = bestMatch / keyword.length;
-                                if (score > maxScore) maxScore = score;
-                            }
-                            scored.push({ keyword, score: maxScore });
-                        }
-
-                        scored.sort((a, b) => b.score - a.score);
-                        window.name2KeywordMap.set(name, scored.map(item => item.keyword));
-                    }
-                }
-            }
-
             let firstKeywords = new Set();
             return str.replace(/“(.*?)”|【(.*?)】|〖(.*?)〗/g, (match, quoted, card, skillName) => {
                 let keyword, type;

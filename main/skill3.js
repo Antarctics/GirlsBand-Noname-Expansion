@@ -1984,7 +1984,7 @@ const skills = {
             player: ["useCard", "discard"]
         },
         charlotte: true,
-        dirced: true,
+        direct: true,
         async content(event, trigger, player) {
             let list = ["选项一", "选项二", "选项三"];
             let used = player.getStorage("gbzhuxin_used");
@@ -2060,7 +2060,7 @@ const skills = {
                             }
                         }
                     } else if (choice.control == "选项三") {
-                        await player.chooseToEnable().forResult()
+                        if (player.hasDisabledSlot()) await player.chooseToEnable().forResult()
                         if (!player.hasDisabledSlot()) {
                             target.showCards(target.getCards("h"));
                             let cards = target.getCards("h").filter(card => get.suit(card) != "heart");
