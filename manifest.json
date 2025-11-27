@@ -36,7 +36,7 @@
                   "audio/KiLLKiSS.mp3":  "06bdbfa9cf81f91811507cb6ba57a967646ca385",
                   "image/TOGETOGE.png":  "68678f973a312f0e71aad0199a72e0261643107c",
                   "audio/skill/gbbeihua4.mp3":  "38d43a17fe29a3643a0c576a103b452d85fdd0e6",
-                  "main/translate.js":  "2a928aa2745fc54f562be24038488a9cd013f79b",
+                  "main/translate.js":  "ee699c1590550ea12172af974ebc304b2f66ab6f",
                   "image/2.png":  "c67bc8749c651e592cb12b951d364c0993451eaa",
                   "main/skill1.js":  "6890a841a31cf44ee3830949f4de5669695840ca",
                   "image/umiri.png":  "3f25b88af963a031470bc62118217b1eb436d4f4",
@@ -113,9 +113,9 @@
                   "image/sp_mortis.png":  "82398c9d1e0e7a85aee623b61a260d2e163af1e3",
                   "audio/skill/gbjianqiu2.mp3":  "5eab599164fc3009c4b357f1d0695e3d2c0e6372",
                   "image/kon.jpg":  "6e813091b6a2d6c3e0e3da56cb7bc93defefa8d0",
-                  "main/update.js":  "31ad97c036b53ce10a98bd5b1a86a359b449b6f3",
+                  "main/update.js":  "cf66207ee92eeac841e29dfabdfff1d30661b12d",
                   "image/kita.png":  "8ee5e3978474067de79983273b986d2d2a950367",
-                  "main/skill3.js":  "fad059b9855ce68720fd5ec4d7cbb95571392ada",
+                  "main/skill3.js":  "3a73273aee0cfdd598321000e7497e2748f10a76",
                   "audio/Hey-day狂騒曲(カプリチオ).mp3":  "af82a843d34b456dab971683f88ec9d71245257c",
                   "main/mainContent.js":  "05381527cb37034ccacc1e85a614c6fa62d43ed6",
                   "audio/skill/gbhexian3.mp3":  "313ea0134d658f1be9fb39d0bdfbc72daca22ea7",
@@ -130,7 +130,7 @@
                   "audio/skill/gblvefei2.mp3":  "37c287f10d5b52629e760488459b22a805fb286a",
                   "image/band.png":  "8b56aeb0a54dc84a5649fac1d318748688ca0e34",
                   "image/sakiko.png":  "f8640c7073a041ee48a51ff10d0bde11e9b112de",
-                  "extension.js":  "d96a89e7e1c74e411a9e6a219a2a5802f2ada4af",
+                  "extension.js":  "c5ac1d035678346dd6fd976cc9e2e84593e00a0f",
                   "image/ran.png":  "d2b048c78410618e7ab0ac3cd102148c62d8fd1e",
                   "image/rui.png":  "6c825dabb7fa4232ed90e833ac84d44b6b05ebc0",
                   "image/momoka.png":  "25b47d65490c8a10f819187d98aab46ce86da6de",
@@ -170,6 +170,6 @@
                   "image/nyamu.png":  "f9f7acb996e18fbc25c29bb17abb5ed98d261466",
                   "audio/skill/gbmizi2.mp3":  "65c5bd168ba84518d4afb37917aaafd40d622896"
               },
-    "version":  "2.2.1",
-  "update": "━━━━━━━━━━━━━━━━━━━━\n✦ 全新乐队「Hello, Happy World!」闪耀登场 ✦\n━━━━━━━━━━━━━━━━━━━━\n✦ 弦卷心 · 普天同心：\n  • 定位：辅助／控场\n  • 开局废除装备区，以牌差创造先机，♥牌运筹帷幄，实现精准控场。\n\n✦ 濑田薰 · 梦幻泡影：\n  • 定位：爆发／控场\n  • 武将牌正反变换，巧妙转化牌型，重铸创造收益，攻势行云流水\n\n✦ 松原花音 · 迷宫水母：\n  • 定位：爆发／辅助／控场\n  • 独特目标延伸能力，纵横全场如入无人之境。\n\n✦ 北泽育美 · 未来可乐：\n  • 定位：压制／强命\n  • 以热情击穿一切防御，攻势连绵不绝。\n\n✦ 奥泽美咲 · 福柯小熊：\n  • 定位：运营／控场\n  • 独特牌型组合机制，演绎千变万化的乐章\n ※ 特别提示：因机制复杂，该角色暂禁止AI选取，期待您的亲手演绎\n\n如有任何建议或反馈，欢迎通过扩展界面加入官方社群交流。\n\n—— GirlsBand 运营团队 敬上 ——"
+    "version":  "2.2.2",
+    "update": "━━━━━━━━━━━━━━━━━━━━\n✦ 全新乐队「Hello, Happy World!」闪耀登场 ✦\n━━━━━━━━━━━━━━━━━━━━\n✦ 弦卷心 · 普天同心：\n  • 定位：辅助／控场\n  • 开局废除装备区，以牌差创造先机，♥牌运筹帷幄，实现精准控场。\n\n✦ 濑田薰 · 梦幻泡影：\n  • 定位：爆发／控场\n  • 武将牌正反变换，巧妙转化牌型，重铸创造收益，攻势行云流水\n\n✦ 松原花音 · 迷宫水母：\n  • 定位：爆发／辅助／控场\n  • 独特目标延伸能力，纵横全场如入无人之境。\n\n✦ 北泽育美 · 未来可乐：\n  • 定位：压制／强命\n  • 以热情击穿一切防御，攻势连绵不绝。\n\n✦ 奥泽美咲 · 福柯小熊：\n  • 定位：运营／控场\n  • 独特牌型组合机制，演绎千变万化的乐章\n ※ 特别提示：因机制复杂，该角色暂禁止AI选取，期待您的亲手演绎\n\n如有任何建议或反馈，欢迎通过扩展界面加入官方社群交流。\n\n—— GirlsBand 运营团队 敬上 ——"
 }
