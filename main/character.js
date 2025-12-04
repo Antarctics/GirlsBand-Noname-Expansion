@@ -313,7 +313,7 @@ const characters = {
     gb_dachangnainai: {
         sex: "female",
         group: "shen",
-        hp: 4,
+        hp: 5,
         skills: ["gbzaiyan", "gbliejiu", "gbjiesha"],
         names: "大场|奈奈",
         img: "extension/GirlsBand/image/nana.png",
@@ -498,6 +498,7 @@ const characters = {
         skills: ["gbxuanjuan", "gbzhuxin", "gbtongxin"],
         names: "弦卷|心",
         img: "extension/GirlsBand/image/kokoro.png",
+        dieAudios: ["ext:GirlsBand/audio/die/kokoro"],
     },
     gb_aozemeixiao: {
         sex: "female",
@@ -508,6 +509,7 @@ const characters = {
         skills: ["gbfuxin", "gbxiongyi", "gbmeilv"],
         names: "奥泽|美咲",
         img: "extension/GirlsBand/image/misaki.png",
+        dieAudios: ["ext:GirlsBand/audio/die/misaki"],
     },
     gb_laitianxun: {
         sex: "female",

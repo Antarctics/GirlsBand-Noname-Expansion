@@ -2,27 +2,6 @@ import { lib, game, ui, get, ai, _status } from "../../../noname.js";
 import { createProgress } from "../../../noname/library/update.js";
 export default async (b) => {
     try {
-        if (!localStorage.gb_clean) {
-            game.importedPack = true
-            let m = JSON.parse(await game.promises.readFile("extension/GirlsBand/manifest.json"))
-            const clean = async (path, pre = '') => {
-                const [dirs, files] = await game.promises.getFileList(path);
-                let list = files.map(file => pre ? `${pre}/${file}` : file);
-                for (const d of dirs) list = list.concat(await clean(`${path}/${d}`, pre ? `${pre}/${d}` : d));
-                return list;
-            };
-            const f = (await clean("extension/GirlsBand")).filter(f => !m.files[f] && f !== "manifest.json");
-            if (f.length) {
-                const p = createProgress("清理文件", f.length);
-                for (let i = 0; i < f.length; i++) {
-                    p.setProgressValue(i + 1);
-                    await game.promises.removeFile(`extension/GirlsBand/${f[i]}`)
-                }
-                p.remove();
-            }
-            delete game.importedPack
-            localStorage.gb_clean = true
-        }
         if (_status.connectMode) if (b) {
             alert("联机状态下无法更新");
             throw new Error("联机状态下无法更新");
@@ -32,7 +11,7 @@ export default async (b) => {
             throw new Error("网络连接失败");
         }
         if (!b && sessionStorage.gb_check) return;
-
+        
         game.importedPack = true;
         const pList = ["https://proxy.aestarin.com/", "", "https://gh-proxy.com/", "https://hk.gh-proxy.com/", "https://tvv.tw/"];
         let p = pList[lib.config.extension_GirlsBand_update_source] || "";

@@ -1048,7 +1048,7 @@ const skills = {
                         } else if (num == 4 && ["sha", "shan", "jiu", "huogong"].includes(name)) list.push(name)
                         else if (num == 3 && ["jiu", "huogong"].includes(name)) list.push(name)
                     }
-                    return player.countCards("hs", card => card.name == "ying") && player.getStorage("gbheming_effect", 0) > 2 && list.some(name => _status.event.filterCard({
+                    return player.countCards("hs", card => card.name == "ying") && player.getStorage("gbheming_effect", 0) > 2 && list.some(name => event.filterCard({
                         name: name
                     }, player, event))
                 },
@@ -3100,7 +3100,17 @@ const skills = {
                         global: "phaseEnd"
                     })
                         .then(() => {
-                            player.give(player.getExpansions("gbkongxiang"), _status.currentPhase, "giveAuto")
+                            player.chooseTarget("宣泄", "请选择一名角色获得『空箱』中的所有牌", true)
+                                .set("ai", (target) => {
+                                    let player = _status.event.player
+                                    return get.attitude(player, target)
+                                })
+                        })
+                        .then(() => {
+                            if (result && result.bool) {
+                                let target = result.targets[0]
+                                player.give(player.getExpansions("gbkongxiang"), target, "giveAuto")
+                            }
                         })
                     break
             }

@@ -1,4 +1,5 @@
 import { lib, game, ui, get, ai, _status } from "../../../noname.js";
+import AsyncCompiler from "../../../noname/library/element/GameEvent/compilers/AsyncCompiler.js";
 /** @type { importCharacterConfig['skill'] } */
 const skills = {
     // 丸山彩
@@ -495,6 +496,9 @@ const skills = {
                     storage: {
                         gbmeiying: true
                     }
+                },
+                async precontent(event, trigger, player) {
+                    event.getParent().addCount = false
                 },
                 filter(event, player) {
                     return player.countCards("hes", card => get.type(card, "trick") == "trick")
@@ -1947,7 +1951,7 @@ const skills = {
         },
     },
     gbxuanjuan: {
-        audio: false,
+        audio: "ext:GirlsBand/audio/skill:2",
         trigger: {
             global: "phaseBefore",
             player: "enterGame",
@@ -1979,12 +1983,16 @@ const skills = {
         },
     },
     gbzhuxin: {
-        audio: false,
+        audio: "ext:GirlsBand/audio/skill:4",
         trigger: {
             player: ["useCard", "discard"]
         },
         charlotte: true,
         direct: true,
+        filter(event, player, name) {
+            if (name == "useCard") return true
+            return event.discarder == player
+        },
         async content(event, trigger, player) {
             let list = ["选项一", "选项二", "选项三"];
             let used = player.getStorage("gbzhuxin_used");
@@ -2079,7 +2087,7 @@ const skills = {
         }
     },
     gbtongxin: {
-        audio: false,
+        audio: "ext:GirlsBand/audio/skill:2",
         zhuSkill: true,
         trigger: {
             player: "phaseBegin"
@@ -2097,7 +2105,7 @@ const skills = {
         }
     },
     gbfuxin: {
-        audio: false,
+        audio: "ext:GirlsBand/audio/skill:2",
         trigger: {
             player: "loseAfter"
         },
@@ -2131,7 +2139,7 @@ const skills = {
         }
     },
     gbxiongyi: {
-        audio: false,
+        audio: "ext:GirlsBand/audio/skill:3",
         mark: true,
         marktext: "翼",
         intro: {
@@ -2155,7 +2163,7 @@ const skills = {
         group: ["gbxiongyi_end"],
         subSkill: {
             end: {
-                audio: false,
+                audio: "gbxiongyi",
                 charlotte: true,
                 trigger: {
                     global: "phaseEnd"
@@ -2185,7 +2193,7 @@ const skills = {
         }
     },
     gbmeilv: {
-        audio: false,
+        audio: "ext:GirlsBand/audio/skill:4",
         trigger: {
             player: "addToExpansionAfter"
         },
@@ -2233,6 +2241,11 @@ const skills = {
         trigger: {
             target: "useCardToTarget",
             player: ["useCard", "respond"]
+        },
+        mod: {
+            cardUsable(card, player, num) {
+                if (player.isDying() && get.name(card, player) == "jiu") return false
+            }
         },
         filter(event, player) {
             if (event.name == "useCard" || event.name == "respond") {

@@ -2166,7 +2166,7 @@ const skill = {
             await player.give(next.links, target, "giveAuto")
             player.markAuto("gbciai_used", target)
             player.addTempSkill("gbciai_used", "roundStart")
-            let result = await target.chooseControlList("慈爱", [`回复1点体力，然后${get.translation(player)}摸两张牌`, "弃置此牌并失去1点体力"], true)
+            let result = await target.chooseControlList("慈爱", [`回复1点体力，然后${get.translation(player)}摸三张牌`, "弃置此牌并失去1点体力"], true)
                 .set("ai", () => {
                     let player = _status.event.player
                     if (player.isDamaged()) return 0
