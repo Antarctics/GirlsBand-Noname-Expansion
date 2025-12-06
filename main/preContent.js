@@ -1,12 +1,16 @@
 import { lib, game, ui, get, ai, _status } from "../../../noname.js";
 export default function () {
-    const minVer = "1.10.17.2";
+    const minVer = "1.11.0";
     const currVer = lib.version.split('.').map(Number);
     const reqVer = minVer.split('.').map(Number);
 
     for (let i = 0; i < Math.max(currVer.length, reqVer.length); i++) {
-        if ((currVer[i] || 0) < (reqVer[i] || 0)) {
+        let curr = currVer[i] || 0
+        let req = reqVer[i] || 0
+        if (curr < req) {
             return alert(`当前版本：${lib.version}\n《少女乐队》需要版本：${minVer}\n请更新无名杀！`);
+        } else if (curr > req) {
+            break
         }
     }
 
@@ -37,57 +41,6 @@ export default function () {
             image: group.image
         });
     });
-
-    // 提示框功能
-    ui.click.poptip = function (elem, text) {
-        const tip = document.createElement('div');
-        const rect = elem.getBoundingClientRect();
-        let left = rect.left;
-        let top = rect.top;
-        let height = rect.height;
-        let width = rect.width;
-        tip.className = 'keyword-poptip';
-        tip.innerHTML = text;
-        tip.style.cssText = `
-            z-index: 9999;
-            background: rgba(71, 52, 0, 0.8);
-            color: #ffeea9;
-            padding: 10px;
-            border-radius: 8px;
-            border: 2px solid #e3ab67;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.18);
-            line-height: 1.6;
-            font-size: 16px;
-            max-width: 360px;
-            word-break: break-word;
-            position: fixed;
-        `;
-
-        document.body.appendChild(tip);
-        const tipRect = tip.getBoundingClientRect();
-
-        if (left + tipRect.width > window.innerWidth) {
-            left = Math.max(10, window.innerWidth - tipRect.width - width);
-        }
-        if (top + height + tipRect.height > window.innerHeight) {
-            top = top - tipRect.height > 0 ? top - tipRect.height : Math.max(10, window.innerHeight - tipRect.height - height);
-        } else {
-            top = top + height + 5;
-        }
-
-        tip.style.left = left / game.documentZoom + 'px';
-        tip.style.top = top / game.documentZoom + 'px';
-
-        const removeTip = () => {
-            if (tip.parentNode) document.body.removeChild(tip);
-            elem.removeEventListener('mouseout', removeTip);
-            elem.removeEventListener('touchend', removeTip);
-        };
-
-        elem.addEventListener('mouseout', removeTip);
-        elem.addEventListener('touchend', removeTip);
-        return tip;
-    };
 
     // 背景音乐
     const bgmList = ["影色舞", "春日影", "KiLLKiSS", "ギターと孤独と蒼い惑星", "空之箱", "GO!GO!MANIAC", "fire bird", "Daylight -デイライト- (Instrumental)", "Hey-day狂騒曲(カプリチオ)", "劣等上等"];

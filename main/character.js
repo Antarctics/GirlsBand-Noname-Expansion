@@ -100,8 +100,9 @@ const characters = {
         hp: 1,
         maxHp: 4,
         skills: ["gbmuling", "gbqiucun"],
-        names: "墨|提斯",
+        names: "墨提斯",
         img: "extension/GirlsBand/image/mortis.png",
+        dieAudios: ["ext:GirlsBand/audio/die/mortis"],
     },
     gb_houtengyili: {
         sex: "female",
@@ -247,9 +248,10 @@ const characters = {
         group: "gbmujica",
         hp: 1,
         maxHp: 4,
-        skills: ["gbmuling", "gbsiwang"],
-        names: "墨|提斯",
+        skills: ["gbmuling", "gbsiwang", "gbspmortis_dead"],
+        names: "墨提斯",
         img: "extension/GirlsBand/image/sp_mortis.png",
+        dieAudios: ["ext:GirlsBand/audio/die/spmortis"]
     },
     gb_sp_gaosongdeng: {
         sex: "female",

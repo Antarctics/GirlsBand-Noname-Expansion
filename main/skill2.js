@@ -572,7 +572,7 @@ const skill = {
     },
     // spmortis
     gbsiwang: {
-        audio: false,
+        audio: "ext:GirlsBand/audio/skill:3",
         trigger: {
             player: "damageBegin4",
         },
@@ -613,7 +613,7 @@ const skill = {
             var list = [],
                 skill = [],
                 choiceList = []
-            choiceList.push("摸两张牌且不计入手牌上限")
+            choiceList.push("摸一张牌且不计入手牌上限")
             list.push("选项一")
             if (!player.hasSkill("gbruoye")) {
                 skill.push("gbruoye");
@@ -649,6 +649,7 @@ const skill = {
                         player.addSkill(skill[0])
                     }
                 }
+                if (next.control == "背水") player.draw(2)
             }
         },
         ai: {
@@ -660,6 +661,20 @@ const skill = {
                     if (get.tag(card, "damage")) return [1, 1]
                 },
             },
+        }
+    },
+    gbspmortis_dead: {
+        audio: "ext:GirlsBand/audio/die/spmortis2",
+        trigger: {
+            player: "dieBegin"
+        },
+        forced: true,
+        forceDie: true,
+        filter(event, player) {
+            return ["gbruoye", "gbchenggu", "gbzhaying"].every(skill => player.hasSkill(skill)) || ["gbruoye", "gbchenggu", "gbzhaying"].every(skill => !player.hasSkill(skill))
+        },
+        async content(event, trigger, player) {
+            trigger.noDieAudio = true
         }
     },
     // sp高松灯
@@ -742,7 +757,7 @@ const skill = {
     },
     // sp若叶睦
     gbduoluo: {
-        audio: false,
+        audio: "ext:GirlsBand/audio/skill:3",
         trigger: {
             player: "discardAfter"
         },

@@ -1,5 +1,6 @@
 import { lib, game, ui, get, ai, _status } from "../../noname.js";
-import mainContent from "./main/mainContent.js";
+import arenaReady from "./main/arenaReady.js"
+import mainContent from "./main/mainContent.js"
 import preContent from "./main/preContent.js"
 import "./main/mode.js";
 import update from "./main/update.js"
@@ -11,9 +12,10 @@ export default function () {
         name: "GirlsBand",
         connect: true,
         editable: false,
+        arenaReady: arenaReady,
         precontent: preContent,
         content: mainContent,
-        package: info("2.2.4"),
+        package: info("2.2.5"),
         config: {
             bgm: {
                 name: `<font color="#e91e63">场内BGM <small>(下局生效)</small>`,

@@ -1678,6 +1678,7 @@ const skills = {
     },
     gbzhaying: {
         audio: false,
+        audioname2: { "gb_sp_mortis": "ext:GirlsBand/audio/skill:3" },
         trigger: {
             global: ["chooseToDebateBegin", "chooseToEnsembleBegin"],
             target: "chooseToCompareBegin",
@@ -1722,6 +1723,7 @@ const skills = {
         subSkill: {
             1: {
                 audio: false,
+                audioname2: { "gb_sp_mortis": "gbzhaying" },
                 forced: true,
                 trigger: {
                     player: "phaseBegin"
@@ -1737,6 +1739,7 @@ const skills = {
             },
             2: {
                 audio: false,
+                audioname2: { "gb_sp_mortis": "gbzhaying" },
                 forced: true,
                 trigger: {
                     player: "phaseJieshuBegin"

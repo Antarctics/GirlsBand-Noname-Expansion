@@ -1,4 +1,8 @@
 import { lib, game, ui, get, ai, _status } from "../../../noname.js";
+const poptips = {
+    rule_yishi: ["议事", "所有参与议事的角色同时展示一张手牌，此牌的颜色称为“意见”：<br>若红色“意见”较多，则议事结果为红色；<br>若黑色“意见”较多，则议事结果为黑色；<br>若二者数量持平，则议事无结果。"],
+    rule_hezou: ["合奏", "所有参与合奏的角色需选择任意一项：<br>①展示任意张手牌；<br>②展示牌堆顶的一张牌。<br>以此法展示的牌视为“合奏”牌"],
+}
 const translates = {
     GirlsBand: "少女乐队",
     vocalist: "主唱",
@@ -125,10 +129,6 @@ const translates = {
     "#ext:GirlsBand/audio/skill/gbxiwei1": "太差劲了",
     "#ext:GirlsBand/audio/skill/gbxiwei2": "哈？",
     "#ext:GirlsBand/audio/skill/gbxiwei3": "哈？",
-    // 注释
-    议事_info: "所有参与议事的角色同时展示一张手牌，此牌的颜色称为“意见”：<br>若红色“意见”较多，则议事结果为红色；<br>若黑色“意见”较多，则议事结果为黑色；<br>若二者数量持平，则议事无结果。",
-    合奏_info: "所有参与合奏的角色需选择任意一项：<br>①展示任意张手牌；<br>②展示牌堆顶的一张牌。<br>以此法展示的牌视为“合奏”牌",
-    背水_info: "背水是一种特殊的选项。发动技能时，若无法执行背水的后果，则无法选择背水。选择背水时，可将该技能的其余选项依次执行，再执行背水的后果。",
 
     // 技能
     gblixi: "立袭",
@@ -542,5 +542,5 @@ const pinyins = {
     松原花音: ["Matsubara", "Kanone"],
     北泽育美: ["Kitazawa", "Hagumi"],
 }
-export { pinyins };
+export { pinyins, poptips };
 export default translates;

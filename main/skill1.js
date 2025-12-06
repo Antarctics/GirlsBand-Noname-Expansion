@@ -1146,7 +1146,7 @@ const skills = {
     },
     // 若叶睦
     gbmoying: {
-        audio: false,
+        audio: "ext:GirlsBand/audio/skill:3",
         enable: "phaseUse",
         usable: 1,
         async content(event, trigger, player) {
@@ -1216,7 +1216,7 @@ const skills = {
         },
         subSkill: {
             effect: {
-                audio: false,
+                audio: "gbmoying",
                 trigger: {
                     target: "useCardToTargeted"
                 },
@@ -1239,7 +1239,7 @@ const skills = {
         }
     },
     gbfuxi: {
-        audio: false,
+        audio: "ext:GirlsBand/audio/skill:3",
         trigger: {
             player: "discardAfter"
         },
@@ -1304,7 +1304,7 @@ const skills = {
         }
     },
     gbzicheng: {
-        audio: false,
+        audio: "ext:GirlsBand/audio/skill:3",
         trigger: {
             player: "phaseDiscardEnd"
         },
@@ -1315,7 +1315,7 @@ const skills = {
         group: 'gbzicheng_effect',
         subSkill: {
             effect: {
-                audio: false,
+                audio: "gbzicheng",
                 enable: ['chooseToUse', 'chooseToRespond'],
                 filter(event, player) {
                     var list = ['sha', 'shan'];
@@ -1455,6 +1455,7 @@ const skills = {
     },
     gbchenggu: {
         audio: "ext:GirlsBand/audio/skill:5",
+        audioname2: { "gb_sp_mortis": [6, 7, 8].map(i => "ext:GirlsBand/audio/skill/gbchenggu" + i) },
         logAudio: index => (typeof index === "number" ? "ext:GirlsBand/audio/skill/gbchenggu" + index : "ext:GirlsBand/audio/skill/gbchenggu1"),
         popup: false,
         trigger: {
@@ -1723,7 +1724,7 @@ const skills = {
         }
     },
     gbruoye: {
-        audio: false,
+        audio: "ext:GirlsBand/audio/skill:3",
         enable: "phaseUse",
         usable: 2,
         filterCard: {
@@ -2045,7 +2046,7 @@ const skills = {
     },
     // Morits
     gbmuling: {
-        audio: false,
+        audio: "ext:GirlsBand/audio/skill:3",
         trigger: {
             global: "roundStart"
         },
@@ -2227,7 +2228,7 @@ const skills = {
         }
     },
     gbqiucun: {
-        audio: false,
+        audio: "ext:GirlsBand/audio/skill:3",
         charlotte: true,
         mod: {
             maxHandcard(player, num) {

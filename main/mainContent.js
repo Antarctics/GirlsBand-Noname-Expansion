@@ -1,6 +1,33 @@
 import { lib, game, ui, get, ai, _status } from "../../../noname.js";
 import update from "./update.js";
 export default function () {
+    game.showExtensionChangeLog([
+        { type: "text", data: "本次更新说明" },
+        {
+            type: "players",
+            data: ["gb_mortis", "gb_sp_mortis", "gb_ruoyemu", "gb_sp_ruoyemu"],
+        },
+        {
+            type: "text",
+            data: `\n新增配套技能语音`,
+        },
+        {
+            type: "text",
+            data: `\n修复${get.poptip("gbsiwang")}描述与实际不符的问题`,
+        },
+        {
+            type: "text",
+            data: `\n针对最新版无名杀进行适配`,
+        },
+        {
+            type: "text",
+            data: `\n调整【特殊词汇注释】功能，改为使用官方注释功能`,
+        },
+        {
+            type: "text",
+            data: `\n后续更新将使用游戏内更新公告`,
+        },
+    ], 'GirlsBand');
     /**
      * 合奏机制 - 让玩家选择展示手牌或从牌堆展示牌
      * @param {Array|Player} players - 参与玩家
@@ -105,225 +132,6 @@ export default function () {
             cbEvent.ensembleResult = get.copy(event.result);
             cbEvent.setContent(event.callback);
         }
-    }
-
-    // 特殊名词注释系统
-    if (lib.config.extension_GirlsBand_poptip) {
-        if (!window.name2KeywordMap || window.name2KeywordMap._lastUpdateLength !== Object.keys(lib.translate).length) {
-            window.name2KeywordMap = new Map();
-            window.name2KeywordMap._lastUpdateLength = Object.keys(lib.translate).length;
-            const tempMap = new Map();
-
-            for (const key in lib.translate) {
-                if (key.endsWith('_info')) continue;
-                const name = lib.translate[key];
-                if (name) {
-                    if (!tempMap.has(name)) tempMap.set(name, []);
-                    tempMap.get(name).push(key);
-                }
-            }
-
-            for (const [name, keywords] of tempMap.entries()) {
-                if (!name) continue;
-                if (keywords.length === 1) {
-                    window.name2KeywordMap.set(name, keywords);
-                } else {
-                    const namePinyin = get.pinyin(name, false).join('');
-                    const scored = [];
-
-                    for (const keyword of keywords) {
-                        let maxScore = 0;
-                        for (const part of keyword.split('_')) {
-                            let bestMatch = 0;
-                            for (let start = 0; start <= part.length - namePinyin.length; start++) {
-                                let match = 0;
-                                for (let i = 0; i < namePinyin.length; i++) {
-                                    if (part[start + i] === namePinyin[i]) match++;
-                                    else break;
-                                }
-                                if (match > bestMatch) bestMatch = match;
-                            }
-                            const score = bestMatch / keyword.length;
-                            if (score > maxScore) maxScore = score;
-                        }
-                        scored.push({ keyword, score: maxScore });
-                    }
-
-                    scored.sort((a, b) => b.score - a.score);
-                    window.name2KeywordMap.set(name, scored.map(item => item.keyword));
-                }
-            }
-        }
-        get.skillInfoTranslation = (skill, player) => {
-            let str = player && lib.dynamicTranslate[skill] ? lib.dynamicTranslate[skill](player, skill) : lib.translate[skill + "_info"] || "";
-
-            if (typeof str !== "string") {
-                console.warn(`你${skill}的翻译传的是什么？！`);
-                return "";
-            }
-            let firstKeywords = new Set();
-            return str.replace(/“(.*?)”|【(.*?)】|〖(.*?)〗/g, (match, quoted, card, skillName) => {
-                let keyword, type;
-                if (quoted !== undefined) {
-                    keyword = quoted;
-                    type = 'quoted';
-                } else if (card !== undefined) {
-                    keyword = card;
-                    type = 'card';
-                } else if (skillName !== undefined) {
-                    keyword = skillName;
-                    type = 'skill';
-                } else return match;
-                let name = lib.translate[keyword];
-                let info = lib.translate[keyword + "_info"];
-                if (!name) {
-                    const matched = window.name2KeywordMap.get(keyword);
-                    if (matched && matched.length) {
-                        if (type != 'card' && lib.skill[skill]) {
-                            const obj = lib.skill[skill];
-                            let found
-                            if (matched.includes(skill)) {
-                                found = skill
-                            } else {
-                                const matchSet = new Set(matched);
-                                const stack = [obj];
-                                while (stack.length > 0) {
-                                    const item = stack.pop();
-                                    if (typeof item === 'string' && matchSet.has(item)) {
-                                        found = item;
-                                        break;
-                                    }
-                                    if (typeof item === 'function') {
-                                        const funcStr = item.toString();
-                                        for (const match of matchSet) {
-                                            const regex = new RegExp(`(^|[^a-zA-Z0-9_])${match}([^a-zA-Z0-9_]|$)`);
-                                            if (regex.test(funcStr)) {
-                                                found = match;
-                                                break;
-                                            }
-                                        }
-                                        if (found) break
-                                    }
-
-                                    if (item && typeof item === 'object') {
-                                        if (Array.isArray(item)) {
-                                            for (let i = item.length - 1; i >= 0; i--) {
-                                                stack.push(item[i]);
-                                            }
-                                        } else {
-                                            for (const key in item) {
-                                                stack.push(item[key]);
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            if (found) {
-                                name = keyword;
-                                keyword = found;
-                                info = lib.translate[keyword + "_info"] || lib.translate[keyword];
-                            }
-                        }
-                        if (!name) {
-                            name = keyword;
-                            keyword = matched[0];
-                            info = lib.translate[keyword + "_info"] || lib.translate[keyword];
-                        }
-                    } else if (info) {
-                        name = keyword;
-                    } else return match;
-                }
-
-                if (!info) info = lib.translate[keyword] || name;
-                if (info === name) return "“" + name + "”";
-                const isCard = type === 'card' || !!lib.card[keyword];
-                const isSkill = type === 'skill' || !!lib.skill[keyword];
-                if (isCard && (lib.cardPack.extra.includes(keyword) || lib.cardPack.standard.includes(keyword) || !lib.card[keyword])) return match;
-                if (isSkill && !lib.skill[keyword]) return match;
-                if (isCard && !lib.card[keyword]) return match;
-
-                const prefix = isCard ? '【' : isSkill ? '〖' : ''
-                const suffix = isCard ? '】' : isSkill ? '〗' : ''
-
-                if (!firstKeywords.has(keyword)) {
-                    firstKeywords.add(keyword);
-                    info = info.replace(/“(.*?)”|【(.*?)】|〖(.*?)〗/g, (m, q, c, s) => {
-                        let kw = q ?? c ?? s;
-                        if (!kw) return m;
-
-                        let name = lib.translate[kw];
-                        if (!name) {
-                            const matched = window.name2KeywordMap.get(kw);
-                            if (matched) {
-                                name = kw;
-                                kw = matched[0];
-                            } else return m;
-                        }
-
-                        if (lib.card[kw]) return "【" + name + "】";
-                        if (lib.skill[kw]) return "〖" + name + "〗";
-                        return m;
-                    });
-                    if (isCard) {
-                        const s = get.translation(get.subtype(keyword));
-                        info = `<span style="display: block; text-align: center;">${get.translation(get.type(keyword))}牌${s ? '-' + s : ''}</span>${info}`;
-                    }
-                    return `<span class="keyword-poptip" style="text-decoration:underline;color:#FF6B00" data-keyword='${info}'>${prefix}${name}${suffix}</span>`;
-                } else {
-                    return prefix + name + suffix;
-                }
-            });
-        };
-        get.prompt2 = function (skill, target, player) {
-            var str = get.prompt(skill, target, player);
-            return "###" + str + "###" + get.skillInfoTranslation(skill, player);
-        };
-        ui.click.skill = (skill) => {
-            var info = get.info(skill);
-            var event = _status.event;
-            event.backup(skill);
-            if (info.filterCard && info.discard != false && info.lose != false && !info.viewAs) {
-                var cards = event.player.getCards(event.position);
-                for (var i = 0; i < cards.length; i++) {
-                    if (!lib.filter.cardDiscardable(cards[i], event.player)) {
-                        cards[i].uncheck("useSkill");
-                    }
-                }
-            }
-            if (typeof event.skillDialog == "object") {
-                event.skillDialog.close();
-            }
-            if (event.isMine()) {
-                event.skillDialog = true;
-            }
-            game.uncheck();
-            game.check();
-            if (event.skillDialog === true) {
-                var str = get.translation(skill);
-                if (info.prompt) {
-                    var str2;
-                    if (typeof info.prompt == "function") {
-                        str2 = info.prompt(event);
-                    } else {
-                        str2 = info.prompt;
-                    }
-                    event.skillDialog = ui.create.dialog(str, '<div><div style="width:100%;text-align:center">' + str2 + "</div></div>");
-                    if (info.longprompt) {
-                        event.skillDialog.forcebutton = true;
-                        ui.update();
-                    }
-                } else if (info.promptfunc) {
-                    event.skillDialog = ui.create.dialog(str, '<div><div style="width:100%">' + info.promptfunc(event, event.player) + "</div></div>");
-                } else {
-                    event.skillDialog = ui.create.dialog(str, '<div><div style="width:100%">' + get.skillInfoTranslation(skill, event.player) + "</div></div>");
-                }
-            }
-        }
-        document.addEventListener(lib.config.touchscreen ? "touchstart" : "mouseover", e => {
-            if (e.target.classList?.contains('keyword-poptip')) {
-                ui.click.poptip(e.target, e.target.getAttribute('data-keyword'));
-            }
-        });
     }
     if (lib.config.extension_GirlsBand_auto_update && navigator.onLine) update(false);
 };
