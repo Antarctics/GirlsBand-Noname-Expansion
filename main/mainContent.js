@@ -5,31 +5,11 @@ export default function () {
         { type: "text", data: "本次更新说明" },
         {
             type: "players",
-            data: ["gb_songyuanhuayin", "gb_beizeyumei", "gb_laitianxun"],
+            data: ["gb_sp_ruoyemu"],
         },
         {
             type: "text",
-            data: `新增配套技能语音`,
-        },
-        {
-            type: "text",
-            data: `修复${get.poptip("gbsiwang")}描述与实际不符的问题`,
-        },
-        {
-            type: "text",
-            data: ``,
-        },
-        {
-            type: "text",
-            data: `调整【注释】功能，修复对部分技能无效的情况，提高加载性能。`,
-        },
-        {
-            type: "text",
-            data: `清除势力全称，以适配左慈等角色。`,
-        },
-        {
-            type: "text",
-            data: `优化势力图标。`,
+            data: `修复${get.poptip("gbduoluo")}描述与实际不符的问题`,
         },
     ], 'GirlsBand');
     /**

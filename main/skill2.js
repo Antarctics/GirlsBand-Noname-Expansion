@@ -762,7 +762,7 @@ const skill = {
         trigger: {
             player: "discardAfter"
         },
-        usable: 1,
+        usable: 2,
         filter(event, player) {
             return event.cards.length >= 2 || event.cards.some(card => get.color(card) == "black" && card.original == "h")
         },

@@ -1,5 +1,5 @@
 ﻿{
-    "version":  "2.2.7",
+    "version":  "2.2.8",
     "files":  {
                   "image/ras.png":  "9f6bfd01aeace4394536438897b65fb97b4b31b8",
                   "audio/skill/gbbeihua2.mp3":  "9498d5d212ee109b5a1514163f3fe949760c6e3c",
@@ -168,7 +168,7 @@
                   "audio/skill/gbxuanjuan2.mp3":  "cd848d214e93397ce6ce38099000500d54a4b4a0",
                   "image/kita.png":  "8ee5e3978474067de79983273b986d2d2a950367",
                   "audio/skill/gbxuanjuan1.mp3":  "1c52025ce54929c6b23c70c83007ee45f86c596b",
-                  "main/mainContent.js":  "c0a5bedfdec44e52a27f17a6d9c0ee2cf5028b83",
+                  "main/mainContent.js":  "b4b4f8c51c761c438637a55faa3d86ee1c11d367",
                   "audio/skill/gbhexian3.mp3":  "313ea0134d658f1be9fb39d0bdfbc72daca22ea7",
                   "image/anon.jpg":  "19384b97c5c12c48cfbf9450b5953aad407b669c",
                   "image/rupa.png":  "b917039bd5dec61568c4dc23fd34a1c5de6b116a",
@@ -187,7 +187,7 @@
                   "audio/skill/gblvefei2.mp3":  "37c287f10d5b52629e760488459b22a805fb286a",
                   "audio/skill/gbxundan1.mp3":  "612f6e9ede57b4ef94c371810c1f4e5cc56120de",
                   "image/sakiko.png":  "f8640c7073a041ee48a51ff10d0bde11e9b112de",
-                  "extension.js":  "cc79bf5c02e5e46cc06f1d82beae76660cf91e17",
+                  "extension.js":  "86ffc33546f017d86d7c5ae2346e1cc3acfde307",
                   "audio/skill/gbmitu1.mp3":  "62f9f18c828c0a1d3b48f6dd897082e71f25a91b",
                   "image/ran.png":  "d2b048c78410618e7ab0ac3cd102148c62d8fd1e",
                   "audio/skill/gbfuxi2.mp3":  "5adbb633382f9921606533c064eab0874d04dfd2",
@@ -214,7 +214,7 @@
                   "audio/skill/gbtongxin2.mp3":  "868bb1e8e9f6bbbe38e0b64a14f1a6456cec334b",
                   "audio/skill/gbzhaying2.mp3":  "fffa90b46fcc960b235855707d31f93ba739b4f9",
                   "audio/skill/gbmizi1.mp3":  "2f76590025aa9d9779cb59ce187c186297506c47",
-                  "main/skill2.js":  "c310c60ac61b1d6cfd398b2d8e510b0573a86439",
+                  "main/skill2.js":  "66b5e38dff91e62b2b17aaf679cd2c2935fb98c9",
                   "audio/skill/gbbenxi3.mp3":  "d9791bac46e5feb01f17eab0cf9198aa5c893548",
                   "image/mio.png":  "f14a585bbff015f783d5bef81f0b09393c3cd99c",
                   "image/yukina.png":  "5c8fb5b3f1f5b65831025cee064b548f148b3cff",
