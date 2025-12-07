@@ -25,7 +25,11 @@ export default function () {
         },
         {
             type: "text",
-            data: `清除势力全程，以适配左慈等角色。`,
+            data: `清除势力全称，以适配左慈等角色。`,
+        },
+        {
+            type: "text",
+            data: `优化势力图标。`,
         },
     ], 'GirlsBand');
     /**
