@@ -22,17 +22,17 @@ export default function () {
 
     // 新增势力
     const groups = [
-        { id: "gbmygo", name: "迷", fullname: "迷途之子", color: "#3388BB", image: "ext:GirlsBand/image/mygo.png" },
-        { id: "gbmujica", name: "偶", fullname: "颂乐人偶", color: "#8b0000", image: "ext:GirlsBand/image/mujica.png" },
-        { id: "gbmonica", name: "蝶", fullname: "Morfonica", color: "#008bff", image: "ext:GirlsBand/image/monica.jpg" },
-        { id: "gbroselia", name: "露", fullname: "Roselia", color: "#3344AA", image: "ext:GirlsBand/image/roselia.jpg" },
-        { id: "gbafterglow", name: "阳", fullname: "Afterglow", color: "#EE3344", image: "ext:GirlsBand/image/afterglow.jpg" },
-        { id: "gbpastel", name: "彩", fullname: "Pastel*Palettes", color: "#33DDAA", image: "ext:GirlsBand/image/pastel.jpg" },
-        { id: "gbras", name: "幕", fullname: "RAISE A SUILEN", color: "#33cccc", image: "ext:GirlsBand/image/ras.jpg" },
-        { id: "gbband", name: "束", fullname: "結束バンド", color: "#ff2291", image: "ext:GirlsBand/image/band.png" },
-        { id: "gbTOGETOGE", name: "刺", fullname: "无刺有刺", color: "#D90E2C", image: "ext:GirlsBand/image/TOGETOGE.png" },
-        { id: "gbkon", name: "轻", fullname: "轻音少女", color: "#e71419", image: "ext:GirlsBand/image/kon.jpg" },
-        { id: "gbhhw", name: "笑", fullname: "Hello, Happy World!", color: "#FFDD00", image: "ext:GirlsBand/image/hhw.jpg" }
+        { id: "gbmygo", name: "迷", color: "#3388BB", image: "ext:GirlsBand/image/mygo.png" },
+        { id: "gbmujica", name: "偶", color: "#8b0000", image: "ext:GirlsBand/image/mujica.png" },
+        { id: "gbmonica", name: "蝶", color: "#008bff", image: "ext:GirlsBand/image/monica.jpg" },
+        { id: "gbroselia", name: "露", color: "#3344AA", image: "ext:GirlsBand/image/roselia.jpg" },
+        { id: "gbafterglow", name: "阳", color: "#EE3344", image: "ext:GirlsBand/image/afterglow.jpg" },
+        { id: "gbpastel", name: "彩", color: "#33DDAA", image: "ext:GirlsBand/image/pastel.jpg" },
+        { id: "gbras", name: "幕", color: "#33cccc", image: "ext:GirlsBand/image/ras.jpg" },
+        { id: "gbband", name: "束", color: "#ff2291", image: "ext:GirlsBand/image/band.png" },
+        { id: "gbTOGETOGE", name: "刺", color: "#D90E2C", image: "ext:GirlsBand/image/TOGETOGE.png" },
+        { id: "gbkon", name: "轻", color: "#e71419", image: "ext:GirlsBand/image/kon.jpg" },
+        { id: "gbhhw", name: "笑", color: "#FFDD00", image: "ext:GirlsBand/image/hhw.jpg" }
     ];
 
     groups.forEach(group => {

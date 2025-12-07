@@ -23,6 +23,10 @@ export default function () {
             type: "text",
             data: `调整【注释】功能，修复对部分技能无效的情况，提高加载性能。`,
         },
+        {
+            type: "text",
+            data: `清除势力全程，以适配左慈等角色。`,
+        },
     ], 'GirlsBand');
     /**
      * 合奏机制 - 让玩家选择展示手牌或从牌堆展示牌

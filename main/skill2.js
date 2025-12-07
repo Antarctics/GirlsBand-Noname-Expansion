@@ -669,6 +669,7 @@ const skill = {
             player: "dieBegin"
         },
         forced: true,
+        unique: true,
         forceDie: true,
         filter(event, player) {
             return ["gbruoye", "gbchenggu", "gbzhaying"].every(skill => player.hasSkill(skill)) || ["gbruoye", "gbchenggu", "gbzhaying"].every(skill => !player.hasSkill(skill))
