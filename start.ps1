@@ -3,7 +3,6 @@ $manifestFile = Join-Path -Path $extensionDir -ChildPath "manifest.json"
 
 $manifest = @{
     version = "1.0.0"
-    update = ""
     files = @{}
 }
 

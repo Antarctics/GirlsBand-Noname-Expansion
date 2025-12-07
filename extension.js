@@ -15,17 +15,12 @@ export default function () {
         arenaReady: arenaReady,
         precontent: preContent,
         content: mainContent,
-        package: info("2.2.5"),
+        package: info("2.2.6"),
         config: {
             bgm: {
                 name: `<font color="#e91e63">场内BGM <small>(下局生效)</small>`,
                 init: true,
                 intro: "存在女乐角色时自动播放BGM",
-            },
-            poptip: {
-                name: `<font color="#46e226ff">名词注释 <small>(重启生效)</small>`,
-                init: true,
-                intro: "自动为特有名词、卡牌、技能添加注释",
             },
             update_source: {
                 name: `<font color="#9c27b0">更新镜像源`,

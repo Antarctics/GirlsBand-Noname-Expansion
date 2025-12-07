@@ -60,6 +60,7 @@ const characters = {
         skills: ["gbmoying", "gbfuxi", "gbzicheng"],
         names: "若叶|睦",
         img: "extension/GirlsBand/image/mutsumi.png",
+        dieAudios: ["ext:GirlsBand/audio/die/mutsumi"]
     },
     gb_sanjiaochuhua: {
         sex: "female",
@@ -520,6 +521,7 @@ const characters = {
         skills: ["gbmenghuan", "gbxundan"],
         names: "濑田|薰",
         img: "extension/GirlsBand/image/kaoru.png",
+        dieAudios: ["ext:GirlsBand/audio/die/kaoru"],
     },
     gb_songyuanhuayin: {
         sex: "female",
@@ -528,6 +530,7 @@ const characters = {
         skills: ["gbmitu", "gbxinglu"],
         names: "松原|花音",
         img: "extension/GirlsBand/image/kanon.png",
+        dieAudios: ["ext:GirlsBand/audio/die/kanon"],
     },
     gb_beizeyumei: {
         sex: "female",
@@ -536,6 +539,7 @@ const characters = {
         skills: ["gbbenxi", "gbjinhuan"],
         names: "北泽|育美",
         img: "extension/GirlsBand/image/hagumi.png",
+        dieAudios: ["ext:GirlsBand/audio/die/hagumi"],
     },
 };
 

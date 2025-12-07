@@ -2240,7 +2240,7 @@ const skills = {
         }
     },
     gbmenghuan: {
-        audio: false,
+        audio: "ext:GirlsBand/audio/skill:4",
         trigger: {
             target: "useCardToTarget",
             player: ["useCard", "respond"]
@@ -2276,7 +2276,7 @@ const skills = {
         }
     },
     gbxundan: {
-        audio: false,
+        audio: "ext:GirlsBand/audio/skill:4",
         forced: true,
         trigger: {
             player: "useCard"
@@ -2304,7 +2304,7 @@ const skills = {
         },
     },
     gbmitu: {
-        audio: false,
+        audio: "ext:GirlsBand/audio/skill:2",
         trigger: {
             player: "useCardToPlayer",
             target: "useCardToTarget"
@@ -2410,7 +2410,7 @@ const skills = {
         }
     },
     gbxinglu: {
-        audio: false,
+        audio: "ext:GirlsBand/audio/skill:2",
         trigger: {
             target: "useCardToTarget"
         },
@@ -2448,7 +2448,7 @@ const skills = {
         }
     },
     gbbenxi: {
-        audio: false,
+        audio: "ext:GirlsBand/audio/skill:3",
         trigger: {
             player: "useCard"
         },
@@ -2483,6 +2483,7 @@ const skills = {
         },
         subSkill: {
             draw: {
+                audio: "gbbenxi",
                 forced: true,
                 onremove(player, skill) {
                     player.draw(player.countMark(skill))
@@ -2492,7 +2493,7 @@ const skills = {
         }
     },
     gbjinhuan: {
-        audio: false,
+        audio: "ext:GirlsBand/audio/skill:3",
         trigger: {
             player: "useCard"
         },

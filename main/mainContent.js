@@ -5,27 +5,23 @@ export default function () {
         { type: "text", data: "本次更新说明" },
         {
             type: "players",
-            data: ["gb_mortis", "gb_sp_mortis", "gb_ruoyemu", "gb_sp_ruoyemu"],
+            data: ["gb_songyuanhuayin", "gb_beizeyumei", "gb_laitianxun"],
         },
         {
             type: "text",
-            data: `\n新增配套技能语音`,
+            data: `新增配套技能语音`,
         },
         {
             type: "text",
-            data: `\n修复${get.poptip("gbsiwang")}描述与实际不符的问题`,
+            data: `修复${get.poptip("gbsiwang")}描述与实际不符的问题`,
         },
         {
             type: "text",
-            data: `\n针对最新版无名杀进行适配`,
+            data: ``,
         },
         {
             type: "text",
-            data: `\n调整【特殊词汇注释】功能，改为使用官方注释功能`,
-        },
-        {
-            type: "text",
-            data: `\n后续更新将使用游戏内更新公告`,
+            data: `调整【注释】功能，修复对部分技能无效的情况，提高加载性能。`,
         },
     ], 'GirlsBand');
     /**

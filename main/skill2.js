@@ -649,7 +649,7 @@ const skill = {
                         player.addSkill(skill[0])
                     }
                 }
-                if (next.control == "背水") player.draw(2)
+                if (next.control == "背水！") player.draw(2)
             }
         },
         ai: {
