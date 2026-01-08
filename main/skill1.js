@@ -1,3 +1,4 @@
+import { i } from "../../../_virtual/index6.js";
 import { lib, game, ui, get, ai, _status } from "../../../noname.js";
 /** @type { importCharacterConfig['skill'] } */
 const skills = {
@@ -843,7 +844,9 @@ const skills = {
     },
     // 丰川祥子
     gbwuwang: {
-        audio: false,
+        audio: "ext:GirlsBand/audio/skill:3",
+        logAudio: index => ("ext:GirlsBand/audio/skill/gbwuwang" + index),
+        popup: false,
         trigger: {
             global: "phaseBefore",
             player: "enterGame",
@@ -857,6 +860,7 @@ const skills = {
                 .forResult()
         },
         async content(event, trigger, player) {
+            player.logSkill(event.name, null, null, null, [3])
             await player.discard(event.cards)
             await player.gain(lib.card.ying.getYing(5))
         },
@@ -873,7 +877,7 @@ const skills = {
         group: ["gbwuwang_lose", "gbwuwang_gain"],
         subSkill: {
             lose: {
-                audio: false,
+                audio: [1, 2].map(i => "ext:GirlsBand/audio/skill/gbwuwang" + i),
                 trigger: {
                     player: "loseAfter"
                 },
@@ -899,7 +903,7 @@ const skills = {
                 }
             },
             gain: {
-                audio: false,
+                audio: [1, 2].map(i => "ext:GirlsBand/audio/skill/gbwuwang" + i),
                 trigger: {
                     player: "loseAfter"
                 },
@@ -915,7 +919,9 @@ const skills = {
         },
     },
     gbheming: {
-        audio: false,
+        audio: "ext:GirlsBand/audio/skill:10",
+        logAudio: index => ("ext:GirlsBand/audio/skill/gbheming" + index),
+        popup: false,
         trigger: {
             global: "roundStart"
         },
@@ -980,6 +986,7 @@ const skills = {
                 })
                 .forResult()
             let num = 0
+            player.logSkill(event.name, null, null, null, [1])
             if (result.bool) {
                 await player.showCards(result.cards)
                 num = result.cards.length
@@ -987,7 +994,11 @@ const skills = {
                 await player.showHandcards()
                 num = player.countCards("h", card => card.name == "ying")
             }
-            if (num == 1) player.loseMaxHp()
+            if (num == 1) {
+                player.logSkill(event.name, null, null, null, [get.rand(7, 8)])
+                player.loseMaxHp()
+
+            }
             if (num == 2) player.addTempSkill("gbheming_two", {
                 global: "roundStart"
             })
@@ -1089,6 +1100,25 @@ const skills = {
                             viewAs: {
                                 name: links[0][2]
                             },
+                            onuse(result, player) {
+                                switch (result.card.name) {
+                                    case "jiu":
+                                        player.logSkill("gbheming", result.targets, null, null, [2])
+                                        break
+                                    case "sha":
+                                        player.logSkill("gbheming", result.targets, null, null, [3])
+                                        break
+                                    case "shan":
+                                        player.logSkill("gbheming", result.targets, null, null, [4])
+                                        break
+                                    case "tao":
+                                        player.logSkill("gbheming", result.targets, null, null, [get.rand(5, 6)])
+                                        break
+                                    case "huogong":
+                                        player.logSkill("gbheming", result.targets, null, null, [get.rand(9, 10)])
+                                        break
+                                }
+                            },
                             ai1(card) {
                                 if (player.countCards("hes", {
                                     name: links[0][2]
@@ -1132,7 +1162,7 @@ const skills = {
         }
     },
     gbsongyue: {
-        audio: false,
+        audio: "ext:GirlsBand/audio/skill:2",
         zhuSkill: true,
         trigger: {
             global: "phaseEnd"
@@ -1571,7 +1601,9 @@ const skills = {
     },
     // 喵梦
     gbmiaomeng: {
-        audio: false,
+        audio: "ext:GirlsBand/audio/skill:4",
+        logAudio: index => ("ext:GirlsBand/audio/skill/gbshiqi" + index),
+        popup: false,
         trigger: {
             global: "phaseBefore",
             player: "enterGame"
@@ -1602,6 +1634,7 @@ const skills = {
                 })
                 .forResult()
             if (result.bool) {
+                player.logSkill(event.name, result.targets, null, null, [get.rand(1, 2)])
                 for (let i = 0; i < result.cards.length; i++) {
                     result.targets[i].addToExpansion(result.cards[i], "giveAuto").gaintag.add("gbmiaomeng_fire")
                 }
@@ -1614,7 +1647,7 @@ const skills = {
         group: "gbmiaomeng_fire",
         subSkill: {
             fire: {
-                audio: false,
+                audio: [3, 4].map(i => "ext:GirlsBand/audio/skill/gbmiaomeng" + i),
                 trigger: {
                     global: "phaseBegin"
                 },
@@ -1660,7 +1693,9 @@ const skills = {
         }
     },
     gbchuanting: {
-        audio: false,
+        audio: "ext:GirlsBand/audio/skill:3",
+        logAudio: index => ("ext:GirlsBand/audio/skill/gbshiqi" + index),
+        popup: false,
         enable: "phaseUse",
         usable: 1,
         filterCard: true,
@@ -1693,6 +1728,17 @@ const skills = {
                         opinion,
                         targets
                     } = event.debateResult;
+                    switch (opinion) {
+                        case "red":
+                            player.logSkill("gbchuanting", targets, null, null, [1])
+                            break;
+                        case "black":
+                            player.logSkill("gbchuanting", targets, null, null, [2])
+                            break;
+                        default:
+                            player.logSkill("gbchuanting", targets, null, null, [3])
+                            break;
+                    }
                     if (opinion != "black") {
                         for (let target of targets.sortBySeat()) {
                             target.draw()
@@ -1724,7 +1770,7 @@ const skills = {
         }
     },
     gbruoye: {
-        audio: "ext:GirlsBand/audio/skill:3",
+        audio: "ext:GirlsBand/audio/skill:2",
         enable: "phaseUse",
         usable: 2,
         filterCard: {
@@ -1825,7 +1871,7 @@ const skills = {
     },
     // 海玲
     gbxinshen: {
-        audio: false,
+        audio: "ext:GirlsBand/audio/skill:3",
         trigger: {
             global: ["phaseBefore", "phaseBegin"],
             player: "enterGame"
@@ -1883,7 +1929,7 @@ const skills = {
         }
     },
     gbyongling: {
-        audio: false,
+        audio: "ext:GirlsBand/audio/skill:3",
         enable: "phaseUse",
         filter(event, player) {
             return !player.hasSkill("gbyongling_used")
@@ -1937,7 +1983,7 @@ const skills = {
         }
     },
     gbhaixi: {
-        audio: false,
+        audio: "ext:GirlsBand/audio/skill:4",
         trigger: {
             player: "compare",
             target: "compare"

@@ -4,12 +4,28 @@ export default function () {
     game.showExtensionChangeLog([
         { type: "text", data: "本次更新说明" },
         {
-            type: "players",
-            data: ["gb_sp_ruoyemu"],
+            type: "text",
+            data: `修复已知技能BUG`,
         },
         {
             type: "text",
-            data: `修复${get.poptip("gbduoluo")}描述与实际不符的问题`,
+            data: `新增【添加BGM】选项`,
+        },
+        {
+            type: "players",
+            data: ["gb_sp_qianzaoaiyin"],
+        },
+        {
+            type: "text",
+            data: `修改${get.poptip("gbduoluo")}技能效果以符合预期`,
+        },
+        {
+            type: "players",
+            data: ["gb_sp_sanjiaochuhua", "gb_bafanhailing", "gb_fengchuanxiangzi", "gb_youtiansiruomai"],
+        },
+        {
+            type: "text",
+            data: `新增技能语音`,
         },
     ], 'GirlsBand');
     /**

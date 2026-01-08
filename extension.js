@@ -15,12 +15,17 @@ export default function () {
         arenaReady: arenaReady,
         precontent: preContent,
         content: mainContent,
-        package: info("2.2.8"),
+        package: info("2.2.9"),
         config: {
             bgm: {
                 name: `<font color="#e91e63">场内BGM <small>(下局生效)</small>`,
                 init: true,
                 intro: "存在女乐角色时自动播放BGM",
+            },
+            add_bgm: {
+                name: `<font color="#e91e63">添加BGM</small>`,
+                init: true,
+                intro: "将女乐BGM添加至无名杀本体的BGM列表中",
             },
             update_source: {
                 name: `<font color="#9c27b0">更新镜像源`,

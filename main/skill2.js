@@ -550,16 +550,17 @@ const skill = {
                     player: "phaseEnd",
                 },
                 filter(event, player) {
-                    return player.countCards("he") >= player.getHistory("skipped").length - 1
+                    if (!player.hasHistory("skipped")) return false
+                    return player.countCards("he") >= Math.max(player.getHistory("skipped").length - 1, 1)
                 },
                 async cost(event, trigger, player) {
-                    event.result = await player.chooseCard("主音", "弃置" + get.cnNumber(player.getHistory("skipped").length - 1) + "张牌获得一个额外的出牌阶段", player.getHistory("skipped").length - 1)
+                    event.result = await player.chooseCard("主音", "弃置" + get.cnNumber(Math.max(player.getHistory("skipped").length - 1, 1)) + "张牌获得一个额外的出牌阶段", Math.max(player.getHistory("skipped").length - 1, 1))
                         .set("ai", (card) => {
                             let player = _status.event.player
                             let cards = player.getCards("he", c => {
                                 return get.value(c) < 6 && !player.hasValueTarget(c)
                             })
-                            if (cards.length >= player.getHistory("skipped").length) return cards.includes(card)
+                            if (cards.length >= Math.max(player.getHistory("skipped").length - 1, 1)) return cards.includes(card)
                         })
                         .forResult()
                 },
@@ -2201,7 +2202,7 @@ const skill = {
                     break
                 case "选项二":
                     game.log(target, "选择了", "#g【慈爱】", "的", "#y" + result.control)
-                    target.discard(next.cards)
+                    target.discard(next.links)
                     target.loseHp()
                     break
             }

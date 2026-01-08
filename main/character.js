@@ -49,6 +49,7 @@ const characters = {
         hp: 3,
         skills: ["gbwuwang", "gbheming", "gbsongyue"],
         names: "丰川|祥子",
+        dieAudios: ["ext:GirlsBand/audio/die/saki"],
         img: "extension/GirlsBand/image/sakiko.png",
         isZhugong: true,
     },
@@ -77,6 +78,7 @@ const characters = {
         hp: 3,
         skills: ["gbshiqi", "gbbeiqiu", "gbduoxin"],
         names: "三角|初华",
+        dieAudios: ["ext:GirlsBand/audio/die/spuika"],
         img: "extension/GirlsBand/image/sp_uika.png",
     },
     gb_youtiansiruomai: {
@@ -85,6 +87,7 @@ const characters = {
         hp: 3,
         skills: ["gbmiaomeng", "gbchuanting", "gbruoye"],
         names: "祐天寺|若麦",
+        dieAudios: ["ext:GirlsBand/audio/die/nyamu"],
         img: "extension/GirlsBand/image/nyamu.png",
     },
     gb_bafanhailing: {
@@ -93,6 +96,7 @@ const characters = {
         hp: 4,
         skills: ["gbxinshen", "gbyongling", "gbhaixi"],
         names: "八幡|海铃",
+        dieAudios: ["ext:GirlsBand/audio/die/umiri"],
         img: "extension/GirlsBand/image/umiri.png",
     },
     gb_mortis: {
@@ -491,6 +495,7 @@ const characters = {
         hp: 3,
         skills: ["gbchunhua", "gblingming", "gbzhaying"],
         names: "丰川|祥子",
+        dieAudios: ["ext:GirlsBand/audio/die/spsaki"],
         img: "extension/GirlsBand/image/sp_saki.png",
     },
     gb_xuanjuanxin: {

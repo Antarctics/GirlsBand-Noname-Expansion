@@ -1677,8 +1677,8 @@ const skills = {
         }
     },
     gbzhaying: {
-        audio: false,
-        audioname2: { "gb_sp_mortis": "ext:GirlsBand/audio/skill:3" },
+        audio: "ext:GirlsBand/audio/skill:4",
+        audioname2: { "gb_sp_mortis": [6, 7, 8].map(i => "ext:GirlsBand/audio/skill/gbzhaying" + i) },
         trigger: {
             global: ["chooseToDebateBegin", "chooseToEnsembleBegin"],
             target: "chooseToCompareBegin",
@@ -1722,8 +1722,7 @@ const skills = {
         group: ["gbzhaying_1", "gbzhaying_2"],
         subSkill: {
             1: {
-                audio: false,
-                audioname2: { "gb_sp_mortis": "gbzhaying" },
+                audio: "gbzhaying",
                 forced: true,
                 trigger: {
                     player: "phaseBegin"
@@ -1738,7 +1737,7 @@ const skills = {
                 }
             },
             2: {
-                audio: false,
+                audio: "ext:GirlsBand/audio/skill/gbzhaying5",
                 audioname2: { "gb_sp_mortis": "gbzhaying" },
                 forced: true,
                 trigger: {
@@ -1761,7 +1760,9 @@ const skills = {
     },
     // SP三角初华
     gbshiqi: {
-        audio: false,
+        audio: "ext:GirlsBand/audio/skill:4",
+        logAudio: index => ("ext:GirlsBand/audio/skill/gbshiqi" + index),
+        popup: false,
         charlotte: true,
         trigger: {
             player: "enterGame",
@@ -1785,6 +1786,7 @@ const skills = {
         },
         async content(event, trigger, player) {
             let target = event.targets[0]
+            player.logSkill(event.name, target, null, null, [1])
             player.markAuto("gbshiqi_effect", target)
             player.unmarkSkill("gbshiqi_effect")
             target.markAuto("gbshiqi_effect", player)
@@ -1793,7 +1795,7 @@ const skills = {
         group: ["gbshiqi_gain", "gbshiqi_effect"],
         subSkill: {
             effect: {
-                audio: false,
+                audio: "ext:GirlsBand/audio/skill/gbshiqi2",
                 forced: true,
                 trigger: {
                     global: "discardAfter"
@@ -1811,7 +1813,7 @@ const skills = {
                 }
             },
             gain: {
-                audio: false,
+                audio: [3, 4].map(i => "ext:GirlsBand/audio/skill/gbshiqi" + i),
                 forced: true,
                 trigger: {
                     player: "phaseUseBegin"
@@ -1851,7 +1853,9 @@ const skills = {
         }
     },
     gbbeiqiu: {
-        audio: false,
+        audio: "ext:GirlsBand/audio/skill:5",
+        logAudio: index => ("ext:GirlsBand/audio/skill/gbbeiqiu" + index),
+        log: false,
         enable: "phaseUse",
         filter(event, player) {
             return !player.hasExpansions("gbbeihua") && player.countSkill("gbbeiqiu") < 3
@@ -1867,6 +1871,7 @@ const skills = {
             return -1 / get.effect(player, { name: "guohe" }, target, player)
         },
         async content(event, trigger, player) {
+            player.logSkill(event.name, event.target, null, null, [get.rand(1, 3)])
             await player.draw()
             let evt = event.targets[0].useCard({ name: "guohe" }, player)
             event.targets[0].when("useCardAfter")
@@ -1900,7 +1905,7 @@ const skills = {
         group: "gbbeiqiu_has",
         subSkill: {
             has: {
-                audio: false,
+                audio: [4, 5].map(i => "ext:GirlsBand/audio/skill/gbbeiqiu" + i),
                 enable: "phaseUse",
                 filter(event, player) {
                     return player.hasExpansions("gbbeihua") && player.countSkill("gbbeiqiu") < 3
@@ -1933,7 +1938,7 @@ const skills = {
         }
     },
     gbduoxin: {
-        audio: false,
+        audio: "ext:GirlsBand/audio/skill:2",
         juexingji: true,
         skillAnimation: true,
         animationColor: "gbmujica",
@@ -1944,6 +1949,7 @@ const skills = {
         filter(event, player) {
             return player.countCards("h") > player.hp
         },
+        derivation: ["gbbeihua", "gbchenggu"],
         async content(event, trigger, player) {
             await player.gain(player.getExpansions("gbshiqi"), "giveAuto")
             await player.recover()

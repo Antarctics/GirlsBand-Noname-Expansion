@@ -41,16 +41,16 @@ export default function () {
             image: group.image
         });
     });
+    if (lib.config.extension_GirlsBand_add_bgm) {
+        const bgmList = ["影色舞", "春日影", "KiLLKiSS", "ギターと孤独と蒼い惑星", "空之箱", "GO!GO!MANIAC", "fire bird", "Daylight -デイライト- (Instrumental)", "Hey-day狂騒曲(カプリチオ)", "劣等上等"];
 
-    // 背景音乐
-    const bgmList = ["影色舞", "春日影", "KiLLKiSS", "ギターと孤独と蒼い惑星", "空之箱", "GO!GO!MANIAC", "fire bird", "Daylight -デイライト- (Instrumental)", "Hey-day狂騒曲(カプリチオ)", "劣等上等"];
+        if (!lib.config.customBackgroundMusic) lib.config.customBackgroundMusic = {};
+        bgmList.forEach(name => {
+            lib.config.customBackgroundMusic[`ext:GirlsBand/audio/${name}.mp3`] = name;
+        });
+        game.saveConfig("customBackgroundMusic", lib.config.customBackgroundMusic);
 
-    if (!lib.config.customBackgroundMusic) lib.config.customBackgroundMusic = {};
-    bgmList.forEach(name => {
-        lib.config.customBackgroundMusic[`ext:GirlsBand/audio/${name}.mp3`] = name;
-    });
-    game.saveConfig("customBackgroundMusic", lib.config.customBackgroundMusic);
-
+    }
     // 自动播放音乐
     lib.skill._gbmusic = {
         trigger: { global: ["gameStart"] },
@@ -65,17 +65,6 @@ export default function () {
                 _status.tempMusic.add(`ext:GirlsBand/audio/${name}.mp3`);
             });
             game.playBackgroundMusic();
-        }
-    };
-
-    // 修复装备栏bug
-    lib.skill._gbBugFix = {
-        trigger: { player: "disableEquipAfter" },
-        direct: true,
-        async content(event, trigger, player) {
-            trigger.slots.forEach(slot => {
-                player.discard(player.getEquip(slot));
-            });
         }
     };
 
