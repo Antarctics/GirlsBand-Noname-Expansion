@@ -17,7 +17,7 @@ export default function () {
         },
         {
             type: "text",
-            data: `修改${get.poptip("gbduoluo")}技能效果以符合预期`,
+            data: `修改技能效果以符合预期`,
         },
         {
             type: "players",
