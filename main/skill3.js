@@ -1,5 +1,4 @@
 import { lib, game, ui, get, ai, _status } from "../../../noname.js";
-import AsyncCompiler from "../../../noname/library/element/GameEvent/compilers/AsyncCompiler.js";
 /** @type { importCharacterConfig['skill'] } */
 const skills = {
     // 丸山彩

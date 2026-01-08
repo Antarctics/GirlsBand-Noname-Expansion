@@ -1,4 +1,3 @@
-import { i } from "../../../_virtual/index6.js";
 import { lib, game, ui, get, ai, _status } from "../../../noname.js";
 /** @type { importCharacterConfig['skill'] } */
 const skills = {
