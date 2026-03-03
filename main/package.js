@@ -1,8 +1,8 @@
+import cards from "./card.js";
 import skills1 from "./skill1.js";
 import skills2 from "./skill2.js";
 import skills3 from "./skill3.js";
-import translates, { pinyins } from "./translate.js";
-import dynamicTranslates from "./dynamicTranslate.js";
+import translates, { pinyins, dynamicTranslates } from "./translate.js";
 import characters, { characterSubstitutes, characterTitles, characterIntros, characterReplaces, characterSort } from "./character.js"
 export default function (version) {
     return {
@@ -59,6 +59,10 @@ export default function (version) {
                 ...pinyins
             }
 
+        },
+        card: {
+            connect: true,
+            ...cards
         },
     }
 }

@@ -1,6 +1,5 @@
-import { lib, game, ui, get, ai, _status } from "../../../noname.js";
-import translates, { poptips } from "./translate.js";
-import dynamicTranslates from "./dynamicTranslate.js"
+import { lib, game, ui, get, ai, _status } from "../../../../noname.js";
+import translates, { poptips, dynamicTranslates } from "./translate.js";
 export default function () {
     // 自动匹配注释
     // 自动识别文本中以特定符号包裹的内容（“ ”、【 】、〖 〗），并替换为对应的提示信息（poptips）
@@ -14,7 +13,7 @@ export default function () {
     /// poptips 对象格式说明：
     /// key: 唯一标识符 (例如: 'skill_id', 'card_name')
     /// val[0]: 显示名称
-    /// val[1]: 类型（可选） - 当有3个元素时，val[1]为类型 (例如: 'card', 'skill'，留空默认为'rule')
+    /// val[1]: 类型（可选） - 当有3个元素时，val[1]为类型 (例如: 'card', 'skill'，'character'，留空默认为'rule')
     /// val[2]: 详细信息 - 当只有2个元素时，val[1]为信息，当有3个元素时，val[2]为信息
     const t = lib.translate;
     const dt = lib.dynamicTranslate
@@ -22,15 +21,9 @@ export default function () {
     const regex = /#|^.*(_info|_append|_config|_bg|_prefix|_suffix)$/;
     const r = /(?:“(.*?)”)|(?:【(.*?)】)|(?:〖(.*?)〗)/g
     // 初始化 poptip
-    // 遍历 poptips 对象，将其内容添加到 lib.poptip 中
-    for (let k in poptips) {
-        let v = poptips[k];
-        lib.poptip.add({
-            id: k,
-            name: v[0],
-            info: v[2] || v[1],
-            ...(v[2] && { type: v[1] })
-        });
+    // 遍历 poptips 数组，将其内容添加到 lib.poptip 中
+    for (let k of poptips) {
+        lib.poptip.add(k)
     }
     // window.name2KeywordMap (关键字与其ID的映射字典)
     for (let k in t) {

@@ -546,6 +546,48 @@ const characters = {
         img: "extension/GirlsBand/image/hagumi.png",
         dieAudios: ["ext:GirlsBand/audio/die/hagumi"],
     },
+    gb_hushanxiangcheng: {
+        sex: "female",
+        group: "gbpoppin",
+        hp: 3,
+        skills: ["gbshanyao", "gbjidong", "gbxingdong"],
+        names: "户山|香澄",
+        img: "extension/GirlsBand/image/kasumi.png",
+        isZhugong: true,
+    },
+    gb_shiguyouxiao: {
+        sex: "female",
+        group: "gbpoppin",
+        hp: 3,
+        skills: ["gbliuxing", "gbxingyin", "gbkami"],
+        names: "市谷|有咲",
+        img: "extension/GirlsBand/image/arisa.png",
+    },
+    gb_huayuanduohui: {
+        sex: "female",
+        group: "gbpoppin",
+        hp: 4,
+        skills: ["gbhuajing", "gbtuxi", "gbhuisi"],
+        names: "花园|多惠",
+        img: "extension/GirlsBand/image/tae.png",
+    },
+    gb_niugulimei: {
+        sex: "female",
+        group: "gbpoppin",
+        hp: 3,
+        maxHp: 6,
+        skills: ["gbqiaoluo", "gbkuangniu", "gbxingli"],
+        names: "牛込|里美",
+        img: "extension/GirlsBand/image/rimi.png",
+    },
+    gb_shanchuishaling: {
+        sex: "female",
+        group: "gbpoppin",
+        hp: 4,
+        skills: ["gbqiaoyou", "gbshanqian"],
+        names: "山吹|沙绫",
+        img: "extension/GirlsBand/image/saya.png",
+    },
 };
 
 const characterSubstitutes = {
@@ -615,6 +657,11 @@ const characterTitles = {
     gb_laitianxun: "梦幻泡影",
     gb_songyuanhuayin: "迷宫水母",
     gb_beizeyumei: "未来可乐",
+    gb_hushanxiangcheng: "邦高祖",
+    gb_shiguyouxiao: "临香称澄",
+    gb_huayuanduohui: "兔耳警察",
+    gb_niugulimei: "尘埃螺定",
+    gb_shanchuishaling: "发酵圣女",
 };
 const characterIntros = {
     zhuiminglixi: "椎名立希，所属动漫《BanG Dream! It's MyGO!!!!!》中的人物。MyGO!!!!!的鼓手，同时也负责作曲，在拿到灯的歌词以后，创作出切合她世界观的歌曲。花咲川女子学园高中一年级学生，是喜欢一人独处的独狼。",
@@ -673,6 +720,12 @@ const characterIntros = {
     laitianxun: "濑田薰，所属动漫《BanG Dream!》中的人物。Hello, Happy World!乐队的吉他手。拥有出色的音乐天赋，性格温柔体贴，始终细心关心着乐队的其他成员。",
     songyuanhuayin: "松原花音，所属动漫《BanG Dream!》中的人物。Hello, Happy World!乐队的鼓手。性格内向害羞，但演奏技术十分出色，在专注打鼓的过程中能找到属于自己的自信和勇气。",
     beizeyumei: "北泽育美，所属动漫《BanG Dream!》中的人物。Hello, Happy World!乐队的贝斯手。活力四射的运动型少女，还是当地垒球队的队长和王牌选手，用稳健有力的贝斯演奏为乐队奠定节奏基础。",
+    hushanxiangcheng: "户山香澄，所属动漫《BanG Dream!》中的人物。Poppin'Party的主唱兼吉他手，花咲川女子学园高中一年级学生。性格积极乐观，行动力极强，总是在寻找着小时候仰望星空时听到的那种令人心跳不已的“星之律动”。她是乐队的灵魂人物，拥有感染周围人的力量。",
+    shiguyouxiao: "市谷有咲，所属动漫《BanG Dream!》中的人物。Poppin'Party的键盘手，花咲川女子学园高中一年级学生。老家是当铺“流星堂”，提供地下室作为乐队的练习据点。虽然性格有些傲娇且毒舌，其实是个很怕寂寞、爱操心的人。兴趣是修剪盆栽，学习成绩非常优秀。",
+    huayuanduohui: "花园多惠，所属动漫《BanG Dream!》中的人物。Poppin'Party的吉他手，花咲川女子学园高中一年级学生。从小就开始练习吉他，拥有极高的演奏水平。性格有些天然呆，经常会有出人意料的发言。家里养了20多只兔子，是一个超级动物爱好者。",
+    niugulimei: "牛込里美，所属动漫《BanG Dream!》中的人物。Poppin'Party的贝斯手，花咲川女子学园高中一年级学生。性格内向害羞，为了改变胆小的自己而加入乐队。非常喜欢巧克力螺丝面包，甚至会以此作为创作灵感。她的姐姐是乐队Glitter*Green的主唱牛込由里。",
+    shanchuishaling: "山吹沙绫，所属动漫《BanG Dream!》中的人物。Poppin'Party的鼓手，花咲川女子学园高中一年级学生。家里经营着“山吹面包房”，经常在店里帮忙。性格稳重体贴，像大姐姐一样照顾着大家。曾因为家庭原因放弃过音乐，在香澄的真诚邀请下重新开始了自己的乐队梦想。"
+
 };
 const characterReplaces = {
     gb_changqisushi: ["gb_sp_changqisushi", "gb_changqisushi"],
@@ -697,6 +750,7 @@ const characterSort = {
     gb_pastel: ["gb_wanshancai", "gb_bailuqiansheng", "gb_bingchuanrina", "gb_dahemami", "gb_ruogongyifu"],
     gb_ras: ["gb_hezouruiyi", "gb_zhaoriliuhua", "gb_zuotengyimu", "gb_ruyuanlingwangna", "gb_zhushouzhiyou"],
     gb_hhw: ["gb_xuanjuanxin", "gb_aozemeixiao", "gb_laitianxun", "gb_songyuanhuayin", "gb_beizeyumei"],
+    gb_poppin: ["gb_hushanxiangcheng", "gb_shiguyouxiao", "gb_huayuanduohui", "gb_niugulimei", "gb_shanchuishaling"],
 };
 export { characterSubstitutes, characterTitles, characterIntros, characterReplaces, characterSort };
 export default characters;

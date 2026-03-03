@@ -1,4 +1,5 @@
 import { lib, game, ui, get, ai, _status } from "../../../noname.js";
+import cards from "./card.js";
 export default function () {
     const minVer = "1.11.0";
     const currVer = lib.version.split('.').map(Number);
@@ -32,7 +33,8 @@ export default function () {
         { id: "gbband", name: "束", color: "#ff2291", image: "ext:GirlsBand/image/band.png" },
         { id: "gbTOGETOGE", name: "刺", color: "#D90E2C" },
         { id: "gbkon", name: "轻", color: "#e71419" },
-        { id: "gbhhw", name: "笑", color: "#FFDD00", image: "ext:GirlsBand/image/hhw.png" }
+        { id: "gbhhw", name: "笑", color: "#FFDD00", image: "ext:GirlsBand/image/hhw.png" },
+        { id: "gbpoppin", name: "派", color: "#FF3377", image: "ext:GirlsBand/image/poppin.png" }
     ];
 
     groups.forEach(group => {

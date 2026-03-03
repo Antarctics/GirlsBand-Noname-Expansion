@@ -2,31 +2,26 @@ import { lib, game, ui, get, ai, _status } from "../../../noname.js";
 import update from "./update.js";
 export default function () {
     game.showExtensionChangeLog([
-        { type: "text", data: "本次更新说明" },
         {
             type: "text",
-            data: `修复已知技能BUG`,
-        },
-        {
-            type: "text",
-            data: `新增【添加BGM】选项`,
-        },
-        {
-            type: "players",
-            data: ["gb_sp_qianzaoaiyin"],
+            data: `修复${get.poptip("gbshanqi")}使用虚拟装备时可不选择实体牌的问题。`,
         },
         {
             type: "text",
-            data: `修改技能效果以符合预期`,
+            data: `优化自动注释系统。`,
         },
+        { type: "text", data: "新增以下角色：" },
         {
-            type: "players",
-            data: ["gb_sp_sanjiaochuhua", "gb_bafanhailing", "gb_fengchuanxiangzi", "gb_youtiansiruomai"],
+            type: "players", data: [
+                "gb_hushanxiangcheng",
+                "gb_shiguyouxiao",
+                "gb_huayuanduohui",
+                "gb_niugulimei",
+                "gb_shanchuishaling"
+            ]
         },
-        {
-            type: "text",
-            data: `新增技能语音`,
-        },
+        { type: "text", data: "新增以下卡牌：" },
+        { type: "cards", data: ['gb_huanle', 'gb_yibeizi', 'gb_bingchuan', 'gb_chuhua', 'gb_daxi', 'gb_feiniao', 'gb_guga', 'gb_hexian', 'gb_ruomai', 'gb_xing', 'gb_xuehong'] },
     ], 'GirlsBand');
     /**
      * 合奏机制 - 让玩家选择展示手牌或从牌堆展示牌

@@ -1,9 +1,29 @@
 import { lib, game, ui, get, ai, _status } from "../../../noname.js";
-const poptips = {
-    rule_yishi: ["议事", "所有参与议事的角色同时展示一张手牌，此牌的颜色称为“意见”：<br>若红色“意见”较多，则议事结果为红色；<br>若黑色“意见”较多，则议事结果为黑色；<br>若二者数量持平，则议事无结果。"],
-    rule_hezou: ["合奏", "所有参与合奏的角色需选择任意一项：<br>①展示任意张手牌；<br>②展示牌堆顶的一张牌。<br>以此法展示的牌视为“合奏”牌。"],
-    背水: ["背水", "执行上述所有选项，然后执行本选项。"]
-}
+const poptips = [
+    {
+        id: "议事",
+        name: "议事",
+        info: "所有参与议事的角色同时展示一张手牌，此牌的颜色称为“意见”：<br>若红色“意见”较多，则议事结果为红色；<br>若黑色“意见”较多，则议事结果为黑色；<br>若二者数量持平，则议事无结果。"
+    },
+    {
+        id: "合奏",
+        name: "合奏",
+        info: "所有参与合奏的角色需选择任意一项：<br>①展示任意张手牌；<br>②展示牌堆顶的一张牌。<br>以此法展示的牌视为“合奏”牌。"
+    },
+    {
+        id: "背水",
+        name: "背水",
+        info: "执行上述所有选项，然后执行本选项。"
+    },
+    {
+        id: "王",
+        name: "【王】",
+        dialog(dialog, poptip) {
+            dialog.addSmall([[["gb_joker"]], "vcard"])
+            dialog.addSmall("扑克牌的一种，牌名为王，无实际效果，无花色，类型为joker的牌。")
+        }
+    }
+]
 const translates = {
     GirlsBand: "少女乐队",
     vocalist: "主唱",
@@ -28,6 +48,7 @@ const translates = {
     gb_pastel: "Pastel*Palettes",
     gb_ras: "RAISE A SUILEN",
     gb_hhw: "Hello, Happy World!",
+    gb_poppin: "Poppin'Party",
     gb_zhuiminglixi: "椎名立希",
     gb_changqisushi: "长崎素世",
     gb_yaolenai: "要乐奈",
@@ -100,6 +121,11 @@ const translates = {
     gb_laitianxun: "濑田薰",
     gb_songyuanhuayin: "松原花音",
     gb_beizeyumei: "北泽育美",
+    gb_hushanxiangcheng: "户山香澄",
+    gb_shiguyouxiao: "市谷有咲",
+    gb_huayuanduohui: "花园多惠",
+    gb_niugulimei: "牛込里美",
+    gb_shanchuishaling: "山吹沙绫",
     // 技能台词
     "#ext:GirlsBand/audio/skill/gbchunying1": "来弹吉他吧。",
     "#ext:GirlsBand/audio/skill/gbchunying2": "一起演出吧。",
@@ -485,7 +511,118 @@ const translates = {
     gbbenxi_info: "锁定技，当你使用牌时，你可以展示并弃置与你距离为1以内的一名角色的一张牌，若此牌花色为♥️，你摸一张牌，否则，其于本回合结束时摸一张牌。",
     gbjinhuan: "尽欢",
     gbjinhuan_info: "锁定技，当你于回合内使用牌时，本轮你计算与其他角色的距离-1。你的♥️牌无次数限制且不可被响应。",
+
+    // 户山香澄
+    gbshanyao: "闪耀",
+    gbshanyao_info: "游戏开始时，场上角色依次选择是否摸一张牌并将一张手牌视为【闪电】置于自身判定区内。当你使用伤害牌指定一名角色时，若其判定区没有【闪电】，你可以获得其区域内的一张牌。",
+    gbjidong: "悸动",
+    gbjidong_info: "锁定技，一名角色回合开始时，若其判定区没有【闪电】，令其摸一张牌并将一张牌视为【闪电】置入自身判定区内，否则其选择一项：①摸两张牌，然后令你获得〖鬼才〗持续至回合结束；②摸一张牌并跳过判定阶段与摸牌阶段，然后获得〖强袭〗、〖挑衅〗持续至回合结束；③令你摸一张牌，然后其可弃置判定区内的一张牌；④令你摸两张牌，然后其获得〖观星〗持续至回合结束。",
+    gbxingdong: "星动",
+    gbxingdong_info: "主公技，当你于回合外获得牌时，你可以将此牌交给同势力角色。",
+
+    // 市谷有咲
+    gbliuxing: "流星",
+    gbliuxing_info: "锁定技，当你受到伤害时，若你的判定区内有【闪电】，你进行一次【闪电】判定，否则你防止此伤害，然后将牌堆顶的一张牌视为【闪电】置入判定区内。",
+    gbxingyin: "星引",
+    gbxingyin_info: "当你的判定牌生效后，你可以获得之，若此牌不为♠2~9，你可以令一名角色横置或重置并重铸任意张手牌。",
+    gbkami: "卡蜜",
+    gbkami_info: "锁定技，你受到的雷属性伤害至多为1，当你受到雷属性伤害时，你摸三张牌。",
+
+    // 花园多惠
+    gbhuajing: "花警",
+    gbhuajing_info: "锁定技，你的初始手牌改为扑克牌，游戏开始时，你获得一张【王】牌。",
+    gbtuxi: "兔袭",
+    gbtuxi_info: "其他角色的回合开始时，你可以令其选择一项：①令你展示一张牌，然后视为对其使用一张【推心置腹】；②令你展示并交给其一张牌，然后视为对其使用一张【趁火打劫】；③令你与其交换一张手牌，然后你可以展示你与其的所有手牌。",
+    gbhuisi: "慧思",
+    gbhuisi_info: "当你展示扑克牌时，你摸一张牌；当其他角色展示【王】牌，其失去1点体力；每轮结束时，你获得弃牌堆内的扑克牌。",
+
+    // 牛込里美
+    gbqiaoluo: "巧螺",
+    gbqiaoluo_info: "锁定技，转换技，当一名角色的判定牌生效后：阳：你摸一张牌并展示一张牌，此牌视为雷【杀】且无距离限制；阴：你获得判定牌并展示一张牌，此牌视为火【杀】且可以额外选择一名目标。",
+    gbkuangniu: "狂牛",
+    gbkuangniu_info: "锁定技，当你使用【杀】指定目标后，你可以进行一次【闪电】判定，然后若此【杀】造成伤害，你回复1点体力并增加1点体力上限，否则，你失去1点体力上限。",
+    gbxingli: "星里",
+    gbxingli_info: "锁定技，当你受到【闪电】伤害时，改为失去3点体力上限。当你失去1点体力上限后，你摸两张牌且本回合使用【杀】的次数+1。",
+
+    // 山吹沙绫
+    gbqiaoyou: "巧诱",
+    gbqiaoyou_info: "当你使用【杀】或【决斗】指定一名目标后，若你判定区内没有牌，你可以将其的一张牌视为【闪电】置入自身判定区内，否则，你获得其区域内的一张牌。",
+    gbshanqian: "山千",
+    gbshanqian_info: "你于出牌阶段获得的牌可视为【杀】使用或打出。当你使用【杀】或【决斗】时，你可以额外选择一名目标。",
 }
+const dynamicTranslates = {
+    gbchunying(player) {
+        if (!player.storage.gbchunying) return `转换技，出牌阶段限一次，你可以展示一名其他角色的一张手牌，然后你令其使用此牌：<span class="bluetext">阳：与你拼点：若你赢，你获得所有拼点牌；若你没赢，此技能视为未使用过；</span>阴：与你“议事”，若结果为：红色，你获得“议事”的牌；黑色，你摸两张牌；无结果：此技能视为未使用过。`
+        return `转换技，出牌阶段限一次，你可以展示一名其他角色的一张手牌，然后你令其使用此牌：阳：与你拼点：若你赢，你获得拼点的牌；若你没赢，此技能视为未使用过；<span class="bluetext">阴：与你“议事”，若结果为：红色，你获得“议事”的牌；黑色，你摸两张牌；无结果：此技能视为未使用过。</span>`
+    },
+    gbdubai(player) {
+        if (!player.storage.gbdubai) return `转换技，出牌阶段限两次，你可以展示一张手牌，<span class="bluetext">阳：横置或重置自身，然后横置一名其他角色。</span>阴：令一名未横置的其他角色选择一项：①令你摸一张牌，然后横置自身武将牌；②视为对你使用一张雷【杀】，若未造成伤害，你摸一张牌并弃置其一张牌。`
+        return `转换技，出牌阶段限两次，你可以展示一张手牌，阳：横置或重置自身，然后横置一名其他角色。<span class="bluetext">阴：令一名未横置的其他角色选择一项：①令你摸一张牌，然后横置自身武将牌；②视为对你使用一张雷【杀】，若未造成伤害，你摸一张牌并弃置其一张牌。</span>`
+    },
+    gbkaimu(player) {
+        let skill = player.storage["gbkaimu"]
+        let num = skill ? skill - 1 : 0
+        let str = "持恒技，游戏开始时或每轮开始时，你选择其中一项作为效果："
+        let infos = ["<br>①明场：当【杀】造成伤害时，伤害来源需弃置一张基本牌，否则本次伤害-1；",
+            "<br>②暗场：一名角色使用防具牌时，其需弃置一张装备牌，否则弃置此牌；所有角色的攻击范围+2；",
+            "<br>③独语：使用【桃】时失去1点体力，使用【酒】时恢复1点体力；",
+            "<br>④乱叙：当【南蛮入侵】或【万箭齐发】造成伤害时，改为回复体力；当【桃园结义】回复体力时，改为造成伤害。"]
+        for (let i = 0; i < 4; i++) {
+            if (i == num) {
+                str += '<span class="bluetext">' + infos[i] + "</span>"
+            } else {
+                str += infos[i]
+            }
+        }
+        return str
+    },
+    gbjianqiu(player) {
+        if (!player.storage.gbjianqiu) return `转换技，每轮每名角色限一次，当你参与的拼点结束后，你可以展示一名其他角色的一张牌，<span class="bluetext">阳：你获得此牌，然后本轮你不能对其使用“gbqilu”；</span>阴：交给其一张牌，然后你可以获得此牌。`
+        return `转换技，每轮每名角色限一次，当你参与的拼点结束后，你可以展示一名其他角色的一张牌，阳：你获得此牌，然后本轮你不能对其使用“gbqilu”；<span class="bluetext">阴：交给其一张牌，然后你可以获得此牌。</span>`
+    },
+    gbmoshe(player) {
+        if (!player.storage.gbmoshe) return `转换技，一名角色的结束阶段，若你有『魔』，你可以将任意张『魔』置入弃牌堆，<span class="bluetext">阳：若此法置入弃牌堆的牌点数之和为14，你对一名其他角色造成1点雷属性伤害，然后你摸一张牌；</span>阴：若此法置入弃牌堆的牌花色均不相同且数量为四，你对一名其他角色造成2点伤害；</br>每轮结束时，若本轮你发动过“gbmoshe”且未以此法杀死其他角色，你失去X点体力（X为本轮你发动“gbmoshe”的次数-1）。`
+        return `转换技，一名角色的结束阶段，若你有『魔』，你可以将任意张『魔』置入弃牌堆，阳：若此法置入弃牌堆的牌点数之和为14，你对一名其他角色造成1点雷属性伤害，然后你摸一张牌；<span class="bluetext">阴：若此法置入弃牌堆的牌花色均不相同且数量为四，你对一名其他角色造成2点伤害；</span></br>每轮结束时，若本轮你发动过“gbmoshe”且未以此法杀死其他角色，你失去X点体力（X为本轮你发动“gbmoshe”的次数-1）。`
+    },
+    gbcigu(player) {
+        if (!player.storage.gbcigu) return `转换技，一名角色的判定阶段开始时，你可以展示任意张「志」，<span class="bluetext">阳：观看牌堆顶的X张牌，并获得其中任意张牌，然后将等量张手牌依次置入牌堆顶；</span>阴：展示牌堆顶X张牌，并令一名角色获得其中与你展示牌点数相同的牌，然后将剩余的牌以任意顺序置入牌堆顶或牌堆底<span class="bluetext">（X为你的体力上限）</span>。`
+        return `转换技，一名角色的判定阶段开始时，你可以展示任意张「志」，阳：观看牌堆顶的X张牌，并获得其中任意张牌，然后将等量张手牌依次置入牌堆顶；<span class="bluetext">阴：展示牌堆顶X张牌，并令一名角色获得其中与你展示牌点数相同的牌，然后将剩余的牌以任意顺序置入牌堆顶或牌堆底（X为你的体力上限）</span>。`
+    },
+    gbwuyin(player) {
+        let str = "限定技，出牌阶段限一次，你可以选择一项直到回合结束（每回合每项限一次）："
+        let choiceList = [
+            "①当你使用牌时，若你于本回合的出牌阶段内使用的所有牌的点数均为严格递增，你摸一张牌；",
+            "②当你使用牌时，若此牌点数小于你使用的上一张牌，你可以重铸一名角色的一张牌；",
+            "③当你使用【杀】或普通锦囊牌时，你可以令一名其他角色成为此牌的目标；",
+            "④当你对其他角色造成伤害时，你可以防止此伤害并获得其一张牌（每回合每名角色限一次）；",
+            "⑤弃置X张牌并摸3张牌（X为你本回合〖添彩〗发动的次数）。"
+        ]
+        for (let i = 1; i <= 5; i++) {
+            let option = "选项" + get.cnNumber(i, true);
+            if (player.getStorage("gbwuyin_used").includes(option)) {
+                str += '<br><span class="bluetext">' + choiceList[i - 1] + '</span>'
+            } else {
+                str += "<br>" + choiceList[i - 1]
+            }
+        }
+        return str
+    },
+    gbmeiying(player) {
+        let str = "限定技，出牌阶段，你可以废除你的任意个装备栏，然后执行对应的选项："
+        let list = [
+            "①武器栏：你使用的下一张【杀】可以额外指定任意个目标；", "②防具栏：当你使用【杀】指定目标时，你可以取消此目标并弃置其各个区域一张牌，直到本回合结束；", "③防御马栏：摸三张牌；", "④进攻马栏：本回合你使用的实体【杀】无法被响应；", "⑤宝物栏：你可以将锦囊牌视为无次数与距离限制的【杀】使用或打出，直到本回合结束。"
+        ]
+        for (let i = 1; i <= 5; i++) {
+            if (player.hasSkill("gbmeiying_" + i)) str += '<span class="bluetext">' + list[i - 1] + '</span>'
+            else str += list[i - 1]
+        }
+        return str
+    },
+    gbqiaoluo(player) {
+        if (!player.storage.gbqiaoluo) return `锁定技，转换技，当一名角色的判定牌生效后：<span class="bluetext">阳：你摸一张牌并展示一张牌，此牌视为雷【杀】且无距离限制；</span>阴：你获得判定牌并展示一张牌，此牌视为火【杀】且可以额外选择一名目标。`
+        return `锁定技，转换技，当一名角色的判定牌生效后：阳：你摸一张牌并展示一张牌，此牌视为雷【杀】且无距离限制；<span class="bluetext">阴：你获得判定牌并展示一张牌，此牌视为火【杀】且可以额外选择一名目标。</span>`
+    }
+};
 const pinyins = {
     椎名立希: ["Shiina", "Taki"],
     长崎素世: ["Nagasaki", "Soyo"],
@@ -542,6 +679,11 @@ const pinyins = {
     濑田薰: ["Seta", "Kaoru"],
     松原花音: ["Matsubara", "Kanone"],
     北泽育美: ["Kitazawa", "Hagumi"],
+    户山香澄: ["Tayama", "Kasumi"],
+    市谷有咲: ["Ichigaya", "Arisa"],
+    花园多惠: ["Hanazono", "Tae"],
+    牛込里美: ["Ushigome", "Rimi"],
+    山吹沙绫: ["Yamabuki", "Saya"],
 }
-export { pinyins, poptips };
+export { pinyins, poptips, dynamicTranslates };
 export default translates;
