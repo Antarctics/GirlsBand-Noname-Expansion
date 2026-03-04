@@ -575,7 +575,7 @@ const characters = {
         sex: "female",
         group: "gbpoppin",
         hp: 3,
-        maxHp: 6,
+        maxHp: 5,
         skills: ["gbqiaoluo", "gbkuangniu", "gbxingli"],
         names: "牛込|里美",
         img: "extension/GirlsBand/image/rimi.png",

@@ -75,12 +75,10 @@ export default function () {
         let v = dynamicTranslates[k];
         if (typeof v === 'string') dt[k] = rep(k, v);
         else if (typeof v === 'function') {
-            let s = rep(k, v.toString());
-            let body = s.match(/\{([\s\S]*)\}/)?.[1];
-            if (body) {
-                let args = s.match(/\((.*?)\)/)?.[1]?.split(',').map(a => a.trim()).filter(Boolean) || [];
-                dt[k] = new Function(...args, body);
-            }
+            dt[k] = new Proxy(v, {
+                apply: (t, _, a) => (r => typeof r == 'string' ? rep(k, r) : r)(Reflect.apply(t, _, a)),
+                toString: () => rep(k, v.toString())
+            });
         }
     }
     lib.translate = t

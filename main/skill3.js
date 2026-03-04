@@ -2692,7 +2692,7 @@ const skills = {
             if (player.countCards("j", { name: "shandian" })) {
                 player.executeDelayCardEffect("shandian")
             } else {
-                trigger.cancel();
+                trigger.num - 1
                 player.addJudge({ name: "shandian" }, get.cards())
             }
         }
@@ -2740,7 +2740,19 @@ const skills = {
         filter(event) { return event.nature == "thunder" && event.num > 0 },
         async content(event, trigger, player) {
             trigger.num = 1;
-            player.draw(3);
+        },
+        group: ["gbkami_draw"],
+        subSkill: {
+            draw: {
+                audio: false,
+                trigger: { player: "damageAfter" },
+                charlotte: true,
+                forced: true,
+                filter(event) { return event.nature == "thunder" && event.num > 0 },
+                async content(event, trigger, player) {
+                    player.draw(3);
+                },
+            }
         }
     },
 
@@ -2849,14 +2861,14 @@ const skills = {
             if (result.control == "选项一") {
                 let result2 = await player.chooseCard("h", "展示一张牌", true).set("ai", card => ["poker", "joker"].includes(get.type(card)) ? 10 : 1 / get.value(card)).forResult();
                 player.showCards(result2.cards);
-                player.useCard({ name: "tuixinzhifu" }, target);
+                if (player.canUse({ name: "tuixinzhifu" }, target, false, false)) player.useCard({ name: "tuixinzhifu" }, target);
             } else if (result.control == "选项二") {
                 let result2 = await player.chooseCard("h", "展示并交给" + get.translation(target) + "一张牌", true)
                     .set("ai", card => get.type(card) == "poker" ? 10 : get.type(card) == "joker" ? 9 : 1 / get.value(card))
                     .forResult();
                 player.showCards(result2.cards);
                 player.give(result2.cards, target);
-                player.useCard({ name: "chenhuodajie" }, target);
+                if (player.canUse({ name: "chenhuodajie" }, target, false, false)) player.useCard({ name: "chenhuodajie" }, target);
             } else {
                 let result2 = await player.chooseCardOL([player, target], "h", "交换一张手牌", true)
                     .set("ai", card => {
@@ -2942,7 +2954,7 @@ const skills = {
                 player.draw();
                 let result = await player.chooseCard("h", "巧螺：展示一张牌令其视为雷【杀】", true)
                     .set("ai", card => -get.value(card))
-                    .set("filterTarget", card => !card.hasGaintag("gbqiaoluo_thunder"))
+                    .set("filterCard", card => !card.hasGaintag("gbqiaoluo_thunder"))
                     .forResult();
                 if (result.bool) {
                     player.showCards(result.cards);
@@ -2952,7 +2964,7 @@ const skills = {
                 player.gain(trigger.result.card, "gain2");
                 let result = await player.chooseCard("h", "展示一张牌令其视为火【杀】", true)
                     .set("ai", card => -get.value(card))
-                    .set("filterTarget", card => !card.hasGaintag("gbqiaoluo_fire"))
+                    .set("filterCard", card => !card.hasGaintag("gbqiaoluo_fire"))
                     .forResult();
                 if (result.bool) {
                     player.showCards(result.cards);
@@ -3039,7 +3051,7 @@ const skills = {
                 forced: true,
                 getIndex(event, player) { return event.num },
                 async content(event, trigger, player) {
-                    player.draw(2);
+                    player.draw();
                     player.addMark("gbxingli_extra", 1, false)
                     player.addTempSkill("gbxingli_extra");
                 }
