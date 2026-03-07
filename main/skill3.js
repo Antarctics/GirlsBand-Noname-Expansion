@@ -2870,7 +2870,7 @@ const skills = {
                     .forResult();
                 player.showCards(result2.cards);
                 player.give(result2.cards, target);
-                if (player.canUse({ name: "chenhuodajie" }, target, false, false)) player.useCard({ name: "chenhuodajie" }, target);
+                if (player.canUse({ name: "chenghuodajie" }, target, false, false)) player.useCard({ name: "chenghuodajie" }, target);
             } else {
                 let result2 = await player.chooseCardOL([player, target], "h", "交换一张手牌", true)
                     .set("ai", card => {
