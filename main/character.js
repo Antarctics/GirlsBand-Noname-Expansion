@@ -549,7 +549,7 @@ const characters = {
     gb_hushanxiangcheng: {
         sex: "female",
         group: "gbpoppin",
-        hp: 3,
+        hp: 4,
         skills: ["gbshanyao", "gbjidong", "gbxingdong"],
         names: "户山|香澄",
         img: "extension/GirlsBand/image/kasumi.png",
@@ -583,7 +583,7 @@ const characters = {
     gb_shanchuishaling: {
         sex: "female",
         group: "gbpoppin",
-        hp: 4,
+        hp: 5,
         skills: ["gbqiaoyou", "gbshanqian"],
         names: "山吹|沙绫",
         img: "extension/GirlsBand/image/saya.png",
@@ -659,7 +659,7 @@ const characterTitles = {
     gb_beizeyumei: "未来可乐",
     gb_hushanxiangcheng: "邦高祖",
     gb_shiguyouxiao: "临香称澄",
-    gb_huayuanduohui: "兔耳警察",
+    gb_huayuanduohui: "兔园警察",
     gb_niugulimei: "尘埃螺定",
     gb_shanchuishaling: "发酵圣女",
 };

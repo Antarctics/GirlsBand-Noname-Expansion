@@ -2551,22 +2551,22 @@ const skills = {
         async content(event, trigger, player) {
             let players = game.players.sortBySeat();
             for (let p of players) {
-                let result = await p.chooseBool("闪耀：是否摸一张牌并将一张手牌视为【闪电】置入判定区？")
+                let result = await p.chooseBool("闪耀：是否摸将牌堆顶的一张牌视为【闪电】置入判定区？")
                     .set("ai", () => {
                         let player = get.event().player
                         let source = get.event().source
                         if (get.effect(player, { name: "shandian" }, player, player) > 0) return 1
                         if (get.attitude(player, source) > 0) return 1
-                        return Math.random() > 0.6
+                        return Math.random() > 0.8()
                     })
                     .set("source", player)
                     .forResult();
                 if (result.bool) {
-                    p.draw();
                     if (!p.canAddJudge({ name: "shandian" })) return
-                    let result2 = await p.chooseCard("h", "选择一张手牌视为【闪电】置入判定区", true).forResult();
-                    if (result2.bool) {
-                        p.addJudge({ name: "shandian" }, result2.cards)
+                    let card = get.cards()
+                    game.cardsGotoOrdering(card)
+                    if (card) {
+                        p.addJudge({ name: "shandian" }, card)
                     }
                 }
             }
@@ -2590,7 +2590,7 @@ const skills = {
         trigger: { global: "phaseBegin" },
         charlotte: true,
         forced: true,
-        derivation: ["guicai", "qiangxi", "tiaoxin", "guanxing"],
+        derivation: ["guidao", "qiangxi", "tiaoxin", "guanxing"],
         async content(event, trigger, player) {
             let target = trigger.player;
             if (!target.countCards("j", { name: "shandian" })) {
@@ -2605,7 +2605,7 @@ const skills = {
                 let result = await target.chooseButton(
                     ["悸动：选择其中一项",
                         [[
-                            [1, "摸两张牌，然后令" + get.translation(player) + "获得〖鬼才〗持续至回合结束"],
+                            [1, "摸两张牌，然后令" + get.translation(player) + "获得〖鬼道〗持续至回合结束"],
                             [2, "摸一张牌并跳过判定阶段与摸牌阶段，然后获得〖强袭〗、〖挑衅〗持续至回合结束"],
                             [3, "令" + get.translation(player) + "摸一张牌，然后你可弃置判定区内的一张牌。"],
                             [4, "令" + get.translation(player) + "摸两张牌，然后你获得〖观星〗持续至回合结束。"],
@@ -2628,7 +2628,7 @@ const skills = {
                 switch (result.links[0]) {
                     case 1:
                         target.draw(2);
-                        player.addTempSkill("guicai");
+                        player.addTempSkill("guidao");
                         break;
                     case 2:
                         target.draw();
@@ -2692,7 +2692,7 @@ const skills = {
             if (player.countCards("j", { name: "shandian" })) {
                 player.executeDelayCardEffect("shandian")
             } else {
-                trigger.num - 1
+                trigger.cancel()
                 player.addJudge({ name: "shandian" }, get.cards())
             }
         }
@@ -2751,6 +2751,8 @@ const skills = {
                 filter(event) { return event.nature == "thunder" && event.num > 0 },
                 async content(event, trigger, player) {
                     player.draw(3);
+                    let result = await player.chooseCard("卡密：选择一张牌置于牌堆顶", true).set("ai", card => 1 / get.value(card)).forResult()
+                    game.cardsGotoPile(result.cards, "insert")
                 },
             }
         }
