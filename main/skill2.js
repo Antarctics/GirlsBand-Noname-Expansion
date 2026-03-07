@@ -430,7 +430,7 @@ const skill = {
         async cost(event, trigger, player) {
             event.result = await player.chooseTarget("暗素", "选择一名参与本次议事的其他角色")
                 .set("targetx", trigger.list)
-                .set("filterTarget", (card, player, target) => get.event("targetx").includes(target) && target != player)
+                .set("filterTarget", (card, player, target) => get.event().targetx.includes(target) && target != player)
                 .set("ai", (target) => {
                     return Math.random()
                 })
@@ -516,7 +516,7 @@ const skill = {
         prompt2: "当你进行议事/拼点时，你可以获得参与本次事件的一名其他角色的一张牌，若如此做，你展示此牌并仅能使用此牌参与本次事件",
         async cost(event, trigger, player) {
             event.result = await player.chooseTarget("主音", "选择一名其他角色并获得其一张牌")
-                .set("filterTarget", (card, player, target) => player != target && get.event("targetx").includes(target))
+                .set("filterTarget", (card, player, target) => player != target && get.event().targetx.includes(target))
                 .set("ai", (target) => {
                     let player = _status.event.player
                     if (get.attitude(player, target) < 0) return 10
@@ -734,7 +734,7 @@ const skill = {
                         player.give(next.cards, target, "giveAuto")
                         let next2 = await player.chooseBool("是否获得" + get.translation(result.cards))
                             .set("ai", () => {
-                                let card = get.event("card")
+                                let card = get.event().card
                                 let player = _status.event.player
                                 if (player.isMaxHandcard()) return true
                                 return get.value(card) > 7
@@ -1146,8 +1146,8 @@ const skill = {
             event.result = await trigger.player.chooseBool("化蝶", `是否将牌堆中的一张同名牌置于『幻』中`)
                 .set("ai", () => {
                     let player = _status.event.player
-                    let source = get.event("source")
-                    let cards = get.event("cards")
+                    let source = get.event().source
+                    let cards = get.event().cards
                     if (get.attitude(player, source) > 0) return !source.getExpansions("gbqixiang").some(c => cards.some(card => card.name == c.name))
                     return false
                 })
@@ -3207,7 +3207,7 @@ const skill = {
                     if (get.attitude(player, target) > 0) return 10
                     return 1
                 })
-                .set("filterTarget", (card, player, tar) => tar != get.event("targetx"))
+                .set("filterTarget", (card, player, tar) => tar != get.event().targetx)
                 .set("targetx", target)
                 .forResultTargets()
             if (targets.length > 0) {

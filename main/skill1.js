@@ -184,7 +184,7 @@ const skills = {
                         })
                         .set("ai", (card) => {
                             let player = _status.event.player
-                            let source = get.event("source")
+                            let source = get.event().source
                             let targets = _status.event.getParent(3).targets
                             if (get.attitude(player, source) > 0) {
                                 if (targets.some(p => get.attitude(source, p) > 0)) return get.color(card) == "red"
@@ -214,7 +214,7 @@ const skills = {
         logTarget: "targets",
         async cost(event, trigger, player) {
             event.result = await player.chooseTarget("###迎祥###", "与一名未参与议事的角色进行拼点")
-                .set("filterTarget", (card, player, target) => get.event("targets").includes(target))
+                .set("filterTarget", (card, player, target) => get.event().targets.includes(target))
                 .set("ai", (target) => {
                     let player = _status.event.player
                     let cards = player.getCards("h")
@@ -237,7 +237,7 @@ const skills = {
             let result = await player.chooseToCompare(event.targets[0])
                 .set("ai", (card) => {
                     let player = _status.event.player
-                    let source = get.event("source")
+                    let source = get.event().source
                     var addi = get.value(card) >= 8 && get.type(card) != "equip" ? -3 : 0;
                     if (source == player) return get.number(card) - get.value(card) / 3 + addi
                     if (source.hp < 4 && get.attitude(player, source) > 0) return -get.number(card) - get.value(card) / 3 + addi
@@ -532,7 +532,7 @@ const skills = {
                     .forResult()
                 if (result) await player.chooseToDebate(result.targets).set("ai", (card) => {
                     let player = _status.event.player
-                    let source = get.event("source")
+                    let source = get.event().source
                     if (get.attitude(player, source) > 0) return get.color(card) == "red"
                     return get.color(card) == "black"
                 })
@@ -563,13 +563,13 @@ const skills = {
                 .set("prompt2", "请选择一张牌交给参与本次事件的一名其他角色")
                 .set("ai1", (card) => {
                     if (trigger.type == "compare") {
-                        if (get.event("targetx").some(t => get.attitude(player, t) < 0 && t != player)) {
+                        if (get.event().targetx.some(t => get.attitude(player, t) < 0 && t != player)) {
                             return -get.number(card) - get.value(card)
                         } else {
                             return 1 / get.value(card)
                         }
                     }
-                    if (get.event("targetx").some(t => get.attitude(player, t) > 0 && t != player)) {
+                    if (get.event().targetx.some(t => get.attitude(player, t) > 0 && t != player)) {
                         if (get.color(card) == "red") return get.value(card)
                         else return get.value(card) - 3
                     } else {
@@ -579,17 +579,17 @@ const skills = {
                 })
                 .set("ai2", (target) => {
                     if (trigger.type == "compare") {
-                        if (get.event("targetx").some(t => get.attitude(player, t) < 0 && t != player)) return get.attitude(player, target) < 0
+                        if (get.event().targetx.some(t => get.attitude(player, t) < 0 && t != player)) return get.attitude(player, target) < 0
                         else return get.attitude(player, target) > 0
                     } else {
-                        if (get.event("targetx").some(p => get.attitude(player, p) > 0 && p != player)) return get.attitude(player, target) > 0
+                        if (get.event().targetx.some(p => get.attitude(player, p) > 0 && p != player)) return get.attitude(player, target) > 0
                         else return -get.attitude(player, target) < 0
                     }
                 })
                 .set("targetx", trigger.list || trigger.targets || [trigger.target, trigger.player])
                 .set("forced", true)
                 .set("filterTarget", (card, player, target) => {
-                    return get.event("targetx").includes(target) && target != player
+                    return get.event().targetx.includes(target) && target != player
                 })
                 .forResult()
             if (result) {
@@ -704,7 +704,7 @@ const skills = {
                     if (player.canCompare(target)) {
                         let choice = await player.chooseToCompare(target)
                             .set("ai", (card) => {
-                                let source = get.event("source")
+                                let source = get.event().source
                                 var addi = get.value(card) >= 8 && get.type(card) != "equip" ? -3 : 0;
                                 if (_status.event.player == source) return -get.number(card) - get.value(card) / 3 + addi
                                 return get.number(card) - get.value(card) / 3 + addi
@@ -719,8 +719,8 @@ const skills = {
                     player.chooseToDebate([target, player])
                         .set("ai", (card) => {
                             let player = _status.event.player
-                            let source = get.event("player")
-                            let cardx = get.event("cardx")
+                            let source = get.event().player
+                            let cardx = get.event().cardx
                             if (player == source) {
                                 if (get.color(cardx) == "black") return get.color(card) == "black"
                                 else return get.color(card) == "red"
@@ -2558,7 +2558,7 @@ const skills = {
                         case "basic":
                             return 1
                         case "trick":
-                            if (get.attitude(player, get.event("target")) > 0 && get.event("target").isDamaged()) return 1
+                            if (get.attitude(player, get.event().target) > 0 && get.event().target.isDamaged()) return 1
                             return 0
                         case "equip":
                             return 2
@@ -2758,7 +2758,7 @@ const skills = {
             await player.give(event.cards, event.targets[0])
             let result = await event.targets[0].chooseCard(`赫戏`, `将两张牌交给${get.translation(player)}并获得〖求凰〗，或点击取消，若其已受伤，令其回复1点体力，否则其增加1点体力上限`, 2, "he")
                 .set("ai", (card) => {
-                    let source = get.event("source")
+                    let source = get.event().source
                     let player = _status.event.player
                     if (get.attitude(player.source) > 0 && source.hp <= 2 && (player.group == source.group || player.hasSkill("gbqiuhuang"))) return 0
                     return 6 - get.value(card)
@@ -3018,7 +3018,7 @@ const skills = {
             let next = await target.chooseCard("闺泣", "是否交给" + get.translation(player) + "一张牌。")
                 .set("ai", (card) => {
                     let player = _status.event.player
-                    let target = get.event("target")
+                    let target = get.event().target
                     if (get.attitude(player, target) > 0) return 6 - get.value(card)
                     return false
                 })
@@ -3365,10 +3365,10 @@ const skills = {
                     player.give(result.links, next.targets[0], "giveAuto");
                     if (next.targets[0].countCards("he", card => get.type(card) != get.type(result.links[0]))) {
                         let cards = await next.targets[0].chooseCard(`分形`, `选择一张不同类型的牌交给${get.translation(player)}`, "he", true)
-                            .set("filterCard", card => get.type(card, "trick") != get.type(get.event("cardx"), "trick"))
+                            .set("filterCard", card => get.type(card, "trick") != get.type(get.event().cardx, "trick"))
                             .set("ai", (card) => {
                                 let player = _status.event.player
-                                let target = get.event("target")
+                                let target = get.event().target
                                 if (get.attitude(player, target) > 0) return get.value(card)
                                 return 6 - get.value(card)
                             })
@@ -3400,7 +3400,7 @@ const skills = {
                 let next = await target.chooseControlList("吹灯", [`重铸${get.translation(player)}区域内的一张牌，若此牌不为基本牌，本回合结束时其摸一张牌`, `重铸${get.translation(player)}的一张手牌，然后进行判定，若判定牌与此牌点数相同，你受到1点伤害`], true)
                     .set("ai", () => {
                         let player = _status.event.player
-                        let target = get.event("target")
+                        let target = get.event().target
                         if (get.attitude(player, target) > 0) return 0
                         else {
                             if (target.countCards("e")) return 0
@@ -3612,7 +3612,7 @@ const skills = {
                 let result = await trigger.player.chooseCard("轻飘", "是否将一张牌交给" + get.translation(player))
                     .set("ai", (card) => {
                         let player = _status.event.player
-                        let source = get.event("source")
+                        let source = get.event().source
                         if (get.attitude(player, source) > 0) return 6 - get.value(card)
                         return 0
                     })
@@ -3749,7 +3749,7 @@ const skills = {
                 let next = await target.chooseControlList("苍空", list, true)
                     .set("ai", () => {
                         let player = _status.event.player
-                        if (get.attitude(player, get.event("source")) > 0) return 1
+                        if (get.attitude(player, get.event().source) > 0) return 1
                         else if (player.hasSkillTag("maixie") && player.hp > 1) return 0
                         else if (player.hp > 2) return 0
                         else if (player.countCards("he")) return 1

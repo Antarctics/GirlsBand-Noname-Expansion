@@ -410,9 +410,11 @@ export default {
         },
         xing_skill: {
             equipSkill: true,
-            trigger: { player: "shaBegin" },
+            trigger: { player: "useCard" },
             filter(event, player) {
-                return event.isFirstTarget && player.countCards("he", card => card != player.getEquip("gb_xing")) && game.hasPlayer(target => player.canUse("sha", target, true) && !event.targets.includes(target));
+                if (event.card) return false
+                if (event.card.name != "sha") return false
+                return player.countCards("he", card => card != player.getEquip("gb_xing")) && game.hasPlayer(target => player.canUse("sha", target, true) && !event.targets.includes(target));
             },
             async cost(event, trigger, player) {
                 event.result = await player.chooseCardTarget("he")

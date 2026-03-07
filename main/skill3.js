@@ -974,7 +974,7 @@ const skills = {
                 await player.chooseToEnsemble(targets)
                     .set("ai", (card) => {
                         let player = _status.event.player
-                        let source = get.event("source")
+                        let source = get.event().source
                         if (get.attitude(player, source) > 0) return get.value(card) <= 4
                         return get.value(card) <= 0
                     })
@@ -1091,8 +1091,8 @@ const skills = {
             for (let target of targets.sortBySeat()) {
                 let next = await target.chooseControlList("革面", "将手牌数调整至与" + get.translation(player) + "相同", "令" + get.translation(player) + "摸一张牌，且其本回合可使用【杀】的次数+1", true)
                     .set("ai", () => {
-                        let source = get.event("source")
-                        let player = get.event("player")
+                        let source = get.event().source
+                        let player = get.event().player
                         let num = source.countCards("h") - player.countCards("h")
                         if (get.attitude(player, source) > 0) return num > 3 ? 0 : 1
                         return num < -1 ? 1 : 0
@@ -1134,13 +1134,13 @@ const skills = {
         async content(event, trigger, player) {
             let card = get.cards(1, true)
             await player.showCards(card)
-            let result = await player.chooseTarget("狂匙", "选择一名其他角色与你“合奏”", true).set("filterTarget", lib.filter.notMe).set("ai", target => -get.attitude(get.event("player"), target)).forResult()
+            let result = await player.chooseTarget("狂匙", "选择一名其他角色与你“合奏”", true).set("filterTarget", lib.filter.notMe).set("ai", target => -get.attitude(get.event().player, target)).forResult()
             if (result) {
                 let targets = [player, result.targets[0]]
                 player.chooseToEnsemble(targets)
                     .set("ai", (card) => {
                         let player = _status.event.player
-                        let source = get.event("source")
+                        let source = get.event().source
                         let att = get.attitude(player, source)
                         if (att < 0) {
                             if (Math.random() < 0.7) return true
@@ -1253,8 +1253,8 @@ const skills = {
             player.chooseToEnsemble(targets)
                 .set("ai", (card) => {
                     let player = _status.event.player
-                    let source = get.event("source")
-                    let targets = get.event("targets")
+                    let source = get.event().source
+                    let targets = get.event().targets
                     let att = get.attitude(player, source)
                     if (player == source) {
                         if (ui.selected.cards.length >= targets[1].countCards("h")) return false
@@ -1319,7 +1319,7 @@ const skills = {
         },
         async cost(event, trigger, player) {
             event.result = await player.chooseTarget("忠犬", "选择一名其他角色", true)
-                .set("ai", (target) => get.attitude(get.event("player"), target))
+                .set("ai", (target) => get.attitude(get.event().player, target))
                 .set("filterTarget", lib.filter.notMe)
                 .forResult()
         },
@@ -1374,7 +1374,7 @@ const skills = {
                 player.chooseToEnsemble(targets)
                     .set("ai", () => {
                         let player = _status.event.player
-                        let source = get.event("source")
+                        let source = get.event().source
                         let att = get.attitude(player, source)
                         if (att < 0) {
                             if (Math.random() < 0.7) return true
@@ -1388,7 +1388,7 @@ const skills = {
                         let target = list.filter(item => item[0] != player).flatMap(item => item[1]).flat()
                         let num = Math.min(targets.length, 5)
                         if (!source.some(card => target.some(c => c.name == card.name))) {
-                            let next = await player.chooseTarget("彩颜", "令一名角色摸" + get.cnNumber(num) + "张牌").set("ai", (target) => get.attitude(get.event("player"), target)).forResult()
+                            let next = await player.chooseTarget("彩颜", "令一名角色摸" + get.cnNumber(num) + "张牌").set("ai", (target) => get.attitude(get.event().player, target)).forResult()
                             if (next && next.bool) next.targets[0].draw(num)
                         }
                     })
@@ -1419,7 +1419,7 @@ const skills = {
                 let next = await event.targets[0].chooseControlList("知由", "将展示牌交给" + get.translation(player) + "，然后摸等量张牌", "弃置展示牌，然后弃置" + get.translation(player) + "一张牌", true)
                     .set("ai", () => {
                         let player = _status.event.player
-                        let source = get.event("source")
+                        let source = get.event().source
                         if (get.attitude(player, source) > 0) return 0
                         return get.rand(0, 1)
                     })
@@ -1446,7 +1446,7 @@ const skills = {
         },
         async content(event, trigger, player) {
             let result = await player.chooseTarget("制音", "选择至多两名其他角色进行“合奏”", [1, 2], true)
-                .set("ai", (target) => get.attitude(get.event("player"), target) <= 0)
+                .set("ai", (target) => get.attitude(get.event().player, target) <= 0)
                 .set("filterTarget", lib.filter.notMe)
                 .forResult()
             if (result) {
@@ -1782,7 +1782,7 @@ const skills = {
             return event.name != "phase" || game.phaseNumber == 0;
         },
         async cost(event, trigger, player) {
-            event.result = await player.chooseTarget(true).set("ai", (target) => get.attitude(get.event("player"), target)).forResult()
+            event.result = await player.chooseTarget(true).set("ai", (target) => get.attitude(get.event().player, target)).forResult()
         },
         async content(event, trigger, player) {
             let target = event.targets[0]
@@ -2017,7 +2017,7 @@ const skills = {
                     return target.countCards("he") > 0
                 })
                 .set("ai", (target) => {
-                    return -get.attitude(get.event("player"), target)
+                    return -get.attitude(get.event().player, target)
                 })
                 .forResult()
             if (result.bool) {
