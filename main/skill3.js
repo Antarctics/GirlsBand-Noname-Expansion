@@ -2557,7 +2557,7 @@ const skills = {
                         let source = get.event().source
                         if (get.effect(player, { name: "shandian" }, player, player) > 0) return 1
                         if (get.attitude(player, source) > 0) return 1
-                        return Math.random() > 0.8()
+                        return Math.random() > 0.8
                     })
                     .set("source", player)
                     .forResult();
