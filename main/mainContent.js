@@ -4,24 +4,12 @@ export default function () {
     game.showExtensionChangeLog([
         {
             type: "text",
-            data: `修复${get.poptip("gbshanqi")}使用虚拟装备时可不选择实体牌的问题。`,
+            data: `修复技能相关BUG。`,
         },
         {
             type: "text",
-            data: `优化自动注释系统。`,
-        },
-        { type: "text", data: "新增以下角色：" },
-        {
-            type: "players", data: [
-                "gb_hushanxiangcheng",
-                "gb_shiguyouxiao",
-                "gb_huayuanduohui",
-                "gb_niugulimei",
-                "gb_shanchuishaling"
-            ]
-        },
-        { type: "text", data: "新增以下卡牌：" },
-        { type: "cards", data: ['gb_huanle', 'gb_yibeizi', 'gb_bingchuan', 'gb_chuhua', 'gb_daxi', 'gb_feiniao', 'gb_guga', 'gb_hexian', 'gb_ruomai', 'gb_xing', 'gb_xuehong'] },
+            data: "修复联机模式下无法禁用卡牌包的问题"
+        }
     ], 'GirlsBand');
     /**
      * 合奏机制 - 让玩家选择展示手牌或从牌堆展示牌

@@ -87,4 +87,6 @@ export default function () {
             return target.apply(thisArg, argumentsList);
         }
     });
+    lib.config.all.cards.push("GirlsBand");
+    lib.translate.GirlsBand_card_config = "GirlsBand";
 };

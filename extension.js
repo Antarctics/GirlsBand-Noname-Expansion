@@ -15,7 +15,7 @@ export default function () {
         arenaReady: arenaReady,
         precontent: preContent,
         content: mainContent,
-        package: info("2.3.2"),
+        package: info("2.3.3"),
         config: {
             bgm: {
                 name: `<font color="#e91e63">场内BGM <small>(下局生效)</small>`,

@@ -1556,14 +1556,18 @@ const skill = {
         },
         charlotte: true,
         async cost(event, trigger, player) {
-            let result = await player.chooseSkill(trigger.target, "选择一项技能", (skill, name) => {
-                return trigger.target.hasSkill(name)
+            let dialog = ui.create.dialog("选择一项技能", "forcebutton");
+            trigger.target.getGainableSkills().forEach(i => {
+                if (lib.translate[i + "_info"]) {
+                    var translation = get.translation(i);
+                    dialog.add([[[i, '【' + translation + "】" + lib.translate[i + "_info"]]], "tdnodes"])
+                }
             })
-                .forResult()
+            let result = await player.chooseButton(dialog).set("ai", btn => get.skillRank(btn.link, ["in", "out"], true)).forResult()
             if (result && result.bool) {
                 event.result = {
                     bool: true,
-                    cost_data: result.skill
+                    cost_data: result.links[0][0]
                 }
             }
         },
@@ -1880,7 +1884,7 @@ const skill = {
                 let result = await trigger.source.chooseBool("皆杀：是否将所有手牌交给" + get.translation(player), "回合结束后可执行一个额外回合")
                     .set("ai", () => {
                         let player = _status.event.player
-                        let source = get.event("sourcex")
+                        let source = get.event().sourcex
                         if (get.attitude(player, source) > 0) return true
                         if (player.countCards("h") < 2) return true
                         return false
@@ -2032,7 +2036,7 @@ const skill = {
                             return 1
                         })
                             .set("sourcex", player)
-                            .forResultControl()
+                            .forResult().control
                     }
                     if (next == "选项一") {
                         player.gainPlayerCard(target, "he", true)
@@ -2071,7 +2075,7 @@ const skill = {
         async content(event, trigger, player) {
             let result = await trigger.player.chooseBool("###蔷薇###", `是否获得${get.translation(player)}一张『孤』`).set("ai", () => {
                 let player = _status.event.player
-                let source = get.event("sourcex")
+                let source = get.event().sourcex
                 if (get.attitude(player, source) > 0) return true
                 return Math.random < 0.5
             })
@@ -2178,7 +2182,7 @@ const skill = {
                     return 1
                 })
                 .set("filterTarget", (card, player, target) => !player.getStorage("gbciai_used").includes(target))
-                .forResultTargets()
+                .forResult().targets
             let target = targets[0]
             await player.give(next.links, target, "giveAuto")
             player.markAuto("gbciai_used", target)
@@ -2828,7 +2832,7 @@ const skill = {
                         red = cards.reduce((num, c) => num += c.isKnownBy(player) ? (get.color(c) == "red" ? 1 : 0) : Math.round(Math.random() - 0.2), 0) > (cards.length / 2)
                     if (!player.getStorage("gbkongtan_temp").includes("选项二") || !player.getStorage("gbkongtan_temp").includes("选项三")) return get.attitude(player, target)
                     return -get.attitude(player, target)
-                }).forResultTargets()
+                }).forResult().targets
             if (target[0]) {
                 let list = ["选项一", "选项二", "选项三"]
                 list.removeArray(player.getStorage("gbkongtan_temp"))
@@ -3209,7 +3213,7 @@ const skill = {
                 })
                 .set("filterTarget", (card, player, tar) => tar != get.event().targetx)
                 .set("targetx", target)
-                .forResultTargets()
+                .forResult().targets
             if (targets.length > 0) {
                 target.chooseToDebate(targets.concat(target))
                     .set("callback", () => {
@@ -3363,7 +3367,7 @@ const skill = {
                             let target = _status.currentPhase
                             return get.effect(target, card, player, player)
                         })
-                        .forResultCards()
+                        .forResult().cards
                     let evt = player.useCard(next, target)
                     player.when("useCardAfter")
                         .filter((event, player) => {
@@ -3508,7 +3512,7 @@ const skill = {
                                 var target = _status.currentPhase
                                 var att = get.sgn(get.attitude(player, target))
                                 let cards = []
-                                let num = get.event("num")
+                                let num = get.event().num
                                 if (target.countCards("j") && !target.hasWuxie()) {
                                     for (var i = 0; i < target.getCards("j").length; i++) {
                                         var judge = get.judge(target.getCards("j")[i])

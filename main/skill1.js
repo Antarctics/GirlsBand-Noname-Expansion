@@ -393,7 +393,7 @@ const skills = {
         async content(event, trigger, player) {
             let cards = []
             for (let target of event.targets.sortBySeat()) {
-                let card = await player.choosePlayerCard("掠菲", "展示" + get.translation(target) + "的一张手牌", "h", target, true).forResultCards()
+                let card = await player.choosePlayerCard("掠菲", "展示" + get.translation(target) + "的一张手牌", "h", target, true).forResult().cards
                 target.showCards(card)
                 cards.addArray(card)
             }
@@ -1746,7 +1746,7 @@ const skills = {
                                     .set("ai", (card) => {
                                         return 6 - get.value(card)
                                     })
-                                    .forResultCards()
+                                    .forResult().cards
                                 if (card.length) target.addToExpansion(card[0]).gaintag.add("gbmiaomeng_fire")
                             }
                         }
@@ -2128,7 +2128,7 @@ const skills = {
                     })
                     return target == game.filterPlayer(p => p.hasSkill(list[0]))[0]
                 })
-                .forResultTargets()
+                .forResult().targets
             if (target) {
                 let list = target[0].getGainableSkills((info, skill) => !player.hasSkill(skill) && !info.limited && !info.juexingji && !info.zhuSkill && !info.persevereSkill && !info.unique && !info.dutySkill && !info.hiddenSkill)
                 const switchToAuto = function () {
@@ -2615,7 +2615,7 @@ const skills = {
                     await player.give(event.cards, result.targets[0], "giveAuto")
                     let card = await result.targets[0].chooseCard(`素食`, `将一张牌交给${get.translation(player)}`, "he", true)
                         .set("ai", (card) => 6 - get.value(card))
-                        .forResultCards()
+                        .forResult().cards
                     await result.targets[0].give(card, player)
                 }
             }
@@ -2702,7 +2702,7 @@ const skills = {
                             if (!current.countCards("h")) return
                             var card = await current.chooseCard(`先路`, `选择一张手牌交给${get.translation(player)}`, true)
                                 .set("ai", (card) => get.value(card))
-                                .forResultCards()
+                                .forResult().cards
                             await current.give(card, player, "giveAuto")
                             await current.draw()
                             current.addTempSkill("fengyin")
@@ -2964,7 +2964,7 @@ const skills = {
                         .chooseCard(`是否交给${get.translation(player)}一张牌`, "he")
                         .set("ai", (card) => {
                             let player = _status.event.player
-                            let source = get.event("sourcex")
+                            let source = get.event().sourcex
                             if (get.attitude(player, source) < 0) return false
                             return 6 - get.value(card)
                         })
