@@ -393,7 +393,7 @@ const skills = {
         async content(event, trigger, player) {
             let cards = []
             for (let target of event.targets.sortBySeat()) {
-                let card = await player.choosePlayerCard("掠菲", "展示" + get.translation(target) + "的一张手牌", "h", target, true).forResult().cards
+                let card = (await player.choosePlayerCard("掠菲", "展示" + get.translation(target) + "的一张手牌", "h", target, true).forResult()).cards
                 target.showCards(card)
                 cards.addArray(card)
             }
@@ -486,7 +486,7 @@ const skills = {
                     return priority[button.link]() || 0;
                 })
                 .set("selectButton", [1, 3])
-                .forResult()
+            console.log(event.result)
             event.result.cost_data = event.result.links
         },
         async content(event, trigger, player) {
@@ -1742,12 +1742,12 @@ const skills = {
                         for (let target of targets.sortBySeat()) {
                             target.draw()
                             if (!target.hasExpansions("gbmiaomeng_fire")) {
-                                let card = await target.chooseCard("传庭", "选择一张牌置于武将牌上，称为『火』", 1, "he", true)
+                                let { cards } = await target.chooseCard("传庭", "选择一张牌置于武将牌上，称为『火』", 1, "he", true)
                                     .set("ai", (card) => {
                                         return 6 - get.value(card)
                                     })
-                                    .forResult().cards
-                                if (card.length) target.addToExpansion(card[0]).gaintag.add("gbmiaomeng_fire")
+                                    .forResult()
+                                if (cards.length) target.addToExpansion(cards[0]).gaintag.add("gbmiaomeng_fire")
                             }
                         }
                     }
@@ -2099,7 +2099,7 @@ const skills = {
         locked: false,
         async content(event, trigger, player) {
             player.gain(lib.card.ying.getYing(2))
-            let target = await player.chooseTarget("睦灵", "选择一名其他角色，然后获得其武将牌上的一个技能", true)
+            let target = (await player.chooseTarget("睦灵", "选择一名其他角色，然后获得其武将牌上的一个技能", true)
                 .set("filterTarget", (card, player, target) => target != player)
                 .set("ai", (target) => {
                     let player = _status.event.player
@@ -2128,7 +2128,7 @@ const skills = {
                     })
                     return target == game.filterPlayer(p => p.hasSkill(list[0]))[0]
                 })
-                .forResult().targets
+                .forResult()).targets
             if (target) {
                 let list = target[0].getGainableSkills((info, skill) => !player.hasSkill(skill) && !info.limited && !info.juexingji && !info.zhuSkill && !info.persevereSkill && !info.unique && !info.dutySkill && !info.hiddenSkill)
                 const switchToAuto = function () {
@@ -2613,9 +2613,9 @@ const skills = {
                     .forResult()
                 if (result.bool) {
                     await player.give(event.cards, result.targets[0], "giveAuto")
-                    let card = await result.targets[0].chooseCard(`素食`, `将一张牌交给${get.translation(player)}`, "he", true)
+                    let card = (await result.targets[0].chooseCard(`素食`, `将一张牌交给${get.translation(player)}`, "he", true)
                         .set("ai", (card) => 6 - get.value(card))
-                        .forResult().cards
+                        .forResult()).cards
                     await result.targets[0].give(card, player)
                 }
             }
@@ -2700,9 +2700,9 @@ const skills = {
                     switch (result.links[0]) {
                         case "give":
                             if (!current.countCards("h")) return
-                            var card = await current.chooseCard(`先路`, `选择一张手牌交给${get.translation(player)}`, true)
+                            var card = (await current.chooseCard(`先路`, `选择一张手牌交给${get.translation(player)}`, true)
                                 .set("ai", (card) => get.value(card))
-                                .forResult().cards
+                                .forResult()).cards
                             await current.give(card, player, "giveAuto")
                             await current.draw()
                             current.addTempSkill("fengyin")

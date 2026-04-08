@@ -235,7 +235,7 @@ export default {
         _yibeizi_skill: {
             mod: {
                 cardRecastable(card, player) {
-                    if (card.name == "gb_yibeizi") return true
+                    if (typeof card == "object" && card.name == "gb_yibeizi") return true
                 }
             }
         },

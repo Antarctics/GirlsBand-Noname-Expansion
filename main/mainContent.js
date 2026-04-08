@@ -6,10 +6,6 @@ export default function () {
             type: "text",
             data: `修复技能相关BUG。`,
         },
-        {
-            type: "text",
-            data: "修复联机模式下无法禁用卡牌包的问题"
-        }
     ], 'GirlsBand');
     /**
      * 合奏机制 - 让玩家选择展示手牌或从牌堆展示牌
