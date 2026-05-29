@@ -486,7 +486,7 @@ const skills = {
                     return priority[button.link]() || 0;
                 })
                 .set("selectButton", [1, 3])
-            console.log(event.result)
+                .forResult()
             event.result.cost_data = event.result.links
         },
         async content(event, trigger, player) {
@@ -2688,7 +2688,7 @@ const skills = {
                         switch (button.link) {
                             case "give":
                                 if (get.attitude(player, current) > 0) return 1
-                                return (2 - current.getSkills(null, false, false).filter(skill => !get.is.locked(skill)).length) * Math.random()
+                                return Math.max(0.01, (2 - current.getSkills(null, false, false).filter(skill => !get.is.locked(skill)).length) * Math.random(), 1)
                             case "discard":
                                 if (get.attitude(player, current) > 0 && player.countCards("j")) return 1
                                 if (get.attitude(player, current) < 0 && !player.countCards("e") && !player.countCards("h")) return 0
