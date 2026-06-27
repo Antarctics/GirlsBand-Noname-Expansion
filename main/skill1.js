@@ -1192,7 +1192,8 @@ const skills = {
                 .forResult()
             if (result && result.bool) {
                 for (let target of result.targets.sortBySeat()) {
-                    let next = await target.chooseControlList("墨影", [`令${get.translation(player)}摸一张牌，然后本回合无法响应其使用的牌`, `令${get.translation(player)}弃置任意张牌，然后本回合不能使用或打出与以此法弃置牌花色相同的牌`], true)
+                    let next = await target.chooseControlList("墨影", [`令${get.translation(player)}摸一张牌，然后本回合无法响应其使用的牌`, `令${get.translation(player)}弃置任意张牌，然后本回合不能使用或打出与以此法弃置牌花色相同的牌`])
+                        .set("forced", true)
                         .set("ai", () => {
                             let player = _status.event.player
                             if (player.countCards("hes") > 2 && Math.random() < 0.3) return 1
@@ -1665,7 +1666,8 @@ const skills = {
                     let list = []
                     list.push("获得『火』并失去一点体力")
                     list.push(`令${get.translation(player)}获得『火』并摸一张牌。`)
-                    let result = await trigger.player.chooseControlList("###喵梦###", list, true)
+                    let result = await trigger.player.chooseControlList("###喵梦###", list)
+                        .set("forced", true)
                         .set("ai", (event, player) => {
                             if (get.effect(player, {
                                 name: "losehp"
@@ -3397,7 +3399,8 @@ const skills = {
         },
         async content(event, trigger, player) {
             for (let target of event.targets) {
-                let next = await target.chooseControlList("吹灯", [`重铸${get.translation(player)}区域内的一张牌，若此牌不为基本牌，本回合结束时其摸一张牌`, `重铸${get.translation(player)}的一张手牌，然后进行判定，若判定牌与此牌点数相同，你受到1点伤害`], true)
+                let next = await target.chooseControlList("吹灯", [`重铸${get.translation(player)}区域内的一张牌，若此牌不为基本牌，本回合结束时其摸一张牌`, `重铸${get.translation(player)}的一张手牌，然后进行判定，若判定牌与此牌点数相同，你受到1点伤害`])
+                    .set("forced", true)
                     .set("ai", () => {
                         let player = _status.event.player
                         let target = get.event().target
@@ -3675,7 +3678,8 @@ const skills = {
                     })
                     .forResult()
                 if (result && result.bool) {
-                    let next = await result.targets[0].chooseControlList("独白", ["令" + get.translation(player) + "摸一张牌，然后横置自身武将牌", "视为对" + get.translation(player) + "使用一张雷【杀】"], true)
+                    let next = await result.targets[0].chooseControlList("独白", ["令" + get.translation(player) + "摸一张牌，然后横置自身武将牌", "视为对" + get.translation(player) + "使用一张雷【杀】"])
+                        .set("forced", true)
                         .set("ai", () => {
                             let player = _status.event.player
                             let source = _status.currentPhase
@@ -3746,7 +3750,8 @@ const skills = {
                 let list = []
                 list.push("受到1点雷属性伤害")
                 if (target.countCards("he")) list.push("交给" + get.translation(player) + "一张牌，然后重置自身武将牌")
-                let next = await target.chooseControlList("苍空", list, true)
+                let next = await target.chooseControlList("苍空", list)
+                    .set("forced", true)
                     .set("ai", () => {
                         let player = _status.event.player
                         if (get.attitude(player, get.event().source) > 0) return 1

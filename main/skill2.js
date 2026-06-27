@@ -382,7 +382,8 @@ const skill = {
                     return event == next
                 })
                 .then(() => {
-                    player.chooseControlList("###人偶###", ["翻面", "弃置所有手牌并获得两张【影】,然后令所有未翻面角色各失去1点体力。"], true)
+                    player.chooseControlList("###人偶###", ["翻面", "弃置所有手牌并获得两张【影】,然后令所有未翻面角色各失去1点体力。"])
+                        .set("forced", true)
                         .set("ai", () => {
                             let player = _status.event.player
                             let is = game.filterPlayer(p => get.attitude(player, p) > 0 && !p.isTurnedOver()).reduce((num, p) => num += get.effect(p, {
@@ -1346,7 +1347,8 @@ const skill = {
                     if (player.hp > 3 && bool1 && bool2) return "背水！"
                     if (bool2) return "选项二"
                     if (!bool1 && player.hp > 3) return "选项二"
-                    return "选项一"
+                    if (game.hasPlayer(p => p.hasMark("gbyouzi"))) return "选项一"
+                    return "选项二"
                 })
                 .forResult()
             if (result) {
@@ -2025,17 +2027,19 @@ const skill = {
                     var next
                     if (!target.countCards("he")) next = "选项二"
                     else {
-                        next = (await target.chooseControlList("火鸟", [`令${get.translation(player)}获得你一张牌`, `获得${get.translation(player)}一张『孤』，然后其摸两张牌`], true).set("ai", () => {
-                            let player = _status.event.player
-                            let source = _status.event.sourcex
-                            if (get.attitude(player, source) > 0) return 1
-                            if (get.effect(player, {
-                                name: "shunshou_copy2"
-                            }, source, player) > get.effect(source, {
-                                name: "draw"
-                            }, player, player) * 2) return 0
-                            return 1
-                        })
+                        next = (await target.chooseControlList("火鸟", [`令${get.translation(player)}获得你一张牌`, `获得${get.translation(player)}一张『孤』，然后其摸两张牌`])
+                            .set("forced", true)
+                            .set("ai", () => {
+                                let player = _status.event.player
+                                let source = _status.event.sourcex
+                                if (get.attitude(player, source) > 0) return 1
+                                if (get.effect(player, {
+                                    name: "shunshou_copy2"
+                                }, source, player) > get.effect(source, {
+                                    name: "draw"
+                                }, player, player) * 2) return 0
+                                return 1
+                            })
                             .set("sourcex", player)
                             .forResult()).control
                     }
@@ -2188,7 +2192,8 @@ const skill = {
             await player.give(next.links, target, "giveAuto")
             player.markAuto("gbciai_used", target)
             player.addTempSkill("gbciai_used", "roundStart")
-            let result = await target.chooseControlList("慈爱", [`回复1点体力，然后${get.translation(player)}摸三张牌`, "弃置此牌并失去1点体力"], true)
+            let result = await target.chooseControlList("慈爱", [`回复1点体力，然后${get.translation(player)}摸三张牌`, "弃置此牌并失去1点体力"])
+                .set("forced", true)
                 .set("ai", () => {
                     let player = _status.event.player
                     if (player.isDamaged()) return 0
@@ -3032,7 +3037,8 @@ const skill = {
             await player.lose(event.cards, ui.cardPile).set("insert_card", true)
             game.log(player, "将", get.cnNumber(event.cards.length), "张牌置于了", "#y牌堆顶")
             let target = trigger.player
-            let result = await target.chooseControlList("心钟", [`令${get.translation(player)}展示牌堆顶上的一张牌，若为红色，其弃置此牌，视为堆你使用【推心置腹】；若为黑色，你展示手牌并弃置其中一种颜色的所有牌，然后其展示手牌并将对应颜色的所有牌交给你`, `你于本回合内获得〖寸目〗，然后交给${get.translation(player)}一张锦囊牌或两张非锦囊牌。`], true)
+            let result = await target.chooseControlList("心钟", [`令${get.translation(player)}展示牌堆顶上的一张牌，若为红色，其弃置此牌，视为对你使用【推心置腹】；若为黑色，你展示手牌并弃置其中一种颜色的所有牌，然后其展示手牌并将对应颜色的所有牌交给你`, `你于本回合内获得〖寸目〗，然后交给${get.translation(player)}一张锦囊牌或两张非锦囊牌。`])
+                .set("forced", true)
                 .set("ai", () => {
                     let player = _status.event.player
                     let source = _status.event.source

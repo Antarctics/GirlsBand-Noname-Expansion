@@ -1089,7 +1089,8 @@ const skills = {
             }
             let targets = await player.chooseTarget("革面", "选择任意名角色", [1, Infinity], true).forResultTargets()
             for (let target of targets.sortBySeat()) {
-                let next = await target.chooseControlList("革面", "将手牌数调整至与" + get.translation(player) + "相同", "令" + get.translation(player) + "摸一张牌，且其本回合可使用【杀】的次数+1", true)
+                let next = await target.chooseControlList("革面", "将手牌数调整至与" + get.translation(player) + "相同", "令" + get.translation(player) + "摸一张牌，且其本回合可使用【杀】的次数+1")
+                    .set("forced", true)
                     .set("ai", () => {
                         let source = get.event().source
                         let player = get.event().player
@@ -1212,7 +1213,8 @@ const skills = {
             player: "phaseZhunbeiBegin"
         },
         async content(event, trigger, player) {
-            let result = await player.chooseControlList("狂犬", "将体力值调整为1，然后执行一个额外的出牌阶段", "将手牌数调整为1，然后执行一个额外的摸牌阶段", true)
+            let result = await player.chooseControlList("狂犬", "将体力值调整为1，然后执行一个额外的出牌阶段", "将手牌数调整为1，然后执行一个额外的摸牌阶段")
+                .set("forced", true)
                 .set("ai", () => {
                     let player = _status.event.player
                     if (player.countCards("h") < 3) return 1
@@ -1274,7 +1276,8 @@ const skills = {
                     const { bool, list, cards, targets } = _status.event.ensembleResult
                     let player = _status.event.player
                     if (cards[0].length >= cards[1].length) {
-                        let next = await player.chooseControlList("狂飙", "获得" + get.translation(targets[1]) + "的合奏牌", "弃置X张牌并摸等量张牌（X为你与其合奏牌数之差，且至多为4）", true)
+                        let next = await player.chooseControlList("狂飙", "获得" + get.translation(targets[1]) + "的合奏牌", "弃置X张牌并摸等量张牌（X为你与其合奏牌数之差，且至多为4）")
+                            .set("forced", true)
                             .set("ai", () => {
                                 const { bool, list, cards, targets, player } = _status.event.getParent().ensembleResult
                                 let num = Math.min(player.countCards("he"), Math.min(cards[0].length - cards[1].length, 4))
@@ -1416,7 +1419,8 @@ const skills = {
             if (result.bool) {
                 let cards = result.links;
                 player.showCards(cards)
-                let next = await event.targets[0].chooseControlList("知由", "将展示牌交给" + get.translation(player) + "，然后摸等量张牌", "弃置展示牌，然后弃置" + get.translation(player) + "一张牌", true)
+                let next = await event.targets[0].chooseControlList("知由", "将展示牌交给" + get.translation(player) + "，然后摸等量张牌", "弃置展示牌，然后弃置" + get.translation(player) + "一张牌")
+                    .set("forced", true)
                     .set("ai", () => {
                         let player = _status.event.player
                         let source = get.event().source
