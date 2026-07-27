@@ -3088,8 +3088,8 @@ const skills = {
         },
         async content(event, trigger, player) {
             if (player.countCards("j") == 0) {
-                let result = await player.choosePlayerCard("巧诱：选择一张牌视为【闪电】置入判定区", trigger.target, "he", true).set("ai", card => get.value(card)).forResult();
-                if (result.bool) {
+                if (trigger.target.countCards("he")) {
+                    let result = await player.choosePlayerCard("巧诱：选择一张牌视为【闪电】置入判定区", trigger.target, "he", true).set("ai", card => get.value(card)).forResult();
                     player.addJudge({ name: "shandian" }, result.cards);
                 }
             } else {
