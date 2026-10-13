@@ -725,14 +725,11 @@ const skills = {
                 audio: false,
                 trigger: { player: "useCardAfter" },
                 forced: true,
-                popup: false,
                 filter(event, player) {
                     if (get.type(event.card) != "basic") return false;
-                    if (!event.targets || event.targets.length != 1 || event.targets[0] != player) return false;
                     if (event.card.name == "jiu") return true
                 },
                 async content(event, trigger, player) {
-                    player.logSkill(event.name)
                     await player.gainMaxHp();
                     const result = await player.chooseCard(`###${get.prompt(event.name)}###选择一张手牌蓄谋，然后视为使用一张【桃】`)
                         .set("ai", card => get.player().isDamaged() ? get.player().getUseValue(card) || -get.value(card) : 0)
