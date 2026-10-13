@@ -1,12 +1,22 @@
 import { lib, game, ui, get, ai, _status } from "../../../noname.js";
 import update from "./update.js";
-export default function () {
+export default function (config, pack) {
     game.showExtensionChangeLog([
         {
             type: "text",
             data: `修复技能相关BUG。`,
         },
+        { type: "text", data: "新增角色：" },
+        { type: "players", data: ["gb_zhongtingalalei", "gb_gongyongyenonaihua", "gb_tengduzi", "gb_qianshiyounai", "gb_fengyuelv", "gb_weiola"] },
     ], 'GirlsBand');
+    if (!!lib.extensionPack.十周年UI && !!registerDecadeCardSkin) {
+        // 十周年UI卡牌皮肤注册
+        registerDecadeCardSkin({
+            extensionName: "GirlsBand",
+            skinKey: "decade",
+            cardNames: ["gb_sking", "gb_bking"]
+        });
+    }
     /**
      * 合奏机制 - 让玩家选择展示手牌或从牌堆展示牌
      * @param {Array|Player} players - 参与玩家
@@ -83,7 +93,6 @@ export default function () {
         }
         event.trigger("EnsembleShow");
         game.broadcastAll((player, id, results) => {
-            game.pause();
             const dialog = ui.create.dialog(`${get.translation(player)}发起了合奏`, "hidden");
             dialog.videoId = id;
 
@@ -100,10 +109,10 @@ export default function () {
                 dialog.addNewRow(...cards);
                 dialog.css({ height: "30%" });
             }
-
-            dialog.open();
-            setTimeout(() => { game.resume(); dialog.close(); }, 2000);
+            dialog.open()
         }, event.player, event.videoId, results);
+        await game.delaye(4)
+        game.broadcastAll("closeDialog", event.videoId);
         event.result = { bool: true, cards: allCards, targets: event.list, list: results, player: event.player };
         if (event.callback) {
             const cbEvent = game.createEvent("ensembleCallback");

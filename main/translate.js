@@ -15,14 +15,6 @@ const poptips = [
         name: "背水",
         info: "执行上述所有选项，然后执行本选项。"
     },
-    {
-        id: "王",
-        name: "【王】",
-        dialog(dialog, poptip) {
-            dialog.addSmall([[["gb_joker"]], "vcard"])
-            dialog.addSmall("扑克牌的一种，牌名为王，无实际效果，无花色，类型为joker的牌。")
-        }
-    }
 ]
 const translates = {
     GirlsBand: "少女乐队",
@@ -126,6 +118,13 @@ const translates = {
     gb_huayuanduohui: "花园多惠",
     gb_niugulimei: "牛込里美",
     gb_shanchuishaling: "山吹沙绫",
+    gb_mewtype: "梦限大MewType",
+    gb_zhongtingalalei: "仲町阿拉蕾",
+    gb_gongyongyenonaihua: "宫永野乃花",
+    gb_tengduzi: "藤都子",
+    gb_qianshiyounai: "千石由乃",
+    gb_fengyuelv: "峰月律",
+    gb_weiola: "薇欧拉",
     // 技能台词
     "#ext:GirlsBand/audio/skill/gbchunying1": "来弹吉他吧。",
     "#ext:GirlsBand/audio/skill/gbchunying2": "一起演出吧。",
@@ -530,11 +529,11 @@ const translates = {
 
     // 花园多惠
     gbhuajing: "花警",
-    gbhuajing_info: "锁定技，你的初始手牌改为扑克牌，游戏开始时，你获得一张【王】牌。",
+    gbhuajing_info: "锁定技，你的初始手牌改为扑克牌，游戏开始时，你获得一张【小王】牌。",
     gbtuxi: "兔袭",
     gbtuxi_info: "其他角色的回合开始时，你可以令其选择一项：①令你展示一张牌，然后视为对其使用一张【推心置腹】；②令你展示并交给其一张牌，然后视为对其使用一张【趁火打劫】；③令你与其交换一张手牌，然后你可以展示你与其的所有手牌。",
     gbhuisi: "惠思",
-    gbhuisi_info: "当你展示扑克牌时，你摸一张牌；当其他角色展示【王】牌，其失去1点体力；每轮结束时，你获得弃牌堆内的扑克牌。",
+    gbhuisi_info: "当你展示扑克牌时，你摸一张牌；当其他角色展示【小王】牌，其失去1点体力；每轮结束时，你获得弃牌堆内的扑克牌。",
 
     // 牛込里美
     gbqiaoluo: "巧螺",
@@ -549,6 +548,50 @@ const translates = {
     gbqiaoyou_info: "当你使用【杀】或【决斗】指定一名目标后，若你判定区内没有牌，你可以将其的一张牌视为【闪电】置入自身判定区内，否则，你获得其区域内的一张牌。",
     gbshanqian: "山千",
     gbshanqian_info: "你于出牌阶段获得的牌可视为【杀】使用或打出。当你使用【杀】或【决斗】时，你可以额外选择一名目标。",
+
+    // 仲町阿拉蕾
+    gbwaixuan: "外炫",
+    gbwaixuan_info: "判定阶段开始时，你可以展示牌堆顶的五张牌并将蓄谋至多三张牌，你使用蓄谋牌指定其他角色为目标时，你可以获得目标的一张牌。",
+    gbneihu: "内狐",
+    gbneihu_info: "锁定技，你的回合内，你获得因未使用而弃置的蓄谋牌。然后根据你使用的蓄谋牌数依次获得以下效果直至你的下个回合开始时：①每回合限一次，目标包含你的伤害牌进入弃牌堆时，你可以将其蓄谋；②你可以获得因无法使用而被置入弃牌堆的蓄谋牌；③你的额定回合结束时，你可以执行一个额外的判定阶段。",
+    gbxushen: "虚神",
+    gbxushen_info: "主公技，当你使用蓄谋牌时，你可以令场上与你势力相同的其他角色各摸一张牌。",
+
+    // 宫永野乃花
+    gbshihou: "食侯",
+    gbshihou_info: "锁定技，游戏开始时，你获得一张【大王】；你可以将【大王】视为任意基本牌使用。一名角色的回合结束时，若你没有【大王】，你从其他角色的手牌、场上或扑克牌堆中获得【大王】。",
+    gbtuguo: "兔国",
+    gbtuguo_info: "其他角色的回合开始时，你可以选择一项：①你蓄谋一张牌，然后视为对其使用一张【逐近弃远】；②你蓄谋一张牌，然后视为对其使用一张【瞒天过海】；③你与其各蓄谋一张牌，然后交换判定区内的所有牌并获得之。",
+    gbgongyu: "宫玉",
+    gbgongyu_info: "判定阶段开始时，你可以获得任意张蓄谋牌；你使用的蓄谋牌不可响应。",
+
+    // 藤都子
+    gbtengshi: "藤师",
+    gbtengshi_info: "转换技，判定阶段开始时或你受到伤害后，你可摸一张牌并使用之。阳：此牌视为【草木皆兵】；阴：此牌视为【兵临城下】。",
+    gbxuedu: "学都",
+    gbxuedu_info: "锁定技，每种牌名每回合限一次，当你使用锦囊牌指定目标时，你令目标角色蓄谋一张手牌；若目标角色包含你，则你增加1点体力上限并回复1点体力。",
+    gbfengzi: "峰子",
+    gbfengzi_info: "一名角色的额定回合结束时，你可以失去X点体力上限并摸两张牌，然后执行一个额外的判定阶段或出牌阶段（X为此技能本轮发动次数且至少为1）。",
+
+    // 千石由乃
+    gbqiusuo: "求索",
+    gbqiusuo_info: "锁定技，判定阶段开始时或你蓄谋后，若你判定区内牌的数量为：①你视为使用一张【调剂盐梅】；②你视为使用一张【增兵减灶】；③弃置判定区内的牌并摸X张牌（X为与你手牌数相同的角色数）。",
+    gbqianyou: "千由",
+    gbqianyou_info: "锁定技，一名角色的体力值发生变化后，若该角色不为你，你蓄谋一张手牌；否则，你可以弃置场上的一张牌并视为对当前回合角色使用一张任意基本牌。",
+
+    // 峰月律
+    gbfengrou: "丰肉",
+    gbfengrou_info: "判定阶段开始时，或你成为其他角色使用伤害牌的目标后，你可选择一项：①展示牌堆顶X张牌；②展示一名其他角色至多X张手牌。然后你使用其中【酒】和【桃】；若你未因此使用牌，则你从牌堆底摸等量的牌（X为已损失体力值，且1≤X≤5）。",
+    gbgaoyue: "膏月",
+    gbgaoyue_info: "锁定技，你使用【酒】无次数限制。当你对自己使用基本牌时，若你未受伤，你增加1点体力上限；否则，你可以蓄谋一张手牌并视为使用一张任意基本牌。",
+
+    // 薇欧拉
+    gbxiaoyuan: "笑源",
+    gbxiaoyuan_info: "判定阶段开始时，你可以选择一种花色；然后令一名其他角色交给你一张花色相同的手牌，否则其受到1点火焰伤害并弃置场上的所有牌。",
+    gbjinchuan: "烬川",
+    gbjinchuan_info: "锁定技，当你于摸牌阶段外不因此技能获得牌时，你蓄谋一张牌并摸一张牌。一名角色回合结束时，若你有蓄谋牌，你执行一个额外的判定阶段。",
+    gbnongsun: "弄孙",
+    gbnongsun_info: "使命技。锁定技。当你使用蓄谋牌时，你摸一张牌并增加一点体力上限；当你使用伤害牌后，若此牌未造成过伤害，你失去一点体力上限。成功：其他角色进入濒死阶段时，你获得其所有牌。",
 }
 const dynamicTranslates = {
     gbchunying(player) {
@@ -621,6 +664,10 @@ const dynamicTranslates = {
     gbqiaoluo(player) {
         if (!player.storage.gbqiaoluo) return `锁定技，转换技，当一名角色的判定牌生效后：<span class="bluetext">阳：你摸一张牌并展示一张牌，此牌视为雷【杀】且无距离限制；</span>阴：你获得判定牌并展示一张牌，此牌视为火【杀】且可以额外选择一名目标。`
         return `锁定技，转换技，当一名角色的判定牌生效后：阳：你摸一张牌并展示一张牌，此牌视为雷【杀】且无距离限制；<span class="bluetext">阴：你获得判定牌并展示一张牌，此牌视为火【杀】且可以额外选择一名目标。</span>`
+    },
+    gbtengshi(player) {
+        if (!player.storage.gbtengshi) return `转换技，判定阶段开始时或你受到伤害后，你可摸一张牌并使用之。<span class="bluetext">阳：此牌视为【草木皆兵】；</span>阴：此牌视为【兵临城下】。`
+        return `转换技，判定阶段开始时或你受到伤害后，你可摸一张牌并使用之。阳：此牌视为【草木皆兵】；<span class="bluetext">阴：此牌视为【兵临城下】。</span>`
     }
 };
 const pinyins = {
@@ -684,6 +731,12 @@ const pinyins = {
     花园多惠: ["Hanazono", "Tae"],
     牛込里美: ["Ushigome", "Rimi"],
     山吹沙绫: ["Yamabuki", "Saya"],
+    仲町阿拉蕾: ["Nakamachi", "Arale"],
+    宫永野乃花: ["Miyanaga", "Nonoka"],
+    藤都子: ["Fuji", "Miyako"],
+    千石由乃: ["Sengoku", "Yuno"],
+    峰月律: ["Minetsuki", "Ritsu"],
+    薇欧拉: ["Viola"],
 }
 export { pinyins, poptips, dynamicTranslates };
 export default translates;

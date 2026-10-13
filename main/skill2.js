@@ -382,8 +382,13 @@ const skill = {
                     return event == next
                 })
                 .then(() => {
-                    player.chooseControlList("###人偶###", ["翻面", "弃置所有手牌并获得两张【影】,然后令所有未翻面角色各失去1点体力。"])
-                        .set("forced", true)
+                    let list = [
+                        "翻面",
+                        "弃置所有手牌并获得两张【影】,然后令所有未翻面角色各失去1点体力。"
+                    ]
+                    player.chooseControl(list.map((_, i) => "选项" + get.cnNumber(i + 1, true)))
+                        .set("prompt", "人偶：请选择一项")
+                        .set("choiceList", list)
                         .set("ai", () => {
                             let player = _status.event.player
                             let is = game.filterPlayer(p => get.attitude(player, p) > 0 && !p.isTurnedOver()).reduce((num, p) => num += get.effect(p, {
@@ -394,10 +399,9 @@ const skill = {
                             }, player), 0)
                             if (get.value({
                                 name: "ying"
-                            }, player) > 0 && player.countCards("h") < 4 && is > not) return "选项二"
-                            return "选项一"
+                            }, player) > 0 && player.countCards("h") < 4 && is > not) return 1
+                            return 0
                         })
-                        .forResult()
                 })
                 .then(() => {
                     if (result) {
@@ -1477,9 +1481,6 @@ const skill = {
         trigger: {
             player: "useCard"
         },
-        prompt() {
-            return get.prompt("gbzicun")
-        },
         check(event, player) {
             if (player.countSkill("gbzicun") < player.maxHp) return true
             if (!player.getCards("hs").some(card => player.hasValueTarget(card, false, true))) return true
@@ -1489,23 +1490,7 @@ const skill = {
         async content(event, trigger, player) {
             player.draw()
             if (player.countSkill("gbzicun") > player.maxHp) {
-                if (_status.currentPhase == player) {
-                    _status.event.getParent("phaseUse").skipped = true
-                } else {
-                    let list = []
-                    if (player.countCards("h")) list.push("弃置所有手牌")
-                    list.push("失去1点体力")
-                    player.chooseControl(list)
-                        .set("prompt", "自寸")
-                        .set("ai", () => {
-                            let player = _status.event.player
-                            if (player.countCards("h") > 2) {
-                                if (player.hp > 1) return "失去1点体力"
-                                if (player.hasCard("tao") || player.hasCard("jiu")) return "失去1点体力"
-                            }
-                            return "弃置所有手牌"
-                        })
-                }
+                player.useSkill("gbzicun_effect")
             }
         },
         group: "gbzicun_effect",
@@ -1527,8 +1512,8 @@ const skill = {
                         let list = []
                         if (player.countCards("h")) list.push("弃置所有手牌")
                         list.push("失去1点体力")
-                        player.chooseControl(list)
-                            .set("prompt", "自寸")
+                        let result = await player.chooseControl(list)
+                            .set("prompt", "自存：请选择一项")
                             .set("ai", () => {
                                 let player = _status.event.player
                                 if (player.countCards("h") > 2) {
@@ -1536,7 +1521,12 @@ const skill = {
                                     if (player.hasCard("tao") || player.hasCard("jiu")) return "失去1点体力"
                                 }
                                 return "弃置所有手牌"
-                            })
+                            }).forResult()
+                        if (result.control == "弃置所有手牌") {
+                            player.discard(player.getCards("h"))
+                        } else {
+                            player.loseHp()
+                        }
                     }
                 }
             },
@@ -1631,13 +1621,14 @@ const skill = {
                         for (let target of result.targets) {
                             let list = []
                             list.push("无法响应" + get.translation(player) + "使用的牌")
-                            if (target.countCards("he")) list.push("交出一张牌")
-                            let next = await target.chooseControlList("唯琴", list)
+                            if (target.countCards("he")) list.push("交给" + get.translation(player) + "一张牌")
+                            let next = await target.chooseControl(list.map((_, i) => "选项" + get.cnNumber(i + 1, true)))
+                                .set("prompt", "唯琴：请选择一项")
+                                .set("choiceList", list)
                                 .set("ai", () => {
                                     let player = _status.event.player
                                     if (player.countCards("hs", card => ["tao", "shan", "sha", "jiu", "wuxie"].includes(card.name)) && player.countCards("he") > 2) return 1
                                     return 0
-
                                 })
                                 .forResult()
                             if (next) {
@@ -2027,8 +2018,13 @@ const skill = {
                     var next
                     if (!target.countCards("he")) next = "选项二"
                     else {
-                        next = (await target.chooseControlList("火鸟", [`令${get.translation(player)}获得你一张牌`, `获得${get.translation(player)}一张『孤』，然后其摸两张牌`])
-                            .set("forced", true)
+                        let list = [
+                            `令${get.translation(player)}获得你一张牌`,
+                            `获得${get.translation(player)}一张『孤』，然后其摸两张牌`
+                        ]
+                        let next = (await target.chooseControl(list.map((_, i) => "选项" + get.cnNumber(i + 1, true)))
+                            .set("prompt", "火鸟：请选择一项")
+                            .set("choiceList", list)
                             .set("ai", () => {
                                 let player = _status.event.player
                                 let source = _status.event.sourcex
@@ -2192,8 +2188,13 @@ const skill = {
             await player.give(next.links, target, "giveAuto")
             player.markAuto("gbciai_used", target)
             player.addTempSkill("gbciai_used", "roundStart")
-            let result = await target.chooseControlList("慈爱", [`回复1点体力，然后${get.translation(player)}摸三张牌`, "弃置此牌并失去1点体力"])
-                .set("forced", true)
+            let list = [
+                `回复1点体力，然后${get.translation(player)}摸三张牌`,
+                "弃置此牌并失去1点体力"
+            ]
+            let result = await target.chooseControl(list.map((_, i) => "选项" + get.cnNumber(i + 1, true)))
+                .set("prompt", "慈爱：请选择一项")
+                .set("choiceList", list)
                 .set("ai", () => {
                     let player = _status.event.player
                     if (player.isDamaged()) return 0
@@ -3037,8 +3038,13 @@ const skill = {
             await player.lose(event.cards, ui.cardPile).set("insert_card", true)
             game.log(player, "将", get.cnNumber(event.cards.length), "张牌置于了", "#y牌堆顶")
             let target = trigger.player
-            let result = await target.chooseControlList("心钟", [`令${get.translation(player)}展示牌堆顶上的一张牌，若为红色，其弃置此牌，视为对你使用【推心置腹】；若为黑色，你展示手牌并弃置其中一种颜色的所有牌，然后其展示手牌并将对应颜色的所有牌交给你`, `你于本回合内获得〖寸目〗，然后交给${get.translation(player)}一张锦囊牌或两张非锦囊牌。`])
-                .set("forced", true)
+            let list = [
+                `令${get.translation(player)}展示牌堆顶上的一张牌，若为红色，其弃置此牌，视为对你使用【推心置腹】；若为黑色，你展示手牌并弃置其中一种颜色的所有牌，然后其展示手牌并将对应颜色的所有牌交给你`,
+                `你于本回合内获得〖寸目〗，然后交给${get.translation(player)}一张锦囊牌或两张非锦囊牌。`
+            ]
+            let result = await target.chooseControl(list.map((_, i) => "选项" + get.cnNumber(i + 1, true)))
+                .set("prompt", "心钟：请选择一项")
+                .set("choiceList", list)
                 .set("ai", () => {
                     let player = _status.event.player
                     let source = _status.event.source

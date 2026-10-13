@@ -176,20 +176,34 @@ export default {
             },
             skills: ["xing_skill"],
         },
-        gb_poker: {
+        gb_sking: {
             derivation: "gb_huayuanduohui",
+            destroy(card, position, player, event) {
+                if (position == "discardPile") {
+                    lib.skill.gbhuajing.discard(card, true);
+                }
+                return false;
+            },
             type: "poker",
             fullskin: true,
+            noname: true,
             image: (card) => {
-                return `image/card/lukai_${card.suit}.png`
+                return "ext:GirlsBand/image/card/sking.png"
             }
         },
-        gb_joker: {
-            derivation: "gb_huayuanduohui",
-            type: "joker",
+        gb_bking: {
+            derivation: "gb_gongyongyenonaihua",
+            destroy(card, position, player, event) {
+                if (position == "discardPile") {
+                    lib.skill.gbhuajing.discard(card, true);
+                }
+                return false;
+            },
+            type: "poker",
             fullskin: true,
+            noname: true,
             image: (card) => {
-                return "ext:GirlsBand/image/card/king.png"
+                return "ext:GirlsBand/image/card/bking.png"
             }
         }
     },
@@ -656,10 +670,11 @@ export default {
         gb_xuehong_info: "当你因执行【杀】的效果而造成伤害时，若目标角色有能被弃置的牌，则你可以防止此伤害，然后依次弃置目标角色的两张牌。",
         xuehong_skill: "血红书记",
         xuehong_skill_info: "当你因执行【杀】的效果而造成伤害时，若目标角色有能被弃置的牌，则你可以防止此伤害，然后依次弃置目标角色的两张牌。",
-        gb_poker: "扑克",
-        gb_poker_info: "扑克牌，牌名为扑克，无实际效果，类型为poker的牌。",
-        gb_joker: "王",
-        gb_joker_info: "王牌，牌名为王，无实际效果，无花色，类型为joker的牌。"
+        poker: "扑克",
+        gb_sking: "小王",
+        gb_sking_info: "扑克牌，牌名字数为0、无效果、无花色、无点数且类型为poker的牌。",
+        gb_bking: "大王",
+        gb_bking_info: "扑克牌，牌名字数为0、无效果、无花色、无点数且类型为poker的牌。"
     },
     list: [
         ["spade", 1, "gb_huanle"],

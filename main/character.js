@@ -206,7 +206,7 @@ const characters = {
         hp: 4,
         skills: ["gbricai", "gbgufeng"],
         names: "田井|中律",
-        img: "extension/GirlsBand/image/ritsu.png",
+        img: "extension/GirlsBand/image/tainaka.png",
     },
     gb_qinchuichou: {
         sex: "female",
@@ -588,6 +588,59 @@ const characters = {
         names: "山吹|沙绫",
         img: "extension/GirlsBand/image/saya.png",
     },
+    gb_zhongtingalalei: {
+        sex: "female",
+        group: "gbmewtype",
+        hp: 4,
+        isZhugong: true,
+        skills: ["gbwaixuan", "gbneihu", "gbxushen"],
+        names: "仲町|阿拉蕾",
+        img: "extension/GirlsBand/image/arale.png",
+    },
+    gb_gongyongyenonaihua: {
+        sex: "female",
+        group: "gbmewtype",
+        hp: 4,
+        skills: ["gbshihou", "gbtuguo", "gbgongyu"],
+        names: "宫永|野乃花",
+        img: "extension/GirlsBand/image/nonoka.png",
+    },
+    gb_tengduzi: {
+        sex: "female",
+        group: "gbmewtype",
+        hp: 3,
+        maxHp: 4,
+        skills: ["gbtengshi", "gbxuedu", "gbfengzi"],
+        names: "藤|都子",
+        img: "extension/GirlsBand/image/miyako.png",
+    },
+    gb_qianshiyounai: {
+        sex: "female",
+        group: "gbmewtype",
+        hp: 3,
+        maxHp: 4,
+        skills: ["gbqiusuo", "gbqianyou"],
+        names: "千石|由乃",
+        img: "extension/GirlsBand/image/yuno.png",
+    },
+    gb_fengyuelv: {
+        sex: "female",
+        group: "gbmewtype",
+        hp: 3,
+        maxHp: 4,
+        skills: ["gbfengrou", "gbgaoyue"],
+        names: "峰月|律",
+        img: "extension/GirlsBand/image/ritsu.png",
+    },
+    gb_weiola: {
+        sex: "female",
+        group: "gbmewtype",
+        hp: 3,
+        maxHp: 4,
+        skills: ["gbxiaoyuan", "gbjinchuan", "gbnongsun"],
+        names: "薇欧拉",
+        img: "extension/GirlsBand/image/viola.jpg",
+    },
 };
 
 const characterSubstitutes = {
@@ -662,6 +715,12 @@ const characterTitles = {
     gb_huayuanduohui: "兔园警察",
     gb_niugulimei: "尘埃螺定",
     gb_shanchuishaling: "发酵圣女",
+    gb_zhongtingalalei: "外炫内温",
+    gb_gongyongyenonaihua: "兔兔国王",
+    gb_tengduzi: "富士见峰",
+    gb_qianshiyounai: "深度求索",
+    gb_fengyuelv: "等身粱资",
+    gb_weiola: "余烬笑川",
 };
 const characterIntros = {
     zhuiminglixi: "椎名立希，所属动漫《BanG Dream! It's MyGO!!!!!》中的人物。MyGO!!!!!的鼓手，同时也负责作曲，在拿到灯的歌词以后，创作出切合她世界观的歌曲。花咲川女子学园高中一年级学生，是喜欢一人独处的独狼。",
@@ -724,8 +783,13 @@ const characterIntros = {
     shiguyouxiao: "市谷有咲，所属动漫《BanG Dream!》中的人物。Poppin'Party的键盘手，花咲川女子学园高中一年级学生。老家是当铺“流星堂”，提供地下室作为乐队的练习据点。虽然性格有些傲娇且毒舌，其实是个很怕寂寞、爱操心的人。兴趣是修剪盆栽，学习成绩非常优秀。",
     huayuanduohui: "花园多惠，所属动漫《BanG Dream!》中的人物。Poppin'Party的吉他手，花咲川女子学园高中一年级学生。从小就开始练习吉他，拥有极高的演奏水平。性格有些天然呆，经常会有出人意料的发言。家里养了20多只兔子，是一个超级动物爱好者。",
     niugulimei: "牛込里美，所属动漫《BanG Dream!》中的人物。Poppin'Party的贝斯手，花咲川女子学园高中一年级学生。性格内向害羞，为了改变胆小的自己而加入乐队。非常喜欢巧克力螺丝面包，甚至会以此作为创作灵感。她的姐姐是乐队Glitter*Green的主唱牛込由里。",
-    shanchuishaling: "山吹沙绫，所属动漫《BanG Dream!》中的人物。Poppin'Party的鼓手，花咲川女子学园高中一年级学生。家里经营着“山吹面包房”，经常在店里帮忙。性格稳重体贴，像大姐姐一样照顾着大家。曾因为家庭原因放弃过音乐，在香澄的真诚邀请下重新开始了自己的乐队梦想。"
-
+    shanchuishaling: "山吹沙绫，所属动漫《BanG Dream!》中的人物。Poppin'Party的鼓手，花咲川女子学园高中一年级学生。家里经营着“山吹面包房”，经常在店里帮忙。性格稳重体贴，像大姐姐一样照顾着大家。曾因为家庭原因放弃过音乐，在香澄的真诚邀请下重新开始了自己的乐队梦想。",
+    zhongtingalalei: "仲町阿拉蕾，所属动画《BanG Dream! YUME∞MITA》中的人物。夢限大MewType的主唱兼吉他手。外表是用暴风般的歌声与话痨 MC 点燃全场的元气少女，内里却是怕生、爱逞强、一被夸就慌神的动画宅。曾因一场炎上事件失去歌唱的勇气，在夢限大MewType 里才重新学会为自己发声。",
+    gongyongyenonaihua: "宫永野乃花，所属动画《BanG Dream! YUME∞MITA》中的人物。夢限大MewType的吉他手。自封「nono 王国」国王的天然系少女，语速慢、脑回路电波，却总能把全场卷进快乐里。幼时以「吃兔魔」的名义在网络上走红，如今把同一股傻劲砸进舞台。",
+    tengduzi: "藤都子，所属动画《BanG Dream! YUME∞MITA》中的人物。夢限大MewType的键盘手，同时是以「富士见夜子」为笔名的现役漫画家，身边总带着手偶「丸君」。看似文静，内里却把「不被称赞就活不下去」写进骨子里。",
+    qianshiyounai: "千石由乃，所属动画《BanG Dream! YUME∞MITA》中的人物。夢限大MewType的DJ与说唱担当，曾是乐队 supremacy 的贝斯手兼作曲。宅在家的节能主义者，却用采样器与程序操纵着整支乐队的呼吸。",
+    fengyuelv: "峰月律，所属动画《BanG Dream! YUME∞MITA》中的人物。夢限大MewType的节奏吉他手，阿拉蕾的小学同学，曾在妖精花束以「克蕾玛琪丝」的艺名活动。认真到固执的优等生，也是全队食量第一。",
+    weiola: "薇欧拉，所属动画《BanG Dream! YUME∞MITA》中的人物。敌对组合「妖精花束」的成员，朱叶女子高等学校二年级。清纯可怜的妹妹外表下，是本作最恶劣的反派：她用情绪勒索、恶意剪辑与 PUA 逐个拆解他人，享受把别人的光芒烧成余烬的过程。"
 };
 const characterReplaces = {
     gb_changqisushi: ["gb_sp_changqisushi", "gb_changqisushi"],
@@ -751,6 +815,7 @@ const characterSort = {
     gb_ras: ["gb_hezouruiyi", "gb_zhaoriliuhua", "gb_zuotengyimu", "gb_ruyuanlingwangna", "gb_zhushouzhiyou"],
     gb_hhw: ["gb_xuanjuanxin", "gb_aozemeixiao", "gb_laitianxun", "gb_songyuanhuayin", "gb_beizeyumei"],
     gb_poppin: ["gb_hushanxiangcheng", "gb_shiguyouxiao", "gb_huayuanduohui", "gb_niugulimei", "gb_shanchuishaling"],
+    gb_mewtype: ["gb_zhongtingalalei", "gb_gongyongyenonaihua", "gb_tengduzi", "gb_qianshiyounai", "gb_fengyuelv", "gb_weiola"],
 };
 export { characterSubstitutes, characterTitles, characterIntros, characterReplaces, characterSort };
 export default characters;
