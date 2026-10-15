@@ -682,7 +682,7 @@ const skills = {
                 })
                 .set("complextSelect", true)
                 .forResult()
-            event.result.cost_data = event.result.links;
+            event.result.cost_data = event.result.links[0]
         },
         async content(event, trigger, player) {
             let control = event.cost_data

@@ -1,5 +1,5 @@
 ﻿{
-    "version":  "2.4.0",
+    "version":  "2.4.0.1",
     "files":  {
                   "audio/skill/gblinming4.mp3":  "4734cfae5b42dcd81c0556e1e62a757e01e8b870",
                   "image/msr.png":  "e5fa00fa1c8a27f64a490c5ecf683be5aad628df",
@@ -8,7 +8,7 @@
                   "audio/skill/gbzhaying6.mp3":  "8fa169238f0d87ff514a1d93c0ab36d2ece3407a",
                   "audio/skill/gbzicheng3.mp3":  "8764a1bac3d6e0c623d0a82c7b5d3a2c3bc61d13",
                   "image/card/yibeizi.png":  "2b56e2a684777324c126092a8f25f072eda3e769",
-                  "main/skill4.js":  "228f098b29e7ad95b0cca6d67daeb8baca2d1c95",
+                  "main/skill4.js":  "8ff63797c907169de7b478d5a4c8ed358579679f",
                   "audio/skill/gbjianqiu2.mp3":  "5eab599164fc3009c4b357f1d0695e3d2c0e6372",
                   "audio/skill/gbfuxin1.mp3":  "c10273eb5c65a65d65d061d34bcf1bf46c0b069f",
                   "image/kokoro.png":  "d8d071b520e8aa9d213c13f111056c27a0c12e81",
@@ -302,7 +302,7 @@
                   "image/arale.png":  "2deb70697615dc55c6d3746aabf094bf8fd2a32a",
                   "audio/skill/gbmeilv3.mp3":  "7c101cdad5877e29207cdc60729e39dbf054518e",
                   "image/takki.jpg":  "407c73195d128688010f47e3af66057b8b29bba6",
-                  "extension.js":  "512c7e704142722f5889e358f54be9b8325c98a7",
+                  "extension.js":  "fdafb4d70a8b6658efe736ca7bc85698306091d4",
                   "audio/劣等上等.mp3":  "63440dea041a331fbb0d3532ac7022c91bc6c058",
                   "audio/skill/gbzhuxin2.mp3":  "f09301a80b1d24ec0009e4bd2a3928cf050ed4f7",
                   "audio/skill/gbfuming_silent2.mp3":  "903374e49a8b544fd1d2aeeeb3f3b21c4474ffd3",
