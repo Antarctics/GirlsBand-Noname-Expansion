@@ -4,10 +4,9 @@ export default function (config, pack) {
     game.showExtensionChangeLog([
         {
             type: "text",
-            data: `修复技能相关BUG。`,
+            data: `修复BUG。`,
         },
-        { type: "text", data: "新增角色：" },
-        { type: "players", data: ["gb_zhongtingalalei", "gb_gongyongyenonaihua", "gb_tengduzi", "gb_qianshiyounai", "gb_fengyuelv", "gb_weiola"] },
+        { type: "text", data: "重构大量技能" },
     ], 'GirlsBand');
     if (!!lib.extensionPack.十周年UI && !!registerDecadeCardSkin) {
         // 十周年UI卡牌皮肤注册

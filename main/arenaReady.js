@@ -1,86 +1,127 @@
 import { lib, game, ui, get, ai, _status } from "../../../../noname.js";
 import translates, { poptips, dynamicTranslates } from "./translate.js";
+/**
+ * 自动匹配注释
+ * 识别翻译文本中被 “ ”、【 】、〖 〗 包裹的内容，
+ * 通过 name2KeywordMap 找到 id，按 id 的实际类型（rule / character / card / skill）渲染。
+ * poptips 格式：数组，元素为 { id, name, info, type?, dialog? } 或 [id, { name, info, type?, dialog? }]
+ * 采用此代码请标注 —— 作者：Rin
+ */
 export default function () {
-    // 自动匹配注释
-    // 自动识别文本中以特定符号包裹的内容（“ ”、【 】、〖 〗），并替换为对应的提示信息（poptips）
+    const translate = lib.translate;
+    const dynamicTranslate = lib.dynamicTranslate;
+    const map = new Map();
 
-    // 使用步骤：
-    // 1. 创建 poptips 对象（格式：key: [名称, 类型, 信息] 或 key: [名称, 信息]）
-    // 2. 调用以下代码初始化系统
+    const skipRegex = /#|^.*(_info|_append|_config|_bg|_prefix|_suffix)$/;
+    const markRegex = /“(.*?)”|【(.*?)】|〖(.*?)〗/g;
+    const wrapper = {
+        card: name => `【${name}】`,
+        skill: name => `〖${name}〗`,
+        character: name => `“${name}”`,
+        rule: name => name,
+    };
+    const wrap = (type, name) => (wrapper[type] || wrapper.rule)(name);
 
-    // 采用此代码请标注——作者：Rin
+    const addMap = (name, id) => {
+        if (!name || !id) return;
+        let list = map.get(name);
+        if (!list) map.set(name, list = []);
+        if (!list.includes(id)) list.push(id);
+    };
 
-    /// poptips 对象格式说明：
-    /// key: 唯一标识符 (例如: 'skill_id', 'card_name')
-    /// val[0]: 显示名称
-    /// val[1]: 类型（可选） - 当有3个元素时，val[1]为类型 (例如: 'card', 'skill'，'character'，留空默认为'rule')
-    /// val[2]: 详细信息 - 当只有2个元素时，val[1]为信息，当有3个元素时，val[2]为信息
-    const t = lib.translate;
-    const dt = lib.dynamicTranslate
-    const map = new Map()
-    const regex = /#|^.*(_info|_append|_config|_bg|_prefix|_suffix)$/;
-    const r = /(?:“(.*?)”)|(?:【(.*?)】)|(?:〖(.*?)〗)/g
-    // 初始化 poptip
-    // 遍历 poptips 数组，将其内容添加到 lib.poptip 中
-    for (let k of poptips) {
-        lib.poptip.add(k)
+    for (const item of poptips) {
+        lib.poptip.add(item);
+        const id = Array.isArray(item) ? item[0] : item.id;
+        const val = Array.isArray(item) ? item[1] : item;
+        if (val && val.name) addMap(val.name, id);
     }
-    // window.name2KeywordMap (关键字与其ID的映射字典)
-    for (let k in t) {
-        let v = t[k];
-        if (!v || regex.test(k)) continue;
-        (map.get(v) || map.set(v, []).get(v)).push(k);
+
+    for (const k of Object.keys(translate)) {
+        const v = translate[k];
+        if (!v || skipRegex.test(k)) continue;
+        addMap(v, k);
     }
-    map.forEach(v => v.sort((a, b) => a.length - b.length));
-    window.name2KeywordMap = map;
+
+    map.forEach(list => list.sort((a, b) => a.length - b.length));
+    lib.name2KeywordMap = map;
+
+    const markType = match => {
+        const c = match[0];
+        if (c === "【") return "card";
+        if (c === "〖") return "skill";
+        if (c === "“") return "character";
+        return "rule";
+    };
+
     const rep = (key, str) => {
         const cache = new Map();
-        return str.replace(r, (_, ...args) => {
-            let txt = args[0] || args[1] || args[2];
-            if (cache.has(txt)) {
-                let c = cache.get(txt);
-                return c[1] === 'card' ? `【${c[0]}】` : c[1] === 'skill' ? `〖${c[0]}〗` : c[0];
-            }
-            let list = window.name2KeywordMap.get(txt),
-                hit;
-            if (!list) return _;
+        const skillId = key.endsWith("_info") ? key.slice(0, -5) : null;
 
-            if (list.length > 1) {
-                let stack = [lib.skill[key.slice(0, -5)]],
-                    visited = new Set();
+        return str.replace(markRegex, (match, ...groups) => {
+            const txt = groups.find(g => typeof g === "string");
+            if (!txt) return match;
+
+            if (cache.has(txt)) {
+                const { name, type } = cache.get(txt);
+                return wrap(type, name);
+            }
+
+            const list = map.get(txt);
+            if (!list) return match;
+
+            const wantType = markType(match);
+
+            let hit;
+            if (list.length > 1 && skillId) {
+                const stack = [lib.skill[skillId]];
+                const visited = new Set();
                 while (stack.length && !hit) {
-                    let o = stack.pop();
+                    const o = stack.pop();
                     if (!o || visited.has(o)) continue;
-                    visited.add(o)
-                    if (typeof o === 'string' && list.includes(o)) hit = o;
-                    else if (typeof o === 'function') {
-                        let s = o.toString();
+                    visited.add(o);
+                    if (typeof o === "string" && list.includes(o)) {
+                        hit = o;
+                    } else if (typeof o === "function") {
+                        const s = o.toString();
                         hit = list.find(x => s.includes(x));
+                    } else if (typeof o === "object") {
+                        stack.push(...Object.values(o));
                     }
-                    else if (typeof o === 'object') stack.push(...Object.values(o));
                 }
             }
-            hit = hit || list[0];
-            cache.set(txt, [lib.poptip.getName(hit), lib.poptip.getType(hit)]);
-            if (txt != hit) {
-                cache.set(hit, [lib.poptip.getName(hit), lib.poptip.getType(hit)]);
+
+            if (!hit) {
+                hit = list.find(id => lib.poptip.getType(id) === wantType);
             }
+            if (!hit) {
+                hit = list.find(id => lib.poptip.getType(id) === "rule") || list[0];
+            }
+
+            const name = lib.poptip.getName(hit);
+            const type = lib.poptip.getType(hit) || "rule";
+            cache.set(txt, { name, type });
+            if (txt !== hit) cache.set(hit, { name, type });
+
             return get.poptip(hit);
         });
+    };
+
+    for (const k of Object.keys(translates)) {
+        translate[k] = rep(k, translates[k]);
     }
-    for (let k in translates) {
-        t[k] = rep(k, translates[k]);
-    }
-    for (let k in dynamicTranslates) {
-        let v = dynamicTranslates[k];
-        if (typeof v === 'string') dt[k] = rep(k, v);
-        else if (typeof v === 'function') {
-            dt[k] = new Proxy(v, {
-                apply: (t, _, a) => (r => typeof r == 'string' ? rep(k, r) : r)(Reflect.apply(t, _, a)),
-                toString: () => rep(k, v.toString())
+
+    for (const k of Object.keys(dynamicTranslates)) {
+        const v = dynamicTranslates[k];
+        if (typeof v === "string") {
+            dynamicTranslate[k] = rep(k, v);
+        } else if (typeof v === "function") {
+            dynamicTranslate[k] = new Proxy(v, {
+                apply(target, thisArg, args) {
+                    const r = Reflect.apply(target, thisArg, args);
+                    return typeof r === "string" ? rep(k, r) : r;
+                },
+                toString: () => rep(k, v.toString()),
             });
         }
     }
-    lib.translate = t
-    lib.dynamicTranslate = dt
 }

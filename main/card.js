@@ -205,6 +205,170 @@ export default {
             image: (card) => {
                 return "ext:GirlsBand/image/card/bking.png"
             }
+        },
+        sadouchengbing: {
+            fullskin: true,
+            type: "trick",
+            enable: true,
+            selectTarget: -1,
+            cardcolor: "red",
+            toself: true,
+            image: "image/mode/boss/card/sadouchengbing.png",
+            filterTarget(card, player, target) {
+                return target == player;
+            },
+            modTarget: true,
+            content() {
+                var num = Math.min(5, target.maxHp);
+                if (target.group == "shen") {
+                    target.draw(num);
+                } else {
+                    var nh = target.countCards("h");
+                    if (nh < num) {
+                        target.draw(num - nh);
+                    }
+                }
+            },
+            ai: {
+                basic: {
+                    order: 7.2,
+                    useful: 4.5,
+                    value: 9.2,
+                },
+                result: {
+                    target(player, target) {
+                        var num = Math.min(5, target.maxHp);
+                        if (target.group == "shen") {
+                            return Math.sqrt(num);
+                        } else {
+                            var nh = target.countCards("h");
+                            if (target == player && player.countCards("h", "sadouchengbing")) {
+                                nh--;
+                            }
+                            if (nh < num) {
+                                return Math.sqrt(num - nh);
+                            }
+                        }
+                        return 0;
+                    },
+                },
+                tag: {
+                    draw: 2,
+                },
+            },
+        },
+        jiwangkailai: {
+            audio: true,
+            fullskin: true,
+            type: "trick",
+            image: "image/card/jiwangkailai.png",
+            enable(card, player) {
+                const hs = player.getCards("h", (cardx) => cardx !== card && (!card.cards || !card.cards.includes(cardx)));
+                if (!hs.length) {
+                    return false;
+                }
+                let use = true;
+                let discard = true;
+                for (const handCard of hs) {
+                    if (use && !game.checkMod(handCard, player, "unchanged", "cardEnabled2", player)) {
+                        use = false;
+                    }
+                    if (discard && !lib.filter.cardDiscardable(handCard, player, "jiwangkailai")) {
+                        discard = false;
+                    }
+                    if (!use && !discard) {
+                        return false;
+                    }
+                }
+                return true;
+            },
+            selectTarget: -1,
+            toself: true,
+            filterTarget(card, player, target) {
+                return target === player;
+            },
+            modTarget: true,
+            async content(event, trigger, player) {
+                const hs = player.getCards("h");
+                if (!hs.length) {
+                    return;
+                }
+                let use = true;
+                let discard = true;
+                for (const handCard of hs) {
+                    if (use && !game.checkMod(handCard, player, "unchanged", "cardEnabled2", player)) {
+                        use = false;
+                    }
+                    if (discard && !lib.filter.cardDiscardable(handCard, player, "jiwangkailai")) {
+                        discard = false;
+                    }
+                    if (!use && !discard) {
+                        return;
+                    }
+                }
+                let index = use ? 1 : 0;
+                if (use && discard) {
+                    const result2 = await player.chooseControl({
+                        prompt: "继往开来：请选择一项",
+                        choiceList: ["弃置所有手牌，然后摸等量的牌", "将所有手牌当做一张普通锦囊牌使用"],
+                        ai: () => _status.event.player.countCards("h") > 2 ? 0 : 1
+                    }).forResult();
+                    index = result2.index;
+                }
+                const cards = player.getCards("h");
+                if (index === 0) {
+                    const num = cards.length;
+                    await player.discard({ cards });
+                    await player.draw(num);
+                    return;
+                }
+                const list = [];
+                for (const name of lib.inpile) {
+                    if (name !== "jiwangkailai" && get.type(name) === "trick" && lib.filter.filterCard({ name, cards }, player)) {
+                        list.push(["锦囊", "", name]);
+                    }
+                }
+                if (!list.length) {
+                    return;
+                }
+                const result = await player.chooseButton({
+                    createDialog: ["继往开来：选择要使用的牌", [list, "vcard"]],
+                    forced: true,
+                    ai: (button) => {
+                        const player2 = _status.event.player;
+                        return player2.getUseValue({
+                            name: button.link[2],
+                            cards: player2.getCards("h")
+                        });
+                    }
+                }).forResult();
+                if (!result.bool) {
+                    return;
+                }
+                await player.chooseUseTarget({
+                    card: { name: result.links[0][2] },
+                    cards: player.getCards("h"),
+                    forced: true
+                });
+            },
+            ai: {
+                basic: {
+                    order: 0.5,
+                    useful: 3,
+                    value: 5
+                },
+                result: {
+                    target(player, target) {
+                        if (target.needsToDiscard(1) || !target.countCards("h", (card) => get.value(card, player) >= 5.5)) {
+                            return 1;
+                        }
+                        return 0;
+                    }
+                },
+                tag: {
+                    draw: 2
+                }
+            }
         }
     },
     /** @type { importCharacterConfig['skill'] } */
@@ -674,7 +838,11 @@ export default {
         gb_sking: "小王",
         gb_sking_info: "扑克牌，牌名字数为0、无效果、无花色、无点数且类型为poker的牌。",
         gb_bking: "大王",
-        gb_bking_info: "扑克牌，牌名字数为0、无效果、无花色、无点数且类型为poker的牌。"
+        gb_bking_info: "扑克牌，牌名字数为0、无效果、无花色、无点数且类型为poker的牌。",
+        sadouchengbing: "撒豆成兵",
+        sadouchengbing_info: "出牌阶段对自己使用，若你的势力为“神”，摸X张牌；否则将你手牌补至X；（X为你的体力上限且至多为5）。",
+        jiwangkailai: "继往开来",
+        jiwangkailai_info: "出牌阶段，对包含你自己在内的一名角色使用。目标角色选择一项：①弃置所有手牌，然后摸等量的牌。②将所有手牌当做一张不为【继往开来】的普通锦囊牌使用。",
     },
     list: [
         ["spade", 1, "gb_huanle"],

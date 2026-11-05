@@ -3,7 +3,7 @@ const characters = {
     gb_zhuiminglixi: {
         sex: "female",
         group: "gbmygo",
-        hp: 4,
+        hp: 5,
         skills: ["gblixi", "gbxiwei"],
         names: "椎名|立希",
         img: "extension/GirlsBand/image/takki.jpg",
@@ -11,7 +11,7 @@ const characters = {
     gb_changqisushi: {
         sex: "female",
         group: "gbmygo",
-        hp: 3,
+        hp: 4,
         skills: ["gbsumou", "gbyingxiang", "gbfuming"],
         names: "长崎|素世",
         dieAudios: ["ext:GirlsBand/audio/die/soyo"],
@@ -20,8 +20,8 @@ const characters = {
     gb_yaolenai: {
         sex: "female",
         group: "gbmygo",
-        hp: 3,
-        maxHp: 4,
+        hp: 4,
+        maxHp: 5,
         skills: ["gbduzou", "gblvefei"],
         names: "要|乐奈",
         img: "extension/GirlsBand/image/rana.png"
@@ -29,7 +29,7 @@ const characters = {
     gb_qianzaoaiyin: {
         sex: "female",
         group: "gbmygo",
-        hp: 4,
+        hp: 5,
         skills: ["gbzhuyi", "gbhexian"],
         names: "千早|爱音",
         img: "extension/GirlsBand/image/anon.jpg"
@@ -37,7 +37,7 @@ const characters = {
     gb_gaosongdeng: {
         sex: "female",
         group: "gbmygo",
-        hp: 3,
+        hp: 4,
         skills: ["gbchunying", "gbqilu", "gbmizi"],
         names: "高松|灯",
         img: "extension/GirlsBand/image/tomorin.png",
@@ -56,8 +56,8 @@ const characters = {
     gb_ruoyemu: {
         sex: "female",
         group: "gbmujica",
-        hp: 3,
-        maxHp: 4,
+        hp: 4,
+        maxHp: 5,
         skills: ["gbmoying", "gbfuxi", "gbzicheng"],
         names: "若叶|睦",
         img: "extension/GirlsBand/image/mutsumi.png",
@@ -66,7 +66,7 @@ const characters = {
     gb_sanjiaochuhua: {
         sex: "female",
         group: "gbmujica",
-        hp: 3,
+        hp: 4,
         skills: ["gbbeihua", "gbxianzhong", "gbchenggu"],
         names: "三角|初华",
         dieAudios: ["ext:GirlsBand/audio/die/uika"],
@@ -75,7 +75,7 @@ const characters = {
     gb_sp_sanjiaochuhua: {
         sex: "female",
         group: "gbmujica",
-        hp: 3,
+        hp: 4,
         skills: ["gbshiqi", "gbbeiqiu", "gbduoxin"],
         names: "三角|初华",
         dieAudios: ["ext:GirlsBand/audio/die/spuika"],
@@ -84,7 +84,7 @@ const characters = {
     gb_youtiansiruomai: {
         sex: "female",
         group: "gbmujica",
-        hp: 3,
+        hp: 5,
         skills: ["gbmiaomeng", "gbchuanting", "gbruoye"],
         names: "祐天寺|若麦",
         dieAudios: ["ext:GirlsBand/audio/die/nyamu"],
@@ -103,7 +103,7 @@ const characters = {
         sex: "female",
         group: "gbmujica",
         hp: 1,
-        maxHp: 4,
+        maxHp: 5,
         skills: ["gbmuling", "gbqiucun"],
         names: "墨提斯",
         img: "extension/GirlsBand/image/mortis.png",
@@ -112,7 +112,7 @@ const characters = {
     gb_houtengyili: {
         sex: "female",
         group: "gbband",
-        hp: 3,
+        hp: 4,
         skills: ["gbjuxiang", "gbgudu", "gbyingxiong"],
         names: "后藤|一里",
         img: "extension/GirlsBand/image/hitori.png",
@@ -120,7 +120,7 @@ const characters = {
     gb_xiduoyudai: {
         sex: "female",
         group: "gbband",
-        hp: 4,
+        hp: 5,
         skills: ["gbnongchao", "gbzhiwo"],
         names: "喜多|郁代",
         img: "extension/GirlsBand/image/kita.png",
@@ -145,7 +145,7 @@ const characters = {
     gb_jinqinrencai: {
         sex: "female",
         group: "gbTOGETOGE",
-        hp: 3,
+        hp: 4,
         isZhugong: true,
         skills: ["gbfanghuang", "gbnahan", "gbguiqi"],
         names: "井芹|仁菜",
@@ -154,7 +154,7 @@ const characters = {
     gb_heyuanmutaoxiang: {
         sex: "female",
         group: "gbTOGETOGE",
-        hp: 3,
+        hp: 5,
         skills: ["gbkongxiang", "gbxuanxie"],
         names: "河原木|桃香",
         img: "extension/GirlsBand/image/momoka.png",
@@ -162,7 +162,7 @@ const characters = {
     gb_hailaozhongzhi: {
         sex: "female",
         group: "gbTOGETOGE",
-        hp: 3,
+        hp: 4,
         skills: ["gbxinxiang", "gbfenxing"],
         names: "海老冢|智",
         img: "extension/GirlsBand/image/tomo.png",
@@ -170,7 +170,7 @@ const characters = {
     gb_anhemao: {
         sex: "female",
         group: "gbTOGETOGE",
-        hp: 3,
+        hp: 4,
         skills: ["gbxuzi", "gbshengwu"],
         names: "安和|昴",
         img: "extension/GirlsBand/image/486.png",
@@ -178,7 +178,7 @@ const characters = {
     gb_lupa: {
         sex: "female",
         group: "gbTOGETOGE",
-        hp: 4,
+        hp: 5,
         skills: ["gbchuideng", "gbweizhi"],
         names: "卢帕",
         img: "extension/GirlsBand/image/rupa.png",
@@ -186,7 +186,7 @@ const characters = {
     gb_pingzewei: {
         sex: "female",
         group: "gbkon",
-        hp: 3,
+        hp: 4,
         isZhugong: true,
         skills: ["gbdanhe", "gbqingpiao"],
         names: "平泽|唯",
@@ -195,7 +195,7 @@ const characters = {
     gb_qiushanling: {
         sex: "female",
         group: "gbkon",
-        hp: 3,
+        hp: 4,
         skills: ["gbdubai", "gbcangkong"],
         names: "秋山|澪",
         img: "extension/GirlsBand/image/mio.png",
@@ -203,7 +203,7 @@ const characters = {
     gb_tianjingzhonglv: {
         sex: "female",
         group: "gbkon",
-        hp: 4,
+        hp: 5,
         skills: ["gbricai", "gbgufeng"],
         names: "田井|中律",
         img: "extension/GirlsBand/image/tainaka.png",
@@ -211,7 +211,7 @@ const characters = {
     gb_qinchuichou: {
         sex: "female",
         group: "gbkon",
-        hp: 3,
+        hp: 4,
         skills: ["gbshancai", "gbqingre"],
         names: "琴吹|䌷",
         img: "extension/GirlsBand/image/tsumugi.png",
@@ -219,7 +219,7 @@ const characters = {
     gb_zhongyezi: {
         sex: "female",
         group: "gbkon",
-        hp: 3,
+        hp: 4,
         skills: ["gbmiaoqin", "gbwolu"],
         names: "中野|梓",
         img: "extension/GirlsBand/image/azusa.png",
@@ -227,7 +227,7 @@ const characters = {
     gb_shen_fengchuanxiangzi: {
         sex: "female",
         group: "shen",
-        hp: 4,
+        hp: 5,
         skills: ["gbkaimu", "gbrenou"],
         names: "丰川|祥子",
         img: "extension/GirlsBand/image/shen_saki.png",
@@ -235,15 +235,15 @@ const characters = {
     gb_sp_changqisushi: {
         sex: "female",
         group: "gbmygo",
-        hp: 3,
-        skills: ["gbsumou", "gbansu"],
+        hp: 4,
+        skills: ["gbsumou", "gbansu", "gbyinai"],
         names: "长崎|素世",
         img: "extension/GirlsBand/image/sp_nagasaki.png",
     },
     gb_sp_qianzaoaiyin: {
         sex: "female",
         group: "gbmygo",
-        hp: 4,
+        hp: 5,
         skills: ["gbzhuyi", "gbzhuyin"],
         names: "千早|爱音",
         img: "extension/GirlsBand/image/sp_ano.png",
@@ -252,7 +252,7 @@ const characters = {
         sex: "female",
         group: "gbmujica",
         hp: 1,
-        maxHp: 4,
+        maxHp: 5,
         skills: ["gbmuling", "gbsiwang", "gbspmortis_dead"],
         names: "墨提斯",
         img: "extension/GirlsBand/image/sp_mortis.png",
@@ -261,7 +261,7 @@ const characters = {
     gb_sp_gaosongdeng: {
         sex: "female",
         group: "gbmygo",
-        hp: 3,
+        hp: 4,
         isZhugong: true,
         skills: ["gbjianqiu", "gbqilu", "gbmizi"],
         names: "高松|灯",
@@ -270,8 +270,8 @@ const characters = {
     gb_sp_ruoyemu: {
         sex: "female",
         group: "gbmujica",
-        hp: 3,
-        maxHp: 4,
+        hp: 4,
+        maxHp: 5,
         skills: ["gbmoying", "gbduoluo"],
         names: "若叶|睦",
         img: "extension/GirlsBand/image/sp_mutsumi.png",
@@ -279,7 +279,7 @@ const characters = {
     gb_cangtianzhenbai: {
         sex: "female",
         group: "gbmonica",
-        hp: 3,
+        hp: 4,
         isZhugong: true,
         skills: ["gbqixiang", "gbyingjian", "gbhuadie"],
         names: "苍田|真白",
@@ -288,7 +288,7 @@ const characters = {
     gb_tonggutouzi: {
         sex: "female",
         group: "gbmonica",
-        hp: 4,
+        hp: 5,
         skills: ["gbxinyi", "gbchaoliu"],
         names: "桐谷|透子",
         img: "extension/GirlsBand/image/toko.png",
@@ -296,7 +296,7 @@ const characters = {
     gb_eryezhuzi: {
         sex: "female",
         group: "gbmonica",
-        hp: 3,
+        hp: 4,
         skills: ["gbyouzi", "gbtubi"],
         names: "二叶|筑紫",
         img: "extension/GirlsBand/image/tsukushi.png",
@@ -304,7 +304,7 @@ const characters = {
     gb_guangtingqishen: {
         sex: "female",
         group: "gbmonica",
-        hp: 3,
+        hp: 4,
         skills: ["gbtianzi", "gbzicun"],
         names: "广町|七深",
         img: "extension/GirlsBand/image/nanami.png",
@@ -312,7 +312,7 @@ const characters = {
     gb_bachaoliuwei: {
         sex: "female",
         group: "gbmonica",
-        hp: 4,
+        hp: 5,
         skills: ["gbzhenglun", "gbweiqin"],
         names: "八潮|瑠唯",
         img: "extension/GirlsBand/image/rui.png",
@@ -320,7 +320,7 @@ const characters = {
     gb_dachangnainai: {
         sex: "female",
         group: "shen",
-        hp: 5,
+        hp: 6,
         skills: ["gbzaiyan", "gbliejiu", "gbjiesha"],
         names: "大场|奈奈",
         img: "extension/GirlsBand/image/nana.png",
@@ -328,7 +328,7 @@ const characters = {
     gb_couyouxina: {
         sex: "female",
         group: "gbroselia",
-        hp: 3,
+        hp: 4,
         isZhugong: true,
         skills: ["gbgugao", "gbhuoniao", "gbqiangwei"],
         names: "凑|友希那",
@@ -337,7 +337,7 @@ const characters = {
     gb_jinjinglisha: {
         sex: "female",
         group: "gbroselia",
-        hp: 3,
+        hp: 4,
         skills: ["gbquqi", "gbciai"],
         names: "今井|莉莎",
         img: "extension/GirlsBand/image/lisa.png",
@@ -345,7 +345,7 @@ const characters = {
     gb_bingchuanshaye: {
         sex: "female",
         group: "gbroselia",
-        hp: 4,
+        hp: 5,
         skills: ["gbzhunzhen", "gbqianwei"],
         names: "冰川|纱夜",
         img: "extension/GirlsBand/image/sayo.png",
@@ -353,7 +353,7 @@ const characters = {
     gb_yutianchuanyazi: {
         sex: "female",
         group: "gbroselia",
-        hp: 3,
+        hp: 4,
         skills: ["gbduoluo_r", "gbmoshe"],
         names: "宇田川|亚子",
         img: "extension/GirlsBand/image/ako.png",
@@ -361,7 +361,7 @@ const characters = {
     gb_baijinlinzi: {
         sex: "female",
         group: "gbroselia",
-        hp: 4,
+        hp: 5,
         skills: ["gbtici", "gbbuya"],
         names: " 白金|燐子",
         img: "extension/GirlsBand/image/rinko.png",
@@ -369,7 +369,7 @@ const characters = {
     gb_meizhulan: {
         sex: "female",
         group: "gbafterglow",
-        hp: 3,
+        hp: 4,
         skills: ["gbbomu", "gbkongtan", "gbhuadao"],
         names: "美竹|兰",
         isZhugong: true,
@@ -378,7 +378,7 @@ const characters = {
     gb_qingyemoka: {
         sex: "female",
         group: "gbafterglow",
-        hp: 3,
+        hp: 4,
         skills: ["gbchenyang", "gbxinzhong"],
         names: "青叶|摩卡",
         img: "extension/GirlsBand/image/moka.png",
@@ -386,7 +386,7 @@ const characters = {
     gb_shangyuanfeimali: {
         sex: "female",
         group: "gbafterglow",
-        hp: 4,
+        hp: 5,
         skills: ["gbhongri", "gbyuanzhen"],
         names: "上原|绯玛丽",
         img: "extension/GirlsBand/image/himari.png",
@@ -394,7 +394,7 @@ const characters = {
     gb_yutianchuanba: {
         sex: "female",
         group: "gbafterglow",
-        hp: 4,
+        hp: 5,
         skills: ["gbfeishou", "gbbafeng"],
         names: "宇田川|巴",
         img: "extension/GirlsBand/image/tamoe.png",
@@ -402,7 +402,7 @@ const characters = {
     gb_yuzedong: {
         sex: "female",
         group: "gbafterglow",
-        hp: 3,
+        hp: 4,
         skills: ["gbfanzhi", "gbcigu"],
         names: "羽泽|鸫",
         img: "extension/GirlsBand/image/tsugumi.png",
@@ -410,7 +410,7 @@ const characters = {
     gb_wanshancai: {
         sex: "female",
         group: "gbpastel",
-        hp: 3,
+        hp: 4,
         isZhugong: true,
         skills: ["gbwuyin", "gbtiancai", "gbshanguang"],
         names: "丸山|彩",
@@ -419,7 +419,7 @@ const characters = {
     gb_bailuqiansheng: {
         sex: "female",
         group: "gbpastel",
-        hp: 3,
+        hp: 4,
         skills: ["gbmeiying", "gbbanmian"],
         names: "白鹭|千圣",
         img: "extension/GirlsBand/image/chisato.png",
@@ -427,7 +427,7 @@ const characters = {
     gb_bingchuanrina: {
         sex: "female",
         group: "gbpastel",
-        hp: 3,
+        hp: 4,
         skills: ["gbguancai", "gbluguang"],
         names: "冰川|日菜",
         img: "extension/GirlsBand/image/hina.png",
@@ -435,7 +435,7 @@ const characters = {
     gb_dahemami: {
         sex: "female",
         group: "gbpastel",
-        hp: 4,
+        hp: 5,
         skills: ["gbshanqi", "gbjiyue"],
         names: "大和|麻弥",
         img: "extension/GirlsBand/image/maya.png",
@@ -443,7 +443,7 @@ const characters = {
     gb_ruogongyifu: {
         sex: "female",
         group: "gbpastel",
-        hp: 4,
+        hp: 5,
         skills: ["gbwudao", "gbdahe"],
         names: "若宫|伊芙",
         img: "extension/GirlsBand/image/eve.png",
@@ -459,7 +459,7 @@ const characters = {
     gb_zhaoriliuhua: {
         sex: "female",
         group: "gbras",
-        hp: 3,
+        hp: 4,
         skills: ["gbgemian", "gbkuangchi"],
         names: "朝日|六花",
         img: "extension/GirlsBand/image/lock.png",
@@ -467,7 +467,7 @@ const characters = {
     gb_zuotengyimu: {
         sex: "female",
         group: "gbras",
-        hp: 4,
+        hp: 5,
         skills: ["gbkuangquan", "gbkuangbiao"],
         names: "佐藤|益木",
         img: "extension/GirlsBand/image/masking.png",
@@ -476,7 +476,7 @@ const characters = {
         sex: "female",
         group: "gbras",
         hp: 2,
-        maxHp: 6,
+        maxHp: 8,
         skills: ["gbzhongquan", "gbcaiyan"],
         names: "鳰原|令王那",
         img: "extension/GirlsBand/image/pareo.png",
@@ -484,7 +484,7 @@ const characters = {
     gb_zhushouzhiyou: {
         sex: "female",
         group: "gbras",
-        hp: 3,
+        hp: 4,
         skills: ["gbzhiyou", "gbzhiyin"],
         names: "珠手|知由",
         img: "extension/GirlsBand/image/chuchu.png",
@@ -492,7 +492,7 @@ const characters = {
     gb_sp_fengchuanxiangzi: {
         sex: "female",
         group: "gbmujica",
-        hp: 3,
+        hp: 4,
         skills: ["gbchunhua", "gblingming", "gbzhaying"],
         names: "丰川|祥子",
         dieAudios: ["ext:GirlsBand/audio/die/spsaki"],
@@ -501,7 +501,7 @@ const characters = {
     gb_xuanjuanxin: {
         sex: "female",
         group: "gbhhw",
-        hp: 4,
+        hp: 5,
         isZhugong: true,
         skills: ["gbxuanjuan", "gbzhuxin", "gbtongxin"],
         names: "弦卷|心",
@@ -513,7 +513,7 @@ const characters = {
         group: "gbhhw",
         isAiForbidden: true,
         hp: 4,
-        maxHp: 6,
+        maxHp: 5,
         skills: ["gbfuxin", "gbxiongyi", "gbmeilv"],
         names: "奥泽|美咲",
         img: "extension/GirlsBand/image/misaki.png",
@@ -531,7 +531,7 @@ const characters = {
     gb_songyuanhuayin: {
         sex: "female",
         group: "gbhhw",
-        hp: 3,
+        hp: 4,
         skills: ["gbmitu", "gbxinglu"],
         names: "松原|花音",
         img: "extension/GirlsBand/image/kanon.png",
@@ -540,7 +540,7 @@ const characters = {
     gb_beizeyumei: {
         sex: "female",
         group: "gbhhw",
-        hp: 4,
+        hp: 5,
         skills: ["gbbenxi", "gbjinhuan"],
         names: "北泽|育美",
         img: "extension/GirlsBand/image/hagumi.png",
@@ -549,7 +549,7 @@ const characters = {
     gb_hushanxiangcheng: {
         sex: "female",
         group: "gbpoppin",
-        hp: 4,
+        hp: 5,
         skills: ["gbshanyao", "gbjidong", "gbxingdong"],
         names: "户山|香澄",
         img: "extension/GirlsBand/image/kasumi.png",
@@ -558,7 +558,7 @@ const characters = {
     gb_shiguyouxiao: {
         sex: "female",
         group: "gbpoppin",
-        hp: 3,
+        hp: 4,
         skills: ["gbliuxing", "gbxingyin", "gbkami"],
         names: "市谷|有咲",
         img: "extension/GirlsBand/image/arisa.png",
@@ -566,7 +566,7 @@ const characters = {
     gb_huayuanduohui: {
         sex: "female",
         group: "gbpoppin",
-        hp: 4,
+        hp: 5,
         skills: ["gbhuajing", "gbtuxi", "gbhuisi"],
         names: "花园|多惠",
         img: "extension/GirlsBand/image/tae.png",
@@ -574,7 +574,7 @@ const characters = {
     gb_niugulimei: {
         sex: "female",
         group: "gbpoppin",
-        hp: 3,
+        hp: 4,
         maxHp: 5,
         skills: ["gbqiaoluo", "gbkuangniu", "gbxingli"],
         names: "牛込|里美",
@@ -591,7 +591,7 @@ const characters = {
     gb_zhongtingalalei: {
         sex: "female",
         group: "gbmewtype",
-        hp: 4,
+        hp: 5,
         isZhugong: true,
         skills: ["gbwaixuan", "gbneihu", "gbxushen"],
         names: "仲町|阿拉蕾",
@@ -600,7 +600,7 @@ const characters = {
     gb_gongyongyenonaihua: {
         sex: "female",
         group: "gbmewtype",
-        hp: 4,
+        hp: 5,
         skills: ["gbshihou", "gbtuguo", "gbgongyu"],
         names: "宫永|野乃花",
         img: "extension/GirlsBand/image/nonoka.png",
@@ -608,8 +608,8 @@ const characters = {
     gb_tengduzi: {
         sex: "female",
         group: "gbmewtype",
-        hp: 3,
-        maxHp: 4,
+        hp: 4,
+        maxHp: 5,
         skills: ["gbtengshi", "gbxuedu", "gbfengzi"],
         names: "藤|都子",
         img: "extension/GirlsBand/image/miyako.png",
@@ -617,8 +617,8 @@ const characters = {
     gb_qianshiyounai: {
         sex: "female",
         group: "gbmewtype",
-        hp: 3,
-        maxHp: 4,
+        hp: 4,
+        maxHp: 5,
         skills: ["gbqiusuo", "gbqianyou"],
         names: "千石|由乃",
         img: "extension/GirlsBand/image/yuno.png",
@@ -626,8 +626,8 @@ const characters = {
     gb_fengyuelv: {
         sex: "female",
         group: "gbmewtype",
-        hp: 3,
-        maxHp: 4,
+        hp: 4,
+        maxHp: 5,
         skills: ["gbfengrou", "gbgaoyue"],
         names: "峰月|律",
         img: "extension/GirlsBand/image/ritsu.png",
@@ -635,8 +635,8 @@ const characters = {
     gb_weiola: {
         sex: "female",
         group: "gbmewtype",
-        hp: 3,
-        maxHp: 4,
+        hp: 4,
+        maxHp: 5,
         skills: ["gbxiaoyuan", "gbjinchuan", "gbnongsun"],
         names: "薇欧拉",
         img: "extension/GirlsBand/image/viola.jpg",
@@ -804,7 +804,7 @@ const characterSort = {
     gb_mygo: ["gb_zhuiminglixi", "gb_changqisushi", "gb_yaolenai", "gb_qianzaoaiyin", "gb_gaosongdeng"],
     gb_sp_mygo: ["gb_sp_changqisushi", "gb_sp_qianzaoaiyin", "gb_sp_gaosongdeng"],
     gb_mujica: ["gb_fengchuanxiangzi", "gb_ruoyemu", "gb_sanjiaochuhua", "gb_bafanhailing", "gb_youtiansiruomai", "gb_mortis", "gb_shen_fengchuanxiangzi"],
-    gb_sp_mujica: ["gb_sp_mortis", "gb_sp_ruoyemu", "gb_sp_ruoyemu", "gb_sp_fengchuanxiangzi", "gb_sp_sanjiaochuhua"],
+    gb_sp_mujica: ["gb_sp_mortis", "gb_sp_ruoyemu", "gb_sp_fengchuanxiangzi", "gb_sp_sanjiaochuhua"],
     gb_band: ["gb_houtengyili", "gb_yidizhihongxia", "gb_shantianliang", "gb_xiduoyudai"],
     gb_TOGETOGE: ["gb_jinqinrencai", "gb_heyuanmutaoxiang", "gb_anhemao", "gb_hailaozhongzhi", "gb_lupa"],
     gb_kon: ["gb_pingzewei", "gb_qiushanling", "gb_tianjingzhonglv", "gb_qinchuichou", "gb_zhongyezi"],
