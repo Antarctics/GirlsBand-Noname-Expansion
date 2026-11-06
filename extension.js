@@ -1,12 +1,14 @@
-import { lib, game, ui, get, ai, _status } from "../../noname.js";
-import arenaReady from "./main/arenaReady.js"
-import mainContent from "./main/mainContent.js"
-import preContent from "./main/preContent.js"
+﻿import { lib, game, ui, get, ai, _status } from "../../noname.js";
 import "./main/mode.js";
-import update from "./main/update.js"
 import info from "./main/package.js"
-/** @type { importExtensionConfig } */
+import update from "./main/update.js"
+import arenaReady from "./main/arenaReady.js"
+import preContent from "./main/preContent.js"
+import mainContent from "./main/mainContent.js"
+import { poptipStyle, clearPoptipStyle } from "./main/poptipStyle.js";
 export const type = "extension";
+/** @type { importExtensionConfig } */
+/** @type {()=>{ config: {[key: string]: SelectConfigData} }} */
 export default function () {
     return {
         name: "GirlsBand",
@@ -15,20 +17,10 @@ export default function () {
         arenaReady: arenaReady,
         precontent: preContent,
         content: (c, p) => mainContent(c, p),
-        package: info("2.4.1"),
+        package: info("2.4.2"),
         config: {
-            bgm: {
-                name: `<font color="#e91e63">场内BGM <small>(下局生效)</small>`,
-                init: true,
-                intro: "存在女乐角色时自动播放BGM",
-            },
-            add_bgm: {
-                name: `<font color="#e91e63">添加BGM</small>`,
-                init: true,
-                intro: "将女乐BGM添加至无名杀本体的BGM列表中",
-            },
             update_source: {
-                name: `<font color="#9c27b0">更新镜像源`,
+                name: `更新镜像源`,
                 init: "0",
                 item: {
                     0: "扩展官方源",
@@ -39,9 +31,56 @@ export default function () {
                 }
             },
             auto_update: {
-                name: `<font color="#ff9800">自动检测更新`,
+                name: `自动检测更新`,
                 init: true,
                 intro: "启动游戏时自动检查更新",
+            },
+            bgm: {
+                name: `场内BGM <small>(下局生效)</small>`,
+                init: true,
+                intro: "存在女乐角色时自动播放BGM",
+            },
+            add_bgm: {
+                name: `添加BGM至本体`,
+                init: true,
+                intro: "将女乐BGM添加至无名杀本体的BGM列表中",
+                onclick(bool) {
+                    if (!lib.config.customBackgroundMusic) lib.config.customBackgroundMusic = {};
+                    if (bool) {
+                        const bgmList = ["影色舞", "春日影", "KiLLKiSS", "ギターと孤独と蒼い惑星", "空之箱", "GO!GO!MANIAC", "fire bird", "Daylight -デイライト- (Instrumental)", "Hey-day狂騒曲(カプリチオ)", "劣等上等"];
+                        bgmList.forEach(name => lib.config.customBackgroundMusic[`ext:GirlsBand/audio/${name}.mp3`] = name)
+                    } else {
+                        Object.keys(lib.config.customBackgroundMusic).forEach(key => {
+                            if (key.startsWith("ext:GirlsBand/audio/")) delete lib.config.customBackgroundMusic[key];
+                        })
+                    }
+                    game.saveConfig("customBackgroundMusic", lib.config.customBackgroundMusic);
+                    game.saveExtensionConfig("GirlsBand", "add_bgm", bool)
+                }
+            },
+            auto_poptip: {
+                name: `全扩自动注释`,
+                init: true,
+                intro: "为全扩添加自动注释功能，此项关闭时将仅为持有本选项的扩展添加自动注释（此选项全局生效）",
+                onclick(bool) {
+                    Object.keys(lib.extensionPack).filter(name => game.getExtensionConfig(name, "auto_poptip") !== undefined).forEach(name => game.saveExtensionConfig(name, "auto_poptip", bool));
+                },
+            },
+            custom_poptip: {
+                name: `<font color="#52fc2b">修改全局注释样式`,
+                clear: true,
+                intro: "修改注释的样式（此选项全局生效）",
+                onclick() {
+                    poptipStyle();
+                },
+            },
+            clear_poptip: {
+                name: `<font color="#9ffffa">恢复默认注释样式`,
+                clear: true,
+                intro: "恢复默认注释样式（此选项全局生效）",
+                onclick() {
+                    clearPoptipStyle();
+                },
             },
             check_update: {
                 name: `<span style="color:#4caf50;text-decoration: underline">检查更新`,

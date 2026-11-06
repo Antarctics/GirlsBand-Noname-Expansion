@@ -1,4 +1,4 @@
-import { lib, game, ui, get, ai, _status } from "../../../noname.js";
+﻿import { lib, game, ui, get, ai, _status } from "../../../noname.js";
 import cards from "./card.js";
 export default function () {
     const minVer = "1.11.3";
@@ -14,13 +14,11 @@ export default function () {
             break
         }
     }
-
     // Tip标记提示
     if (!lib.config.show_tip && !localStorage.getItem('gb_tipHint')) {
         game.saveConfig("show_tip", confirm("检测到未启用Tip标记！\n\n《少女乐队》扩展需要Tip标记功能\n\n是否启用？\n\n本询问仅显示一次！"));
         localStorage.setItem('gb_tipHint', true);
     }
-
     // 新增势力
     const groups = [
         { id: "gbmygo", name: "迷", color: "#3388BB", image: "ext:GirlsBand/image/mygo.png" },
@@ -37,23 +35,30 @@ export default function () {
         { id: "gbpoppin", name: "派", color: "#FF3377", image: "ext:GirlsBand/image/poppin.png" },
         { id: "gbmewtype", name: "梦", color: "#FF7788", image: "ext:GirlsBand/image/mewtyp.png" }
     ];
-
     groups.forEach(group => {
         game.addGroup(group.id, group.name, group.fullname, {
             color: group.color,
             image: group.image
         });
     });
-    if (lib.config.extension_GirlsBand_add_bgm) {
-        const bgmList = ["影色舞", "春日影", "KiLLKiSS", "ギターと孤独と蒼い惑星", "空之箱", "GO!GO!MANIAC", "fire bird", "Daylight -デイライト- (Instrumental)", "Hey-day狂騒曲(カプリチオ)", "劣等上等"];
-
-        if (!lib.config.customBackgroundMusic) lib.config.customBackgroundMusic = {};
-        bgmList.forEach(name => {
-            lib.config.customBackgroundMusic[`ext:GirlsBand/audio/${name}.mp3`] = name;
-        });
-        game.saveConfig("customBackgroundMusic", lib.config.customBackgroundMusic);
-
-    }
+    // 武器替换
+    const createCards = ui.create.cards;
+    ui.create.cards = function (...args) {
+        const packs = _status.connectMode ? lib.configOL.cardPack : lib.config.cards;
+        if (packs?.includes("GirlsBand")) {
+            const weaponMap = {
+                guding: "gb_huanle", zhuge: "gb_yibeizi", zhuque: "gb_bingchuan",
+                qilin: "gb_chuhua", guanshi: "gb_daxi", qinglong: "gb_feiniao",
+                qinggang: "gb_guga", zhangba: "gb_hexian", cixiong: "gb_ruomai",
+                fangtian: "gb_xing", hanbing: "gb_xuehong",
+            };
+            lib.card.list = lib.card.list.map(e => {
+                const n = weaponMap[e[2]];
+                return n && lib.card[n] ? e.map((x, i) => i == 2 ? n : x) : e;
+            });
+        }
+        return createCards.apply(this, args);
+    };
     // 自动播放音乐
     lib.skill._gbmusic = {
         trigger: { global: ["gameStart"] },
@@ -70,7 +75,6 @@ export default function () {
             game.playBackgroundMusic();
         }
     };
-
     const oldModetrans = get.modetrans
     get.modetrans = new Proxy(oldModetrans, {
         apply: function (target, thisArg, argumentsList) {
@@ -89,5 +93,4 @@ export default function () {
         }
     });
     lib.config.all.cards.push("GirlsBand");
-    lib.translate.GirlsBand_card_config = "GirlsBand";
 };

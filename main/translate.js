@@ -1,21 +1,22 @@
 import { lib, game, ui, get, ai, _status } from "../../../noname.js";
-const poptips = [
-    {
-        id: "rule_yishi",
+const poptips = {
+    rule_yishi: {
         name: "议事",
         info: "所有参与角色同时展示一张手牌，此牌的颜色称为“意见”：<br>若红色“意见”较多，则结果为红色；<br>若黑色“意见”较多，则“结果为黑色；<br>若二者数量持平，则无结果。"
     },
-    {
-        id: "rule_hezou",
+    rule_hezou: {
         name: "合奏",
         info: "所有参与角色需选择任意一项：<br>①展示任意张手牌；<br>②展示牌堆顶的一张牌。<br>以此法展示的牌视为“合奏”牌。"
     },
-    {
-        id: "rule_lujing",
+    rule_lujing: {
         name: "路径",
         info: "使用者与目标之间单向遍历其间所有角色的一条路线。<br>即从使用者的上家或下家开始，至目标所处位置其间的所有角色。<br>不包括首尾角色。"
     },
-]
+    rule_xumou: {
+        name: "蓄谋",
+        info: `将指定牌${get.poptip("xumou_jsrg")}视为置于判定区。`
+    }
+}
 const translates = {
     GirlsBand: "少女乐队",
     vocalist: "主唱",
@@ -155,7 +156,16 @@ const translates = {
     "#ext:GirlsBand/audio/skill/gbxiwei1": "太差劲了",
     "#ext:GirlsBand/audio/skill/gbxiwei2": "哈？",
     "#ext:GirlsBand/audio/skill/gbxiwei3": "哈？",
-
+    // 牌
+    poker: "扑克",
+    gb_sking: "小王",
+    gb_sking_info: "扑克牌，牌名字数为0、无效果、无花色、无点数且类型为poker的牌。",
+    gb_bking: "大王",
+    gb_bking_info: "扑克牌，牌名字数为0、无效果、无花色、无点数且类型为poker的牌。",
+    sadouchengbing: "撒豆成兵",
+    sadouchengbing_info: "出牌阶段对自己使用，若你的势力为“神”，摸X张牌；否则将你手牌补至X；（X为你的体力上限且至多为5）。",
+    jiwangkailai: "继往开来",
+    jiwangkailai_info: "出牌阶段，对包含你自己在内的一名角色使用。目标角色选择一项：①弃置所有手牌，然后摸等量的牌。②将所有手牌当做一张不为【继往开来】的普通锦囊牌使用。",
     // 技能
     gblixi: "立袭",
     gbxiwei: "希威",

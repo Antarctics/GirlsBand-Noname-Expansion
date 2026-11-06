@@ -463,7 +463,7 @@ const skill = {
             let cards = []
             for (let target of targets.sortBySeat()) {
                 if (target == player) continue
-                if (!player.countGainableCards(target, "he")) continue
+                if (!target.countGainableCards(player, "he")) continue
                 let { cards: [card] } = await player.gainPlayerCard("he", true, target).forResult()
                 if (card) {
                     cards.push(card)
@@ -1186,9 +1186,8 @@ const skill = {
             }
             list.push("cancel2")
             const result = await player.chooseControl(list)
-                .set("prompt", `###${get.prompt(event.skill)}###请选择一项`)
+                .set("prompt", get.prompt(event.skill))
                 .set("choiceList", choiceList)
-                .set("trigger", trigger)
                 .set("ai", () => {
                     let player = get.player()
                     let controls = get.event().controls
@@ -2844,9 +2843,9 @@ const skill = {
                         if (!result?.bool) return
                         const player = debate.player
                         if (result.opinion == "red") {
-                            for (const target of debate.targets.sortBySeat()) await target.draw()
+                            for (const target of result.targets.sortBySeat()) await target.draw()
                         } else if (result.opinion == "black") {
-                            for (const target of debate.targets.sortBySeat()) {
+                            for (const target of result.targets.sortBySeat()) {
                                 if (target == player || target.isDead()) continue
                                 if (target.canUse({ name: "sha" }, player, false, false)) await target.useCard({ name: "sha" }, player)
                             }

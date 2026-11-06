@@ -1,4 +1,4 @@
-import { lib, game, ui, get, ai, _status } from "../../../noname.js";
+﻿import { lib, game, ui, get, ai, _status } from "../../../noname.js";
 export default {
     /** @type {importCardConfig['card']} */
     card: {
@@ -786,6 +786,8 @@ export default {
         },
     },
     translate: {
+        GirlsBand: "少女乐队",
+        GirlsBand_cardsInfo: "若当前卡牌包启用，则自动替换对应的原版武器。",
         gb_huanle: "欢乐时光",
         gb_huanle_info: "锁定技，当你使用的【杀】造成伤害时，若指定的目标没有手牌，该伤害+1。",
         huanle_skill: "欢乐时光",
@@ -834,28 +836,5 @@ export default {
         gb_xuehong_info: "当你因执行【杀】的效果而造成伤害时，若目标角色有能被弃置的牌，则你可以防止此伤害，然后依次弃置目标角色的两张牌。",
         xuehong_skill: "血红书记",
         xuehong_skill_info: "当你因执行【杀】的效果而造成伤害时，若目标角色有能被弃置的牌，则你可以防止此伤害，然后依次弃置目标角色的两张牌。",
-        poker: "扑克",
-        gb_sking: "小王",
-        gb_sking_info: "扑克牌，牌名字数为0、无效果、无花色、无点数且类型为poker的牌。",
-        gb_bking: "大王",
-        gb_bking_info: "扑克牌，牌名字数为0、无效果、无花色、无点数且类型为poker的牌。",
-        sadouchengbing: "撒豆成兵",
-        sadouchengbing_info: "出牌阶段对自己使用，若你的势力为“神”，摸X张牌；否则将你手牌补至X；（X为你的体力上限且至多为5）。",
-        jiwangkailai: "继往开来",
-        jiwangkailai_info: "出牌阶段，对包含你自己在内的一名角色使用。目标角色选择一项：①弃置所有手牌，然后摸等量的牌。②将所有手牌当做一张不为【继往开来】的普通锦囊牌使用。",
-    },
-    list: [
-        ["spade", 1, "gb_huanle"],
-        ["club", 1, "gb_yibeizi"],
-        ["diamond", 1, "gb_yibeizi"],
-        ["diamond", 1, "gb_bingchuan"],
-        ["heart", 5, "gb_chuhua"],
-        ["spade", 5, "gb_feiniao"],
-        ["diamond", 5, "gb_daxi"],
-        ["spade", 6, "gb_guga"],
-        ["spade", 12, "gb_hexian"],
-        ["spade", 2, "gb_ruomai"],
-        ["diamond", 12, "gb_xing"],
-        ["spade", 2, "gb_xuehong"],
-    ]
+    }
 }

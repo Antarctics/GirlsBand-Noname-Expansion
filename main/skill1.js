@@ -201,12 +201,8 @@ const skills = {
         },
         logTarget: "targets",
         async cost(event, trigger, player) {
-            if (!game.filterPlayer(p => !trigger.targets.includes(p).some(target => player.canCompare(target)))) {
-                event.trigger("gbfuming_fail")
-                return
-            }
             event.result = await player.chooseTarget(`###${get.prompt(event.skill)}###与一名未参与议事的角色进行拼点`)
-                .set("filterTarget", (card, player, target) => get.event().targets.includes(target))
+                .set("filterTarget", (card, player, target) => get.event().targets.includes(target) && player.canCompare(target))
                 .set("ai", (target) => {
                     let player = get.player()
                     let cards = player.getCards("h")
@@ -401,7 +397,6 @@ const skills = {
                     player.gain(cards, "gain2").gaintag.add("gblvefei_tag")
                 })
                 .vars({
-                    targets: event.targets,
                     cards: cards
                 })
         },
@@ -1322,9 +1317,11 @@ const skills = {
                 async content(event, trigger, player) {
                     const cards = player.getCards("h")
                     if (cards.length) {
-                        const next = player.addToExpansion(cards, "giveAuto").gaintag.add("gbbeihua")
+                        const next = player.addToExpansion(cards, "giveAuto")
+                        next.gaintag.add("gbbeihua")
                         await next
                     }
+                    console.log(player.countExpansions("gbbeihua"), player.countCards("x"))
                     const num = player.countExpansions("gbbeihua")
                     if (num) await player.gain(lib.card.ying.getYing(num))
                 }
@@ -2302,7 +2299,7 @@ const skills = {
                     const type = get.type2(card)
                     if (type == "basic") return 1
                     if (type == "equip") return (player.getUseValue({ name: "huogong" }) > 0 || game.hasPlayer(p => get.attitude(player, p) > 0 && p != player)) ? 1 : 0
-                    if (type == "trick") return event.trigger.targets[0].isDamaged() ? 1 : 0
+                    if (type == "trick") return event.getTrigger().targets[0].isDamaged() ? 1 : 0
                     return 0
                 })
                 .forResult()
@@ -2317,7 +2314,7 @@ const skills = {
                     await trigger.targets[0].recover()
                     break
                 case "equip":
-                    await player.useCard("gbnongchao")
+                    await player.useSkill("gbnongchao")
                     break
             }
         }
@@ -2837,7 +2834,7 @@ const skills = {
                         const { targets: [target] } = await player.chooseTarget("宣泄：对一名其他角色使用『空箱』中所有的【杀】", true)
                             .set("ai", target => {
                                 const player = get.player()
-                                return player.getExpansions("gbkongxiang").filter(card => get.name(card) == "sha").reduce((num, card) => num + get.effect(target, card, player, player))
+                                return player.getExpansions("gbkongxiang").filter(card => get.name(card) == "sha").reduce((num, card) => num + get.effect(target, card, player, player), 0)
                             })
                             .set("filterTarget", (card, player, target) => get.distance(player, target) >= 1)
                             .forResult()
@@ -3238,7 +3235,7 @@ const skills = {
                     player: "useCard"
                 },
                 filter(event, player) {
-                    return event.card && ["equip", "delay"].includes(get.type(event.card))
+                    return event.card && !["equip", "delay"].includes(get.type(event.card))
                 },
                 async content(event, trigger, player) {
                     trigger.effectCount++

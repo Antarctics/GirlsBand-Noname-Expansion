@@ -1,12 +1,13 @@
-import { lib, game, ui, get, ai, _status } from "../../../noname.js";
+﻿import { lib, game, ui, get, ai, _status } from "../../../noname.js";
 import update from "./update.js";
 export default function (config, pack) {
     game.showExtensionChangeLog([
-        {
-            type: "text",
-            data: `修复BUG。`,
-        },
-        { type: "text", data: "重构大量技能" },
+        { type: "text", data: "新增全扩注释功能。" },
+        { type: "text", data: "新增注释样式自定义功能" },
+        { type: "text", data: "优化注释样式实时预览与应用性能。" },
+        { type: "text", data: "新增 GirlsBand 武器牌替换机制。" },
+        { type: "text", data: "优化牌堆适配与技能逻辑。" },
+        { type: "text", data: "修复已知BUG。" },
     ], 'GirlsBand');
     if (!!lib.extensionPack.十周年UI && !!registerDecadeCardSkin) {
         // 十周年UI卡牌皮肤注册
@@ -44,7 +45,6 @@ export default function (config, pack) {
         next.setContent("chooseToEnsemble");
         return next;
     }
-
     lib.element.content.chooseToEnsemble = async function () {
         const event = _status.event;
         if (!event.list) return event.result = { bool: false };

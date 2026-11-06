@@ -653,7 +653,7 @@ const skills = {
             return true
         },
         async cost(event, trigger, player) {
-            event.result = await player.chooseButtonTarget()
+            const { bool, links: [link] = [], targets } = await player.chooseButtonTarget()
                 .set("createDialog", [
                     `###${get.prompt(event.skill)}###你可以...，然后使用其中的【酒】和【桃】，若你未因此使用牌，则你从牌堆底摸等量张牌。`,
                     [
@@ -683,7 +683,11 @@ const skills = {
                 })
                 .set("complexSelect", true)
                 .forResult()
-            event.result.cost_data = event.result.links[0]
+            event.result = {
+                bool: bool,
+                targets: targets,
+                cost_data: link
+            }
         },
         async content(event, trigger, player) {
             let control = event.cost_data

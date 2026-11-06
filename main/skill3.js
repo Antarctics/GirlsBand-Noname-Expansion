@@ -1061,7 +1061,7 @@ const skills = {
     },
     gbgemian: {
         audio: false,
-        forced: true,
+        locked: true,
         trigger: {
             player: "phaseZhunbeiBegin"
         },
@@ -1070,6 +1070,7 @@ const skills = {
         },
         async cost(event, trigger, player) {
             event.result = await player.chooseCardTarget()
+                .set("forced", true)
                 .set("position", "he")
                 .set("selectCard", [1, Infinity])
                 .set("selectTarget", [1, Infinity])
