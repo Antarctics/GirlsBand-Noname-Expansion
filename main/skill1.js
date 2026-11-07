@@ -1321,7 +1321,6 @@ const skills = {
                         next.gaintag.add("gbbeihua")
                         await next
                     }
-                    console.log(player.countExpansions("gbbeihua"), player.countCards("x"))
                     const num = player.countExpansions("gbbeihua")
                     if (num) await player.gain(lib.card.ying.getYing(num))
                 }
@@ -1397,7 +1396,6 @@ const skills = {
         },
         async cost(event, trigger, player) {
             event.result = await player.chooseBool(get.prompt2(event.skill))
-                .set("trigger", trigger)
                 .set("ai", () => {
                     const event = get.event()
                     return event.player.hasCard("ying")
@@ -1419,7 +1417,6 @@ const skills = {
             const choice = await player.chooseControl(list, true)
                 .set("prompt", "成孤：请选择一项")
                 .set("choiceList", choiceList)
-                .set("trigger", trigger)
                 .set("num", num)
                 .set("ai", () => {
                     const event = get.event()
@@ -1855,7 +1852,6 @@ const skills = {
             const result = await player.chooseControl(["选项一", "选项二"], true)
                 .set("prompt", "海希：将" + get.translation(target) + "的拼点牌点数...")
                 .set("choiceList", ["调整为8", "调整为9"])
-                .set("trigger", trigger)
                 .set("ai", () => {
                     const event = get.event()
                     const trigger = event.trigger

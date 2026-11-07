@@ -886,7 +886,7 @@ const skills = {
                 player.draw(n)
             } else {
                 if (!player.hasHistory("sourceDamage", evt => evt.card == trigger.card)) {
-                    let { bool, targets: [target], cards } = await player.chooseCardTarget()
+                    let { bool, targets: [target] = [], cards } = await player.chooseCardTarget()
                         .set("prompt", `###${get.prompt(event.name)}###弃置一张牌，视为对一名其他角色使用【杀】`)
                         .set("position", "he")
                         .set("filterTarget", (card, player, target) => !target.hasHistory("damage") && player.canUse({ name: "sha" }, target, true, false))

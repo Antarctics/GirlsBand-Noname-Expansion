@@ -1724,7 +1724,7 @@ const skill = {
             storage: { gbhuoniao: true }
         },
         async precontent(event, trigger, player) {
-            const { cards: cards } = event.result
+            const { cards } = event.result
             await player.discard(cards)
             event.result.card.cards = [];
             event.result.cards = [];
