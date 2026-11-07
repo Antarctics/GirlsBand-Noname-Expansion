@@ -3226,7 +3226,6 @@ const skills = {
                     break
             }
         },
-        group: "gbdanhe_effect",
         subSkill: {
             effect: {
                 audio: false,

@@ -17,7 +17,7 @@ export default function () {
         arenaReady: arenaReady,
         precontent: preContent,
         content: (c, p) => mainContent(c, p),
-        package: info("2.4.2"),
+        package: info("2.4.2.1"),
         config: {
             update_source: {
                 name: `更新镜像源`,
