@@ -694,8 +694,9 @@ const skills = {
                 var list = [];
                 for (var name of lib.inpile) {
                     if (get.type(name) == "equip") list.push(name)
-                    if (get.subtype(name) == "equip5") list.remove(name)
+                    if (!player.hasEnabledSlot(get.subtype(name)) || !player.hasEmptySlot(get.subtype(name))) list.remove(name)
                 }
+                if (!list.length) return
                 let next = await player.chooseButton(["善器", [list, "vcard"]], true)
                     .set("ai", button => {
                         let player = get.player()
@@ -2056,7 +2057,7 @@ const skills = {
                                 }
                             })
                             .forResult()
-                        if (discard.bool && discard.cards.length && get.suit(discard.cards[0]) == "heart") {
+                        if (discard.cards.length && get.suit(discard.cards[0], ...(target === player ? [player] : [])) == "heart") {
                             player.draw()
                         }
                     } else if (choice.control == "选项二") {
@@ -2066,11 +2067,9 @@ const skills = {
                                 return 1
                             })
                             .forResult();
-                        if (show.bool) {
-                            target.showCards(show.cards);
-                            if (get.suit(show.cards[0]) != "heart") {
-                                await player.discard(show.cards);
-                            }
+                        target.showCards(show.cards);
+                        if (get.suit(show.cards[0]) != "heart") {
+                            await target.discard(show.cards, player);
                         }
                     } else if (choice.control == "选项三") {
                         if (player.hasDisabledSlot()) await player.chooseToEnable().forResult()
@@ -2957,11 +2956,10 @@ const skills = {
             fire: {
                 mod: {
                     cardname(card, player) {
-                        if (get.itemtype(card) && card.hasGaintag("gbqiaoluo_fire")) return "sha"
+                        if (get.itemtype(card) == "card" && card.hasGaintag("gbqiaoluo_fire")) return "sha"
                     },
                     cardnature(card, player, nature) {
-                        if (get.itemtype(card) && card.hasGaintag("gbqiaoluo_fire")) return "fire";
-
+                        if (get.itemtype(card) == "card" && card.hasGaintag("gbqiaoluo_fire")) return "fire";
                     },
                     selectTarget(card, player, range) {
                         if (get.name(card) == "sha") {
@@ -2973,10 +2971,10 @@ const skills = {
             thunder: {
                 mod: {
                     cardname(card, player) {
-                        if (get.itemtype(card) && card.hasGaintag("gbqiaoluo_thunder")) return "sha"
+                        if (get.itemtype(card) == "card" && card.hasGaintag("gbqiaoluo_thunder")) return "sha"
                     },
                     cardnature(card, player, nature) {
-                        if (get.itemtype(card) && card.hasGaintag("gbqiaoluo_thunder")) return "thunder";
+                        if (get.itemtype(card) == "card" && card.hasGaintag("gbqiaoluo_thunder")) return "thunder";
 
                     },
                     targetInRange(card, player, target) {

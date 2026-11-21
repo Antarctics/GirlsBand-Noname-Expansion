@@ -141,10 +141,14 @@ function autoAddPoptip() {
             }
             return null;
         };
+        const poptipCache = new Map();
+        const getPoptip = id => {
+            if (!poptipCache.has(id)) poptipCache.set(id, get.poptip(id));
+            return poptipCache.get(id);
+        };
         const replace = (key, str) => {
             if (!str) return str;
             const base = key.endsWith("_info") ? key.slice(0, -5) : key;
-            const used = new Set();
             const cache = new Map();
 
             const handle = (name, mode) => {
@@ -158,17 +162,14 @@ function autoAddPoptip() {
                 };
                 let id;
                 if (mode === "card" || mode === "skill") {
-                    const k = mode + "\0" + name;
-                    if (used.has(k)) return null;
                     id = find() || pick(ids, "rule")
                         || pick(ids, "card") || pick(ids, "skill") || pick(ids, "character");
-                    if (id) used.add(k);
                 } else {
                     id = pick(ids, "rule") || find()
                         || pick(ids, "card") || pick(ids, "skill") || pick(ids, "character");
                 }
                 if (!id) return null;
-                const text = get.poptip(id);
+                const text = getPoptip(id);
                 if (!text) return null;
                 return text;
             };

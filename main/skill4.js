@@ -228,7 +228,9 @@ const skills = {
             viewas: {
                 enable: ["chooseToUse"],
                 filter(event, player) {
-                    return player.getCards("hs").some(card => get.name(card) == "gb_bking");
+                    let cards = get.inpileVCardList(info => info[0] == "basic")
+                    if (!player.getCards("hs").some(card => get.name(card) == "gb_bking")) return false
+                    return cards.some(card => event.filterCard(get.autoViewAs(card), player, event))
                 },
                 chooseButton: {
                     dialog(event, player) {

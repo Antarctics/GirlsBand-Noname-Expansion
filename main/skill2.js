@@ -785,7 +785,7 @@ const skill = {
                 onremove: true,
                 mod: {
                     cardUsableTarget(card, player, target) {
-                        if (player.getStorage("gbduoluo_temp").includes(target) && get.name(card) == "sha") return true
+                        if (player.getStorage("gbduoluo_temp").includes(target) && get.name(card) == "sha") return Infinity
                     },
                     targetInRange(card, player, target) {
                         if (player.getStorage("gbduoluo_temp").includes(target) && get.name(card) == "sha") return true
@@ -796,7 +796,7 @@ const skill = {
                 onremove: true,
                 mod: {
                     cardname(card, player, current) {
-                        if (get.name(card) == "ying") return "sha"
+                        if (card.name == "ying") return "sha"
                     }
                 }
             }

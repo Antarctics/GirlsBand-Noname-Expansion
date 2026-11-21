@@ -1080,7 +1080,7 @@ const skills = {
                 for (let target of result.targets.sortBySeat()) {
                     let list = ["选项一"]
                     if (player.countCards("he")) list.push("选项二")
-                    let choiceList = [`令${get.translation(player)}摸一张牌，然后本回合无法响应其使用的牌`, `令${get.translation(player)}弃置任意张牌，然后本回合不能使用或打出与以此法弃置牌花色相同的牌`]
+                    let choiceList = [`令${get.translation(player)}摸一张牌，然后本回合无法响应其使用的牌`, `令${get.translation(player)}弃置任意张牌，然后本回合不能使用或打出与弃置牌花色相同的牌`]
                     let next = await target.chooseControl(list)
                         .set("prompt", "墨影：请选择一项")
                         .set("choiceList", choiceList)
@@ -1119,7 +1119,7 @@ const skills = {
                                     return cards[0] == card
                                 }
                             }).forResult()
-                            target.markAuto("gbmoying_discard", next.cards)
+                            target.markAuto("gbmoying_discard", next.cards.map(card => get.suit(card)))
                             target.addTempSkill("gbmoying_discard")
                             game.log(target, "选择了", "#g【墨影】", "的", "#y选项二")
                             break
@@ -1177,23 +1177,16 @@ const skills = {
         },
         async content(event, trigger, player) {
             const target = event.targets[0]
-            const card = get.autoViewAs({ name: "sha", nature: "thunder", isCard: true })
+            const card = get.autoViewAs({ name: "sha", nature: "thunder", storage: { gbfuxi: true }, isCard: true })
             if (!player.canUse(card, target, false, false)) return
             const next = player.useCard(card, target, false)
-            player.when({ source: "damageBegin2" })
-                .filter(evt => evt.card == next.card && evt.player == target)
-                .then(() => {
-                    const event = get.event()
-                    event.player.markAuto("gbfuxi_effect", event.target)
-                    event.player.addTempSkill("gbfuxi_effect")
-                })
-                .set("target", target)
             await next
         },
         ai: {
             threaten: 1,
             expose: 0.3
         },
+        group: "gbfuxi_effect",
         subSkill: {
             effect: {
                 audio: false,
@@ -1203,15 +1196,15 @@ const skills = {
                 },
                 forced: true,
                 filter(event, player) {
-                    return player.getStorage("gbfuxi_effect").includes(event.player)
+                    return player.getHistory("sourceDamage", evt => evt.card?.storage?.gbfuxi).map(evt => evt.player).some(i => i == event.player)
                 },
                 async content(event, trigger, player) {
                     trigger.num++
                 },
                 mod: {
                     cardUsableTarget(card, player, target) {
-                        if (player.getStorage("gbfuxi_effect").includes(target)) return true
-                    }
+                        if (player.getHistory("sourceDamage", evt => evt.card?.storage?.gbfuxi).map(evt => evt.player).some(i => i == target)) return Infinity
+                    },
                 }
             }
         }
@@ -3426,7 +3419,7 @@ const skills = {
         async content(event, trigger, player) {
             let { targets: [target] } = await player.chooseTarget("鼓风：请选择并横置一名角色", true)
                 .set("ai", target => {
-                    const val = 0
+                    let val = 0
                     const player = get.player()
                     if (!target.isLinked()) val += 1
                     if (get.attitude(player, target) < 0) val += 1
