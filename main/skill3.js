@@ -1779,7 +1779,7 @@ const skills = {
                     return player.getHistory("lose", evt => evt.getParent("phaseDiscard", true) && evt.cards.some(card => get.name(card) == "ying")).length
                 },
                 async content(event, trigger, player) {
-                    await player.discard(player.getCards("h"))
+                    await player.loseMaxHp()
                     player.addSkill("gbwuwang")
                 }
             }

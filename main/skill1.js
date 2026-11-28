@@ -853,7 +853,7 @@ const skills = {
             gain: {
                 audio: [1, 2].map(i => "ext:GirlsBand/audio/skill/gbwuwang" + i),
                 trigger: {
-                    player: "loseAfter"
+                    player: ["loseAfter", "gainAfter"]
                 },
                 filter(event, player) {
                     return event.cards?.length >= 2
@@ -1063,45 +1063,45 @@ const skills = {
     gbmoying: {
         audio: "ext:GirlsBand/audio/skill:3",
         enable: "phaseUse",
+        filterTarget: lib.filter.notMe,
+        selectTarget: [1, 3],
+        ai2(target) {
+            let player = get.player()
+            if (get.attitude(player, target) < 0) {
+                if (target.getEquip("bagua")) return 0.25
+                if (target.getEquip("rewrite_bagua")) return 0.5
+                return target.countCards("hs") / 4
+            }
+            return 0.1
+        },
         usable: 1,
         async content(event, trigger, player) {
-            let result = await player.chooseTarget("墨影：选择至多三名其他角色", [1, 3], true)
-                .set("filterTarget", lib.filter.notMe)
-                .set("ai", (target) => {
-                    let player = get.player()
-                    if (get.attitude(player, target) < 0) {
-                        if (target.getEquip("bagua")) return 0.25
-                        if (target.getEquip("rewrite_bagua")) return 0.5
-                        return target.countCards("hs") / 4
-                    }
-                })
-                .forResult()
-            if (result && result.bool) {
-                for (let target of result.targets.sortBySeat()) {
-                    let list = ["选项一"]
-                    if (player.countCards("he")) list.push("选项二")
-                    let choiceList = [`令${get.translation(player)}摸一张牌，然后本回合无法响应其使用的牌`, `令${get.translation(player)}弃置任意张牌，然后本回合不能使用或打出与弃置牌花色相同的牌`]
-                    let next = await target.chooseControl(list)
-                        .set("prompt", "墨影：请选择一项")
-                        .set("choiceList", choiceList)
-                        .set("ai", () => {
-                            let player = get.player()
-                            let controls = get.event().controls
-                            if (controls.length == 1) return controls[0]
-                            if (player.countCards("he") > 2 && Math.random() < 0.3) return "选项二"
-                            if ((player.getEquip("bagua") || player.getEquip("rewrite_bagua")) && Math.random() > 0.3) return "选项二"
-                            return "选项一"
-                        })
-                        .forResult()
-                    switch (next.control) {
-                        case "选项一":
-                            player.draw()
-                            target.markAuto("gbmoying_effect", player)
-                            target.addTempSkill("gbmoying_effect")
-                            game.log(target, "选择了", "#g【墨影】", "的", "#y选项一")
-                            break
-                        case "选项二":
-                            let next = await player.chooseToDiscard([1, Infinity], true).set("ai", (card) => {
+            for (let target of event.targets.sortBySeat()) {
+                let list = ["选项一"]
+                if (player.countCards("he")) list.push("选项二")
+                let choiceList = [`令${get.translation(player)}摸一张牌，然后你本回合无法响应其使用的牌`, `令${get.translation(player)}弃置任意张牌，然后你本回合不能使用或打出与弃置牌花色相同的牌`]
+                let next = await target.chooseControl(list)
+                    .set("prompt", "墨影：请选择一项")
+                    .set("choiceList", choiceList)
+                    .set("ai", () => {
+                        let player = get.player()
+                        let controls = get.event().controls
+                        if (controls.length == 1) return controls[0]
+                        if (player.countCards("he") > 2 && Math.random() < 0.3) return "选项二"
+                        if ((player.getEquip("bagua") || player.getEquip("rewrite_bagua")) && Math.random() > 0.3) return "选项二"
+                        return "选项一"
+                    })
+                    .forResult()
+                switch (next.control) {
+                    case "选项一":
+                        player.draw()
+                        target.markAuto("gbmoying_effect", player)
+                        target.addTempSkill("gbmoying_effect")
+                        game.log(target, "选择了", "#g【墨影】", "的", "#y选项一")
+                        break
+                    case "选项二":
+                        let { cards } = await player.chooseToDiscard([1, Infinity], true)
+                            .set("ai", (card) => {
                                 let player = get.player()
                                 let cards = player.getCards("he", card => get.value(card) <= 4).sort((a, b) => get.value(a) - get.value(b))
                                 let suits = cards.filter(c => !player.getHistory("lose", evt => evt.getParent("gbmoying", true)).map(evt => evt.cards).flat().reduce((suit, card) => suit.add(get.suit(card)), []).includes(get.suit(c)))
@@ -1118,12 +1118,14 @@ const skills = {
                                     }
                                     return cards[0] == card
                                 }
-                            }).forResult()
-                            target.markAuto("gbmoying_discard", next.cards.map(card => get.suit(card)))
-                            target.addTempSkill("gbmoying_discard")
-                            game.log(target, "选择了", "#g【墨影】", "的", "#y选项二")
-                            break
-                    }
+                            })
+                            .set("chooseonly", true)
+                            .forResult()
+                        game.log(target, "选择了", "#g【墨影】", "的", "#y选项二")
+                        target.markAuto("gbmoying_discard", cards.map(card => get.suit(card)))
+                        await target.addTempSkill("gbmoying_discard")
+                        await player.discard(cards)
+                        break
                 }
             }
 
@@ -1295,7 +1297,7 @@ const skills = {
             const me = player;
             const numx = trigger.num;
             trigger.num = function (player) {
-                if (player == me) return 5 + (typeof numx == "function" ? numx(player) : numx)
+                if (player == me) return 6 + (typeof numx == "function" ? numx(player) : numx)
                 return typeof numx == "function" ? numx(player) : numx
             };
         },
@@ -1980,7 +1982,7 @@ const skills = {
                     }
                     var dialog = ui.create.dialog("forcebutton");
                     dialog.add("睦灵", "选择获得一项技能");
-                    var clickItem = () => {
+                    var clickItem = function () {
                         event._result = {
                             bool: true,
                             skill: this.link
@@ -2793,7 +2795,7 @@ const skills = {
         async cost(event, trigger, player) {
             const list = ["选项一", "选项二"]
             const choiceList = ["摸一张牌", "当前的回合结束时，对一名距离1以内的其他角色使用『空箱』中所有的【杀】", "本回合结束时，令一名角色获得『空箱』中的所有牌"]
-            if (player.countExpansions("gbkongxiang").length > 0) {
+            if (player.countExpansions("gbkongxiang") > 0) {
                 list.push("选项三")
             }
             list.push("cancel2")
@@ -3206,7 +3208,7 @@ const skills = {
                     await player.draw()
                     break
                 case 2:
-                    player.addTempSkill("gbdanhe_effect", { player: "useCard" })
+                    player.addSkill("gbdanhe_effect")
                     break
                 case 3:
                     player.skip("phaseDiscard")
@@ -3228,6 +3230,7 @@ const skills = {
                 async content(event, trigger, player) {
                     trigger.effectCount++
                     game.log(trigger.card, "额外结算一次")
+                    player.removeSkill(event.name)
                 }
             }
         },

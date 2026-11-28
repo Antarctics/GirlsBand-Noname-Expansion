@@ -1734,7 +1734,7 @@ const skill = {
                     for (const target of game.filterPlayer(target => target != player).sortBySeat()) {
                         const list = [], choiceList = ["令" + get.translation(player) + "获得你的一张牌", "获得" + get.translation(player) + "的一张『孤』，然后令其摸三张牌"]
                         if (target.countCards("he")) list.push("选项一")
-                        if (player.countExpansions("gbgugao").length) list.push("选项二")
+                        if (player.countExpansions("gbgugao")) list.push("选项二")
                         if (!list.length) continue
                         const result = await target.chooseControl(list)
                             .set("prompt", "火鸟：请选择一项")
